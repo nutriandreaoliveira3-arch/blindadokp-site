@@ -1,0 +1,9 @@
+{
+  "name": "BlindadoKP",
+  "short_name": "BlindadoKP",
+  "lang": "pt-BR",
+  "start_url": "../index.html",
+  "display": "standalone",
+  "background_color": "#080807",
+  "theme_color": "#080807"
+}
