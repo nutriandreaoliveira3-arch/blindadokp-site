@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SKIL TOPCLAUDIA — R$ 497</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%);
+      color: #fff;
+      padding: 40px 0;
+      text-align: center;
+      border-bottom: 4px solid #C9A227;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #C9A227;
+    }
+
+    header p {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: white;
+      padding: 40px;
+      margin: 40px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      color: #C9A227;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section h3 {
+      color: #1C1C1C;
+      font-size: 18px;
+      margin: 20px 0 10px;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .section ul {
+      margin-left: 30px;
+      margin-bottom: 15px;
+    }
+
+    .section li {
+      margin-bottom: 10px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #C9A227;
+      color: #1C1C1C;
+      padding: 18px 50px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 18px;
+      text-decoration: none;
+      margin: 20px 0;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: #FFD700;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+    }
+
+    .cta-block {
+      text-align: center;
+      padding: 40px 0;
+      background: rgba(201, 162, 39, 0.05);
+      border-radius: 8px;
+    }
+
+    .preco {
+      font-size: 48px;
+      color: #C9A227;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    .guarantee {
+      background: rgba(0, 255, 0, 0.1);
+      border-left: 4px solid #00ff00;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .problem {
+      background: rgba(255, 0, 0, 0.05);
+      border-left: 4px solid #ff4444;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 4px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .feature-box {
+      background: #f0f0f0;
+      padding: 20px;
+      border-radius: 8px;
+      border-left: 4px solid #C9A227;
+    }
+
+    .feature-box h4 {
+      color: #C9A227;
+      margin-bottom: 10px;
+    }
+
+    .template-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      margin: 20px 0;
+    }
+
+    .template-card {
+      background: #f9f9f9;
+      padding: 15px;
+      border-radius: 6px;
+      border: 2px solid #C9A227;
+      text-align: center;
+    }
+
+    .template-card h4 {
+      color: #C9A227;
+      margin-bottom: 8px;
+    }
+
+    .palette {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+      flex-wrap: wrap;
+    }
+
+    .color-swatch {
+      width: 100px;
+      height: 100px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+      font-size: 12px;
+      text-align: center;
+      padding: 10px;
+    }
+
+    footer {
+      background: #1C1C1C;
+      color: #fff;
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 60px;
+      border-top: 4px solid #C9A227;
+    }
+
+    footer p {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 28px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .preco {
+        font-size: 36px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <h1>SKIL TOPCLAUDIA</h1>
+    <p>Carrosseis Profissionais em 30 Minutos — Sem Designer Caro</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <h2>🚨 O Seu Problema</h2>
+    <div class="problem">
+      <p><strong>Seu conteúdo é INCRÍVEL.</strong></p>
+      <p><strong>Mas:</strong> Os carrosseis parecem "feitos no PowerPoint".</p>
+      <p><strong>Resultado?</strong> Menos engagement, menos pessoas vendo.</p>
+      <p><strong>Solução?</strong> Visuais profissionais + paleta unificada + templates prontos.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>✅ O Que Você Recebe</h2>
+    <div class="features">
+      <div class="feature-box">
+        <h4>✓ SKILL Instalável</h4>
+        <p>6 templates HTML prontos + updates vitalício</p>
+      </div>
+      <div class="feature-box">
+        <h4>✓ 5 Vídeos de Treinamento</h4>
+        <p>Template por template, prático e direto</p>
+      </div>
+      <div class="feature-box">
+        <h4>✓ Paleta Profissional</h4>
+        <p>Preto #1C1C1C + Dourado #C9A227 + Branco</p>
+      </div>
+      <div class="feature-box">
+        <h4>✓ Conversor Feed→Reels+Stories</h4>
+        <p>1 carrossel = 3 formatos (feed, reel, story)</p>
+      </div>
+      <div class="feature-box">
+        <h4>✓ Manual Completo</h4>
+        <p>Guia passo a passo + dicas de design</p>
+      </div>
+      <div class="feature-box">
+        <h4>✓ Suporte 60 Dias</h4>
+        <p>Dúvidas sobre design/criação? Respondemos</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💰 Investimento</h2>
+    <div class="cta-block">
+      <div class="preco">R$ 497</div>
+      <p>Uma única vez • Sem mensalidade • Acesso vitalício</p>
+      <a href="#checkout" class="cta-button">COMEÇAR AGORA</a>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>🎨 Paleta Profissional Embutida</h2>
+    <p>Escolha das cores é science-backed. Essas cores passam:</p>
+    <ul>
+      <li>Profissionalismo</li>
+      <li>Luxo (diferencia no feed)</li>
+      <li>Alto contraste (legível em mobile)</li>
+      <li>Identidade visual forte</li>
+    </ul>
+    
+    <div class="palette">
+      <div class="color-swatch" style="background: #1C1C1C;">
+        <div>#1C1C1C<br>(Preto)</div>
+      </div>
+      <div class="color-swatch" style="background: #C9A227;">
+        <div>#C9A227<br>(Dourado)</div>
+      </div>
+      <div class="color-swatch" style="background: #FFFFFF; border: 2px solid #ddd; color: #1C1C1C;">
+        <div>#FFFFFF<br>(Branco)</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>6 Templates Prontos</h2>
+    <div class="template-grid">
+      <div class="template-card">
+        <h4>1️⃣ Tipografia</h4>
+        <p>Só texto + cores. Ideal para dicas.</p>
+      </div>
+      <div class="template-card">
+        <h4>2️⃣ Imagem+Texto</h4>
+        <p>Foto + mensagem. Mais visual.</p>
+      </div>
+      <div class="template-card">
+        <h4>3️⃣ Dados/Stats</h4>
+        <p>Números bonitos. Prova social.</p>
+      </div>
+      <div class="template-card">
+        <h4>4️⃣ Dicas & Hacks</h4>
+        <p>Listas estruturadas. Alto engagement.</p>
+      </div>
+      <div class="template-card">
+        <h4>5️⃣ Depoimento</h4>
+        <p>Proof social. Confiança.</p>
+      </div>
+      <div class="template-card">
+        <h4>6️⃣ Call-to-Action</h4>
+        <p>Urgência + botão. Conversão.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>⏱️ Tempo Total: 30 Minutos</h2>
+    <p><strong>Fluxo:</strong> Abra template HTML → Edite seu texto → Salve como PNG → Pronto pro Instagram.</p>
+    <p><strong>Depois?</strong> Use conversor para gerar Reel + Stories automaticamente.</p>
+    <p><strong>Resultado:</strong> 1 conteúdo, 3 formatos, 3x o impacto.</p>
+  </div>
+
+  <div class="section">
+    <h2>🔄 Conversor Feed → Reels + Stories</h2>
+    <p><strong>Problema:</strong> Você cria carrossel (9 slides, 30 min de trabalho).</p>
+    <p><strong>Solução:</strong> Conversor automático gera:</p>
+    <ul>
+      <li>✓ Reel (15-60 seg, transições suaves)</li>
+      <li>✓ Stories (9 stories, 9:16 cada)</li>
+    </ul>
+    <p><strong>Tempo total?</strong> Mesmos 30 minutos, 3 formatos.</p>
+  </div>
+
+  <div class="section">
+    <h2>💡 Resultado Esperado</h2>
+    <p><strong>Antes:</strong> Conteúdo desunificado, visuais genéricos, baixo engagement.</p>
+    <p><strong>Depois:</strong> Feed profissional, visuais consistentes, 3x mais likes/comentários.</p>
+    <p><strong>Metrica que importa:</strong> Mais visibilidade = mais leads = mais pacientes.</p>
+  </div>
+
+  <div class="section">
+    <h2>🛡️ Garantia 60 Dias</h2>
+    <div class="guarantee">
+      <p><strong>Se você não gostar dos templates ou achar que não é pra você, devolvemos 100% em 60 dias.</strong></p>
+      <p>Sem perguntas. Teste sem risco.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>❓ Perguntas Frequentes</h2>
+    
+    <h3>P: Preciso saber design?</h3>
+    <p>R: Não. Templates estão prontos, cores escolhidas. Você só edita texto.</p>
+    
+    <h3>P: Funciona com qual ferramenta?</h3>
+    <p>R: Claude (AI). Você tem skill, pode gerar quantos carrosseis quiser.</p>
+    
+    <h3>P: Posso usar meu logo?</h3>
+    <p>R: Sim! Templates permitem inserir imagens. Seu logo, suas fotos, seus exemplos.</p>
+
+    <h3>P: Quanto tempo até aprender?</h3>
+    <p>R: ~30 min (assista 5 vídeos de 6 min). Já está usando carrosseis no dia.</p>
+
+    <h3>P: Posso customizar as cores?</h3>
+    <p>R: Sim! Paleta preto+dourado é recomendação. Mas HTML é editável, você muda conforme quer.</p>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p><strong>SKIL TOPCLAUDIA</strong> — Carrosseis Profissionais Sem Designer Caro</p>
+    <p>Desenvolvido por: Andréa Oliveira | @nutriandreaoliveira</p>
+  </div>
+</footer>
+
+</body>
+</html>
