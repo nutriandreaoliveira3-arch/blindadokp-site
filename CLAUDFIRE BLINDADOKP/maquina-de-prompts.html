@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MÁQUINA DE PROMPTS — em breve</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: #f9f9f9;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%);
+      color: #fff;
+      padding: 40px 0;
+      text-align: center;
+      border-bottom: 4px solid #C9A227;
+    }
+
+    .eyebrow-badge {
+      display: inline-block;
+      background: rgba(201, 162, 39, 0.15);
+      color: #C9A227;
+      border: 1px solid #C9A227;
+      letter-spacing: 0.1em;
+      font-size: 11px;
+      font-weight: bold;
+      padding: 6px 14px;
+      border-radius: 20px;
+      margin-bottom: 16px;
+    }
+
+    header h1 {
+      font-size: 42px;
+      margin-bottom: 10px;
+      color: #C9A227;
+    }
+
+    header p {
+      font-size: 18px;
+      color: rgba(255, 255, 255, 0.9);
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    .section {
+      background: white;
+      padding: 40px;
+      margin: 40px 0;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .section h2 {
+      color: #C9A227;
+      font-size: 28px;
+      margin-bottom: 20px;
+    }
+
+    .section p {
+      margin-bottom: 15px;
+      line-height: 1.8;
+      font-size: 16px;
+    }
+
+    .cta-button {
+      display: inline-block;
+      background: #C9A227;
+      color: #1C1C1C;
+      padding: 18px 50px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-size: 18px;
+      text-decoration: none;
+      margin: 20px 0;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .cta-button:hover {
+      background: #FFD700;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+    }
+
+    .cta-block {
+      text-align: center;
+      padding: 40px 0;
+      background: rgba(201, 162, 39, 0.05);
+      border-radius: 8px;
+    }
+
+    .preco {
+      font-size: 44px;
+      color: #C9A227;
+      font-weight: bold;
+      text-align: center;
+      margin: 20px 0 6px;
+    }
+
+    .preco-de {
+      text-align: center;
+      color: #999;
+      text-decoration: line-through;
+      font-size: 18px;
+      margin-bottom: 4px;
+    }
+
+    .preco-nota {
+      text-align: center;
+      color: #666;
+      font-size: 14px;
+      margin-bottom: 10px;
+    }
+
+    .categorias-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 14px;
+      margin: 20px 0;
+    }
+
+    .categoria-card {
+      background: #f0f0f0;
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #C9A227;
+      font-weight: 600;
+      color: #1C1C1C;
+      font-size: 14.5px;
+    }
+
+    .tipos-row {
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+      margin: 20px 0;
+    }
+
+    .tipo-card {
+      background: #1C1C1C;
+      color: #C9A227;
+      padding: 14px 22px;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    footer {
+      background: #1C1C1C;
+      color: #fff;
+      text-align: center;
+      padding: 30px 0;
+      margin-top: 60px;
+      border-top: 4px solid #C9A227;
+    }
+
+    footer p {
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 28px;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .preco {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <div class="container">
+    <span class="eyebrow-badge">EM DESENVOLVIMENTO</span>
+    <h1>MÁQUINA DE PROMPTS</h1>
+    <p>O prompt certo pra cada tarefa — biblioteca organizada por profissão da saúde, pronta pra postar.</p>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="section">
+    <h2>O Que Está Sendo Construído</h2>
+    <p>Uma biblioteca prática de prompts prontos, organizada por categoria de profissão de saúde — sem precisar adaptar nada, só copiar, colar e usar.</p>
+    <h3 style="margin-top:24px;color:#1C1C1C;">Categorias por profissão</h3>
+    <div class="categorias-grid">
+      <div class="categoria-card">Nutricionista</div>
+      <div class="categoria-card">Fisioterapeuta</div>
+      <div class="categoria-card">Dentista</div>
+      <div class="categoria-card">Médico(a)</div>
+      <div class="categoria-card">+ outras profissões da saúde</div>
+    </div>
+    <h3 style="margin-top:24px;color:#1C1C1C;">Tipos de conteúdo</h3>
+    <div class="tipos-row">
+      <span class="tipo-card">POSTAGEM</span>
+      <span class="tipo-card">CARROSSEL</span>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>💰 Preço Previsto de Lançamento</h2>
+    <div class="cta-block">
+      <div class="preco">R$ 97</div>
+      <p class="preco-nota">Preço de lançamento para os primeiros compradores</p>
+      <p class="preco-de">Depois: R$ 197</p>
+      <p style="max-width:520px;margin:16px auto 0;color:#777;font-size:13.5px;">
+        Produto ainda em desenvolvimento — preço e data de lançamento podem mudar até o dia do lançamento oficial.
+      </p>
+      <a href="mailto:contato@blindadokp.com.br?subject=Quero%20ser%20avisado(a)%20do%20lan%C3%A7amento%20da%20M%C3%A1quina%20de%20Prompts" class="cta-button">QUERO SER AVISADO(A) DO LANÇAMENTO</a>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <div class="container">
+    <p><strong>MÁQUINA DE PROMPTS</strong> — Prompts prontos por profissão da saúde</p>
+    <p>Desenvolvido por: Andréa Oliveira | @nutriandreaoliveira</p>
+  </div>
+</footer>
+
+</body>
+</html>
