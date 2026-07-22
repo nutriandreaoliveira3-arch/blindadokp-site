@@ -1,0 +1,1024 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Comportamento Alimentar &amp; Emagrecimento Blindado</title>
+<meta name="description" content="Módulo educativo: 33 padrões de comportamento alimentar e sabotagem no emagrecimento." />
+<link rel="icon" href="/images/favicon.svg" />
+</head>
+<body>
+<style>
+:root {
+  --bg: #F3ECE4;
+  --bg-deep: #EBE1D6;
+  --surface: #FFFDFB;
+  --ink: #2B2019;
+  --ink-soft: #6E5C53;
+  --ink-faint: #9C8B80;
+  --accent: #7C2A3F;
+  --accent-dim: #A9576A;
+  --accent-tint: #F1DCE0;
+  --sage: #66714F;
+  --sage-tint: #E6E9DA;
+  --line: #DDCDBF;
+  --line-soft: #E9DFD3;
+  --font-display: "Iowan Old Style", "Palatino Linotype", Palatino, "URW Palladio L", Georgia, serif;
+  --font-body: Charter, "Bitstream Charter", "Sitka Text", Georgia, serif;
+  --font-utility: -apple-system, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  color-scheme: light;
+}
+
+* { box-sizing: border-box; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .card, .hero-inner { animation: rise .6s ease both; }
+}
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 17px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection { background: var(--accent-tint); color: var(--accent); }
+
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 3px; }
+a:focus-visible, summary:focus-visible, button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+.page { max-width: 1180px; margin: 0 auto; padding: 0 clamp(16px, 4vw, 48px); }
+
+/* ---------- HERO ---------- */
+.hero {
+  padding: clamp(48px, 8vw, 88px) 0 clamp(28px, 5vw, 48px);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+}
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0; left: -10%;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--accent) 0%, transparent 85%);
+  opacity: .35;
+}
+.hero-inner { max-width: 760px; }
+.kicker {
+  font-family: var(--font-utility);
+  font-size: 12.5px;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  font-weight: 600;
+  margin: 0 0 18px;
+}
+.hero h1 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(34px, 5.4vw, 54px);
+  line-height: 1.08;
+  letter-spacing: -0.01em;
+  margin: 0 0 22px;
+  text-wrap: balance;
+  color: var(--ink);
+}
+.hero-lede {
+  font-size: 19px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+  max-width: 62ch;
+  margin: 0 0 32px;
+}
+.hero-lede em { color: var(--accent); font-style: italic; }
+
+.hero-stats { display: flex; gap: clamp(24px, 5vw, 48px); flex-wrap: wrap; }
+.hero-stats div { display: flex; flex-direction: column; }
+.hero-stats strong {
+  font-family: var(--font-display);
+  font-size: 30px;
+  color: var(--accent);
+  line-height: 1;
+}
+.hero-stats span {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-top: 6px;
+}
+
+/* ---------- LAYOUT ---------- */
+.layout {
+  display: grid;
+  grid-template-columns: 260px minmax(0, 1fr);
+  gap: clamp(28px, 4vw, 64px);
+  align-items: start;
+  padding-top: clamp(28px, 4vw, 44px);
+}
+
+/* TOC */
+.toc {
+  position: sticky;
+  top: 24px;
+  max-height: calc(100vh - 48px);
+  overflow-y: auto;
+  padding-right: 8px;
+}
+.toc summary {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--ink-soft);
+  cursor: pointer;
+  padding: 6px 0 12px;
+  list-style: none;
+}
+.toc summary::-webkit-details-marker { display: none; }
+.toc summary::after {
+  content: "Toque para abrir";
+  float: right;
+  font-weight: 400;
+  color: var(--ink-faint);
+  text-transform: none;
+  letter-spacing: 0;
+}
+.nav-group { margin-bottom: 18px; }
+.nav-cluster {
+  display: block;
+  font-family: var(--font-utility);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--ink);
+  text-decoration: none;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--line-soft);
+  margin-bottom: 4px;
+}
+.nav-cluster:hover { color: var(--accent); }
+.nav-group ul { list-style: none; margin: 4px 0 0; padding: 0; }
+.nav-group li a {
+  display: block;
+  font-family: var(--font-utility);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+  text-decoration: none;
+  padding: 3px 0 3px 10px;
+  border-left: 2px solid transparent;
+  line-height: 1.4;
+}
+.nav-group li a:hover { color: var(--accent); border-left-color: var(--accent); }
+
+@media (min-width: 900px) {
+  .toc summary { pointer-events: none; }
+  .toc summary::after { display: none; }
+}
+@media (max-width: 899px) {
+  .layout { grid-template-columns: 1fr; }
+  .toc {
+    position: static;
+    max-height: none;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 4px 16px;
+  }
+  .toc-inner { padding-bottom: 12px; }
+}
+
+/* ---------- MAIN TYPE ---------- */
+main { min-width: 0; }
+.intro-note {
+  max-width: 66ch;
+  margin: 0 0 clamp(36px, 6vw, 56px);
+  padding-bottom: clamp(28px, 5vw, 40px);
+  border-bottom: 1px solid var(--line);
+}
+.intro-note p { margin: 0 0 16px; color: var(--ink-soft); font-size: 17px; }
+.intro-note strong { color: var(--ink); }
+
+.cluster { margin-bottom: clamp(48px, 7vw, 76px); scroll-margin-top: 24px; }
+.cluster-head { max-width: 66ch; margin-bottom: 28px; }
+.cluster-tag {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: var(--sage);
+}
+.cluster-head h2 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 3vw, 32px);
+  font-weight: 600;
+  margin: 8px 0 10px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.cluster-head p { margin: 0; color: var(--ink-soft); font-size: 16px; }
+
+.card-grid { display: flex; flex-direction: column; gap: 20px; }
+
+/* ---------- CARD ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--accent);
+  padding: clamp(20px, 3vw, 32px);
+  scroll-margin-top: 24px;
+}
+.card-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 16px; flex-wrap: wrap; }
+.card-num {
+  font-family: var(--font-utility);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  color: var(--accent);
+  background: var(--accent-tint);
+  padding: 3px 9px;
+  border-radius: 2px;
+  white-space: nowrap;
+}
+.card-head h3 {
+  font-family: var(--font-display);
+  font-size: clamp(20px, 2.4vw, 25px);
+  font-weight: 600;
+  margin: 0;
+  color: var(--ink);
+}
+
+.card-body { display: flex; flex-direction: column; gap: 14px; max-width: 68ch; }
+.field-label {
+  display: block;
+  font-family: var(--font-utility);
+  font-size: 11.5px;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 700;
+  margin-bottom: 3px;
+}
+.field p { margin: 0; color: var(--ink); }
+
+.quote-id {
+  padding: 18px 20px;
+  border-radius: 3px;
+  background: var(--bg-deep);
+  border-left: 2px solid var(--sage);
+  margin: 22px 0 18px;
+}
+.quote-id p {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  margin: 0 0 8px;
+  color: var(--ink);
+  line-height: 1.5;
+}
+.quote-id span {
+  font-family: var(--font-utility);
+  font-size: 10.5px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  opacity: .7;
+}
+
+.card-foot {
+  border-top: 1px solid var(--line-soft);
+  padding-top: 14px;
+  font-size: 14.5px;
+  color: var(--ink-soft);
+}
+.card-foot p { margin: 0; }
+.card-foot strong { color: var(--ink); }
+.card-foot .refs { font-size: 13px; font-style: italic; color: var(--ink-faint); }
+
+.page-foot {
+  margin-top: 56px;
+  padding: 24px 0 64px;
+  border-top: 1px solid var(--line);
+}
+.page-foot p {
+  font-family: var(--font-utility);
+  font-size: 13px;
+  color: var(--ink-faint);
+  max-width: 60ch;
+}
+
+</style>
+<title>Comportamento Alimentar &amp; Emagrecimento Blindado</title>
+<div class="page">
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="kicker">Módulo Educativo &middot; Método Emagrecimento Blindado</p>
+      <h1>Comportamento alimentar<br>&amp; sabotagem no emagrecimento</h1>
+      <p class="hero-lede">Se você já perdeu as contas de quantas dietas começou — e de quantas terminou em <em>&ldquo;amanhã eu recomeço&rdquo;</em> — este material foi escrito pensando em você. Não é sobre força de vontade. É sobre entender, com precisão, o que acontece antes do prato.</p>
+      <div class="hero-stats">
+        <div><strong>33</strong><span>padrões mapeados</span></div>
+        <div><strong>5</strong><span>blocos temáticos</span></div>
+        <div><strong>35+</strong><span>pesquisadores e autores</span></div>
+      </div>
+    </div>
+  </header>
+
+  <div class="layout">
+    <details class="toc" open>
+      <summary>Sumário</summary>
+      <div class="toc-inner">
+        <div class="nav-group">
+    <a class="nav-cluster" href="#c-emocoes">Bloco 01 &middot; As emoções que a gente tenta comer</a>
+    <ul><li><a href="#b-1">01. Fome Emocional</a></li><li><a href="#b-2">02. Comer por Ansiedade</a></li><li><a href="#b-3">03. Comer por Estresse (o efeito do cortisol)</a></li><li><a href="#b-4">04. Comer por Tédio</a></li><li><a href="#b-5">05. Comer por Solidão</a></li><li><a href="#b-6">06. Comer por Culpa</a></li><li><a href="#b-7">07. Comer Escondido</a></li><li><a href="#b-8">08. Comer para Aliviar a Tristeza (Comida como Consolo)</a></li></ul>
+  </div>
+<div class="nav-group">
+    <a class="nav-cluster" href="#c-cerebro">Bloco 02 &middot; O corpo, o cérebro e o piloto automático</a>
+    <ul><li><a href="#b-9">09. Compulsão Alimentar (Episódios de Descontrole)</a></li><li><a href="#b-10">10. Comida, Recompensa e Dopamina</a></li><li><a href="#b-11">11. Comida como Afeto</a></li><li><a href="#b-12">12. Hábitos Automáticos (Piloto Automático / Comer sem Perceber)</a></li><li><a href="#b-13">13. Beliscar sem Perceber (Grazing)</a></li><li><a href="#b-14">14. Comer Rápido Demais / Desconexão da Saciedade</a></li></ul>
+  </div>
+<div class="nav-group">
+    <a class="nav-cluster" href="#c-pensamento">Bloco 03 &middot; Os pensamentos que sabotam por dentro</a>
+    <ul><li><a href="#b-15">15. Mentalidade de Tudo ou Nada</a></li><li><a href="#b-16">16. Restrição Alimentar Excessiva</a></li><li><a href="#b-17">17. Medo de Sentir Fome</a></li><li><a href="#b-18">18. Efeito Sanfona (Weight Cycling)</a></li><li><a href="#b-19">19. Dieta de Segunda a Sexta, Solta no Fim de Semana</a></li><li><a href="#b-20">20. Autopunição Pós-Exagero</a></li><li><a href="#b-21">21. Moralização da Comida (Comida Boa x Comida Má)</a></li></ul>
+  </div>
+<div class="nav-group">
+    <a class="nav-cluster" href="#c-corpo">Bloco 04 &middot; O corpo visto, comparado e adiado</a>
+    <ul><li><a href="#b-22">22. Vergonha do Corpo</a></li><li><a href="#b-23">23. Comparação Corporal (Redes Sociais e Corpo do Passado)</a></li><li><a href="#b-24">24. Autossabotagem no Emagrecimento</a></li><li><a href="#b-25">25. Procrastinação do "Segunda eu Começo"</a></li></ul>
+  </div>
+<div class="nav-group">
+    <a class="nav-cluster" href="#c-sistema">Bloco 05 &middot; Sistema, ambiente e biologia</a>
+    <ul><li><a href="#b-26">26. Baixo Autocontrole Percebido (Esgotamento da Força de Vontade)</a></li><li><a href="#b-27">27. Fadiga de Decisão Alimentar</a></li><li><a href="#b-28">28. Identidade Antiga ("Eu Sou Assim Mesmo")</a></li><li><a href="#b-29">29. Falta de Constância / Dependência de Motivação</a></li><li><a href="#b-30">30. Ambiente Alimentar Sabotador</a></li><li><a href="#b-31">31. Pressão Social para Comer</a></li><li><a href="#b-32">32. Privação de Sono e Fome Hormonal</a></li><li><a href="#b-33">33. Tomada de Decisão Alimentar sob Emoção (Sistema 1 x Sistema 2)</a></li></ul>
+  </div>
+      </div>
+    </details>
+
+    <main>
+      <section class="intro-note">
+        <p>A ciência do comportamento, a neurociência e a psicologia da alimentação já mostraram, com muita clareza, que a maior parte do que sabota o emagrecimento <strong>não acontece no prato</strong>. Acontece antes: na cabeça, no corpo, nas emoções, nos hábitos automáticos que a gente nem percebe que tem.</p>
+        <p>Este módulo reúne 33 padrões de comportamento alimentar que mais atrapalham mulheres acima dos 35 anos a emagrecer de forma sustentável — com base em autores e pesquisadores de psicologia comportamental, neurociência, terapia cognitivo-comportamental, nutrição comportamental e medicina do estilo de vida. Nenhum deles é rótulo ou defeito de caráter. São respostas aprendidas — e o que se aprende pode ser reaprendido, com estratégia e sem culpa.</p>
+      </section>
+
+      
+<section class="cluster" id="c-emocoes">
+  <div class="cluster-head">
+    <span class="cluster-tag">Bloco 01</span>
+    <h2>As emoções que a gente tenta comer</h2>
+    <p>Fome que não nasce no estômago — nasce no peito. Os oito padrões mais comuns de usar comida para regular um sentimento.</p>
+  </div>
+  <div class="card-grid">
+    
+<article class="card" id="b-1">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;1</span>
+    <h3>Fome Emocional</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você chega em casa depois de um dia difícil e, sem nem decidir conscientemente, já está com a geladeira aberta. Não era fome física — a barriga não estava roncando —, mas parecia urgente, quase incontrolável.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Um alívio imediato ao comer, seguido, minutos depois, de culpa ou vazio. A sensação de "eu sabia que não precisava comer isso, mas comi assim mesmo".</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Desde muito cedo aprendemos a associar comida a conforto — colo, prêmio, celebração, consolo. O cérebro não diferencia bem "dor emocional" de "fome física": ambas ativam circuitos parecidos de busca por alívio. Comer vira o caminho mais rápido e mais socialmente aceito para regular uma emoção difícil.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Você fica tentando resolver com dieta um problema que é emocional. Resultado: mesmo comendo "certinho" durante o dia, as emoções da noite desmontam o esforço, e a sensação de fracasso se repete todo santo dia.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Antes de comer, faça uma pergunta simples: "Isso é fome de boca ou fome de peito?" Se for emocional, dê um nome ao que você sente (cansaço, frustração, solidão) antes de decidir o que fazer com isso — muitas vezes o alívio não está na comida, mas em ser ouvida, descansar ou se movimentar.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não estava com fome. Eu estava com o dia inteiro dentro de mim."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Geneen Roth (*Women, Food, and God*), Susan Albers (*Eating Mindfully*), Judson Brewer (*The Craving Mind*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-2">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;2</span>
+    <h3>Comer por Ansiedade</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Antes de uma reunião importante, de uma conversa difícil ou só com o pensamento acelerado à noite, sua mão vai direto para o pacote de biscoito — nem percebe que já comeu metade.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma inquietação no corpo que parece pedir "faz alguma coisa AGORA". Mastigar acalma por alguns segundos, como se ocupasse a boca e a mente ao mesmo tempo.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>A ansiedade ativa o sistema nervoso simpático, deixando o corpo em estado de alerta. Comer, especialmente carboidratos e açúcar, gera uma sensação rápida de regulação porque libera serotonina temporariamente. É automedicação, só que com comida.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa come sem registrar quantidade nem sabor — o corpo recebe calorias, mas a mente não recebe a satisfação que buscava. A ansiedade continua, e agora soma-se a sensação de "comi demais de novo".</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Trabalhar a ansiedade na raiz (respiração, regulação do sistema nervoso, terapia quando necessário) em vez de tentar resolvê-la só com "força de vontade" na hora da comida. Ter um "cardápio de alívio" sem comida pronto para os momentos de pico: água gelada, caminhada curta, mensagem de voz para uma amiga.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Minha ansiedade sempre encontra a cozinha antes de encontrar a saída."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Kelly McGonigal (*The Willpower Instinct*), Judson Brewer (*Unwinding Anxiety*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-3">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;3</span>
+    <h3>Comer por Estresse (o efeito do cortisol)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Semana de prazo apertado, casa bagunçada, contas para pagar — e de repente você percebe que está "beliscando" o dia inteiro, sem nem lembrar direito o que comeu.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma vontade específica por comida gordurosa e doce, não qualquer comida. Depois, cansaço e peso no corpo, mas o estresse continua lá.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>O cortisol, hormônio do estresse crônico, aumenta o apetite e direciona especificamente o desejo para "comfort food" — cientistas já mostraram que estresse sustentado altera a preferência alimentar do cérebro, não só a fome. É biologia, não fraqueza.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Estresse crônico mantém o cortisol elevado, o que favorece acúmulo de gordura abdominal e aumenta a compulsão por alimentos calóricos — um ciclo que nenhuma dieta sozinha quebra, porque a causa não está no prato.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Tratar o estresse como parte do plano de emagrecimento, não como algo "paralelo". Pausas reais ao longo do dia, sono de qualidade e organização de rotina reduzem cortisol tanto quanto (às vezes mais que) qualquer ajuste alimentar.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não estou sem disciplina. Eu estou sobrecarregada, e ninguém perguntou isso pra mim."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Robert Sapolsky (*Why Zebras Don't Get Ulcers*), Elissa Epel (pesquisa sobre estresse, cortisol e gordura abdominal).</p>
+  </div>
+</article>
+
+<article class="card" id="b-4">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;4</span>
+    <h3>Comer por Tédio</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Domingo à tarde, sem nada específico para fazer. Você já abriu a geladeira três vezes em uma hora, sem fome nenhuma — só procurando alguma coisa para fazer.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma inquietação vaga, quase um "vazio de estímulo". Comer dá uma sensação momentânea de propósito e prazer.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>O tédio é desconfortável para o cérebro, que busca ativamente estímulo e recompensa. Comida é um dos estímulos mais acessíveis e imediatos que existem — mais fácil que resolver o tédio de verdade.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>É um dos tipos de "comer sem fome" mais difíceis de perceber, porque não vem com emoção forte — parece inofensivo, mas se repete várias vezes por semana e soma calorias sem nenhum prazer real associado.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Ter uma lista pronta de "o que fazer quando estou entediada" longe da cozinha — ligar para alguém, organizar uma gaveta, sair para tomar um ar. O ponto não é proibir a comida, é notar que a fome ali é de estímulo, não de nutriente.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não estava com fome. Eu só não sabia o que fazer com o silêncio."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Susan Albers (*Eating Mindfully*), Brian Wansink (*Mindless Eating*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-5">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;5</span>
+    <h3>Comer por Solidão</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Depois que os filhos foram dormir, ou num fim de semana sozinha em casa, a comida vira companhia. Às vezes é um prato a mais, às vezes é ficar "beliscando" na frente da TV até tarde.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Um vazio que a comida preenche por alguns minutos — o ato de comer em si já traz uma sensação de acolhimento, mesmo sem ninguém por perto.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Comer é, biologicamente e culturalmente, um ato social. Quando falta conexão humana real, o cérebro busca no ritual da comida algo parecido com companhia — sabor, textura, o próprio hábito de "sentar para comer".</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa come em quantidade e frequência maiores do que faria acompanhada, muitas vezes de forma automática, sem realmente saborear — porque o objetivo nunca foi nutrir o corpo, era preencher a ausência de vínculo.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Criar rituais de conexão real (mesmo que curtos: uma ligação, uma mensagem, um encontro semanal) e observar se a vontade de comer aparece mais nos períodos de maior isolamento — isso já é um dado importante sobre onde investir energia.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não estava com fome de comida. Eu estava com fome de companhia."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Julianne Holt-Lunstad (pesquisas sobre solidão e saúde), Geneen Roth (*Women, Food, and God*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-6">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;6</span>
+    <h3>Comer por Culpa</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você "escapou" da dieta no almoço e, à noite, pensa: "já que estraguei o dia, posso comer o resto também" — e come muito mais do que comeria se não tivesse esse pensamento.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma mistura de raiva de si mesma e permissão simultânea — como se a culpa autorizasse continuar exagerando.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Isso tem nome na ciência do comportamento: **efeito "que se dane"** (*what-the-hell effect*), descrito pelos pesquisadores Janet Polivy e Peter Herman. Quando alguém que segue regras alimentares rígidas quebra uma regra, o cérebro interpreta isso como "o dia já era", abandonando qualquer moderação — mais culpa gera mais descontrole, não menos.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Um pequeno deslize (que sozinho não faria diferença nenhuma no resultado final) vira um exagero muito maior, porque a culpa — e não a comida em si — é o gatilho do descontrole.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Substituir a régua de "certo x errado" por uma régua de continuidade: um deslize é só uma refeição, não é o fim do dia nem da semana. A próxima escolha, e não a última, é o que importa.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não exagero por causa do que comi. Eu exagero por causa do que penso depois que como."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Janet Polivy &amp; C. Peter Herman (teoria da restrição alimentar), Kristin Neff (autocompaixão).</p>
+  </div>
+</article>
+
+<article class="card" id="b-7">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;7</span>
+    <h3>Comer Escondido</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você come "certinho" na frente dos outros e, sozinha, no carro, no banheiro ou tarde da noite, come o que realmente quer — rápido, quase às escondidas, como se estivesse fazendo algo proibido.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Vergonha misturada com uma espécie de alívio proibido. Muitas vezes nem lembra direito de ter comido, porque foi tão rápido e tão automático.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Anos de julgamento (dos outros ou de si mesma) sobre o que "deveria" comer criam uma cisão entre a alimentação pública e a privada. Comer escondido é uma forma de fugir do julgamento — inclusive do próprio.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Reforça a vergonha, que por sua vez alimenta mais o ciclo de restrição-descontrole. Também impede que a pessoa peça ajuda, porque tem vergonha de admitir o próprio padrão — o segredo vira uma prisão.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Praticar comer sem julgamento na frente de alguém de confiança, nomear em voz alta (para si mesma ou para um terapeuta/nutricionista) o que costuma ser feito escondido. Tirar o segredo do comportamento tira parte do seu poder.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu tenho vergonha de comer na frente dos outros o que eu como sozinha."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Susan Albers, Anne Katherine (*Anatomy of a Food Addiction*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-8">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;8</span>
+    <h3>Comer para Aliviar a Tristeza (Comida como Consolo)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Depois de um término, uma perda, uma notícia ruim ou só um dia de choro contido, vem aquela vontade de um prato "de infância" — aquela comida que lembra colo.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Um conforto quase físico, uma sensação de ser cuidada, mesmo sabendo que é você mesma se servindo.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Muitas memórias afetivas da infância estão ligadas à comida — quem nunca ganhou um doce para "parar de chorar"? O cérebro grava essa associação profundamente: comida = cuidado = alívio da dor.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A tristeza não resolvida continua voltando, e a comida vira o único recurso disponível de regulação emocional, criando dependência de um alívio que dura minutos, mas nunca resolve a causa.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Identificar quais são as suas "comidas-colo" e criar, paralelamente, outras fontes reais de cuidado — um banho demorado, uma conversa, chorar sem pressa. A comida pode continuar presente, só não pode ser a única ferramenta.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu aprendi cedo demais que a dor se disfarça de fome."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Geneen Roth, Gabor Maté (conexão entre emoção não processada e comportamentos compulsivos).</p>
+  </div>
+</article>
+  </div>
+</section>
+
+<section class="cluster" id="c-cerebro">
+  <div class="cluster-head">
+    <span class="cluster-tag">Bloco 02</span>
+    <h2>O corpo, o cérebro e o piloto automático</h2>
+    <p>Compulsão, recompensa, dopamina e hábitos que acontecem antes de qualquer decisão consciente.</p>
+  </div>
+  <div class="card-grid">
+    
+<article class="card" id="b-9">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;9</span>
+    <h3>Compulsão Alimentar (Episódios de Descontrole)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Em determinados momentos, você come uma quantidade grande de comida em pouco tempo, rápido, sem realmente sentir sabor, mesmo sem fome — e depois sente que "perdeu o controle" completamente.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Durante o episódio, uma espécie de anestesia emocional. Depois, vergonha intensa, culpa e, às vezes, desespero — "o que está acontecendo comigo?"</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>A compulsão alimentar costuma ser resultado direto de ciclos de restrição extrema — o corpo, que passou fome (real ou percebida), reage com um comando biológico de comer o máximo possível quando a comida está disponível. Não é falta de caráter, é fisiologia de sobrevivência somada a regulação emocional deficitária.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Cria um ciclo vicioso: restringe → compulsa → culpa → restringe mais → compulsa de novo. Cada tentativa de "consertar" com mais dieta piora o próximo episódio.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Parar de restringir de forma extrema é, contraintuitivamente, o primeiro passo para reduzir episódios de compulsão. Quando a compulsão é frequente e intensa, buscar acompanhamento profissional (nutricionista comportamental e/ou psicólogo) é essencial — não é algo para "resolver sozinha na força de vontade".</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não escolho comer daquele jeito. É como se outra pessoa assumisse o controle por alguns minutos."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Ashley Gearhardt (Yale Food Addiction Scale), Judson Brewer, critérios do DSM-5 para Transtorno de Compulsão Alimentar Periódica (TCAP).</p>
+  </div>
+</article>
+
+<article class="card" id="b-10">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;10</span>
+    <h3>Comida, Recompensa e Dopamina</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Terminou uma tarefa difícil? "Mereço" um doce. Passou por uma semana puxada no trabalho? "Mereço" pedir aquele delivery. A comida virou o prêmio automático de qualquer esforço.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma antecipação prazerosa antes mesmo de comer — o "mereço isso" já ativa parte da recompensa.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Alimentos ricos em açúcar e gordura ativam fortemente o sistema de dopamina do cérebro, o mesmo circuito envolvido em outras formas de recompensa e, em graus variados, de dependência. Usar comida como prêmio reforça esse circuito toda vez.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Cada "recompensa" alimentar fortalece a associação entre esforço/estresse e comida calórica, tornando cada vez mais difícil quebrar o padrão — o cérebro passa a esperar (e cobrar) essa recompensa.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Criar uma lista de recompensas não alimentares genuinamente prazerosas (um tempo sem culpa, uma compra pequena, um banho de banheira, uma série nova) para reeducar o cérebro a associar conquista a outras formas de prazer.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu troco todo esforço meu por comida, como se fosse a única moeda de valor que eu conheço."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Nora Volkow (NIDA — neurociência da recompensa e dependência), Robert Lustig (*The Hacking of the American Mind*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-11">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;11</span>
+    <h3>Comida como Afeto</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>"Comendo mais um pouco?" é a forma como sua família mostra amor — recusar parece rejeitar quem preparou. Festas, visitas, domingos em família giram em torno de fartura.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Culpa ao dizer não, mesmo sem fome, porque comer parece ser sinônimo de gratidão e pertencimento.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Em muitas famílias e culturas, alimentar o outro é a linguagem do cuidado. Aprendemos, desde crianças, que comer é retribuir amor — e recusar comida pode ser lido, mesmo sem querer, como recusar afeto.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa come além da fome real em praticamente todo encontro social ou familiar, porque dizer "não, obrigada" ativa um desconforto emocional maior do que comer sem vontade.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Separar, com gentileza, o afeto da comida: agradecer verbalmente, elogiar o prato, ficar mais tempo na mesa conversando — sem que isso precise significar comer além do que o corpo pede.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Na minha família, amor sempre veio com prato cheio."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Ellyn Satter (relação entre alimentação, família e vínculo), Brian Wansink (memórias afetivas e comportamento alimentar).</p>
+  </div>
+</article>
+
+<article class="card" id="b-12">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;12</span>
+    <h3>Hábitos Automáticos (Piloto Automático / Comer sem Perceber)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você abre o pacote de bolacha sem nem pensar, assistindo TV. Quando percebe, já está na metade — e nem lembra do sabor do começo.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Quase nada, no momento — é essa a questão: o comportamento acontece sem consciência nenhuma.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Hábitos são a forma que o cérebro encontrou de economizar energia: repita algo várias vezes no mesmo contexto (sofá + TV, por exemplo) e ele se torna automático, disparado por pistas ambientais, sem precisar de decisão consciente.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa come calorias que nem registra, o que torna quase impossível fazer ajustes conscientes — não dá para mudar o que não se percebe que está fazendo.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Trocar o "combate à força de vontade" por **mudança de contexto**: comer sempre à mesa, sem tela, com o pacote servido num prato (não direto da embalagem) — isso já reduz drasticamente o consumo automático.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não decido comer. Eu simplesmente me vejo comendo."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Charles Duhigg (*The Power of Habit*), Wendy Wood (*Good Habits, Bad Habits*), BJ Fogg (*Tiny Habits*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-13">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;13</span>
+    <h3>Beliscar sem Perceber (Grazing)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Um punhado de amendoim aqui, um pedaço de pão ali, um "só um pouquinho" da sobremesa das crianças — ao longo do dia, isso vira uma refeição inteira sem nenhuma delas parecer "uma refeição".</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>A sensação de que "não comeu quase nada hoje", mesmo tendo ingerido uma quantidade considerável de calorias — a fragmentação engana a percepção.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Petiscar é reforçado pela disponibilidade e visibilidade da comida (pesquisas mostram que comida visível é consumida em quantidade muito maior do que comida guardada) e pela ausência de um "início e fim" claro de refeição, o que dificulta o cérebro registrar saciedade.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>É um dos padrões mais subestimados: como nenhuma refeição parece "grande", a pessoa acredita estar comendo pouco, o que gera frustração quando a balança não corresponde ao que ela acha que está fazendo.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Guardar comida fora da linha de visão, definir horários certos de refeição e lanches (mesmo que flexíveis) e, ao beliscar, servir numa tigela pequena em vez de comer direto do pacote ou da geladeira.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu juro que não como quase nada... só belisco o dia inteiro."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Brian Wansink (*Mindless Eating* — pesquisas sobre visibilidade e consumo).</p>
+  </div>
+</article>
+
+<article class="card" id="b-14">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;14</span>
+    <h3>Comer Rápido Demais / Desconexão da Saciedade</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você termina o prato antes de todo mundo, muitas vezes sem nem lembrar do sabor — e cinco, dez minutos depois, sente que "ainda cabe mais".</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Ausência de sinal de "chega" no momento certo — a saciedade parece sempre chegar tarde demais, já com o prato vazio.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>O cérebro leva, em média, cerca de 15 a 20 minutos para registrar sinais de saciedade vindos do estômago. Comer rápido significa terminar antes que esse sinal chegue — o corpo não teve tempo de avisar.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa consistentemente come além do necessário, não por falta de controle, mas por um descompasso de tempo entre o ato de comer e o sinal biológico de parar.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Colocar o talher na mesa entre garfadas, mastigar mais devagar, beber água durante a refeição — pequenos ajustes mecânicos que dão tempo ao corpo de "avisar" antes do prato acabar.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu só sinto que comi demais depois que já é tarde demais."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Ellyn Satter, Evelyn Tribole &amp; Elyse Resch (*Intuitive Eating*).</p>
+  </div>
+</article>
+  </div>
+</section>
+
+<section class="cluster" id="c-pensamento">
+  <div class="cluster-head">
+    <span class="cluster-tag">Bloco 03</span>
+    <h2>Os pensamentos que sabotam por dentro</h2>
+    <p>Regras rígidas, restrição e culpa — a engenharia mental por trás do ciclo dieta-descontrole.</p>
+  </div>
+  <div class="card-grid">
+    
+<article class="card" id="b-15">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;15</span>
+    <h3>Mentalidade de Tudo ou Nada</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Segunda-feira você começa "certinha", com tudo planejado. Na quarta, um deslize — e o resto da semana já era, porque "estragou mesmo, só recomeço na próxima segunda".</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma sensação binária: ou está 100% no controle, ou está completamente fora dele. Não existe meio-termo na sua cabeça.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Anos de dietas com regras rígidas (proibido x permitido) treinam o cérebro a pensar em categorias absolutas. É um padrão de pensamento, não um traço de personalidade — e pensamento em categorias absolutas é um dos vieses cognitivos mais estudados em terapia cognitivo-comportamental.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Transforma um deslize pequeno (que não faria diferença nenhuma sozinho) em dias ou semanas de descontrole, porque a régua não permite "imperfeição sustentável" — só perfeição ou fracasso.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Praticar deliberadamente a ideia de "70% bom na maioria dos dias" como meta real, em vez de 100% às vezes e 0% no resto. Consistência imperfeita emagrece mais do que perfeição interrompida.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Pra mim, ou é tudo certo, ou já não vale mais a pena."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Traci Mann (*Secrets from the Eating Lab*), Janet Polivy &amp; Peter Herman (teoria da restrição), abordagens de Terapia Cognitivo-Comportamental (Aaron Beck, David Burns) sobre pensamento dicotômico.</p>
+  </div>
+</article>
+
+<article class="card" id="b-16">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;16</span>
+    <h3>Restrição Alimentar Excessiva</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Cortar carboidrato completamente, evitar convites sociais para "não ser tentada", contar cada caloria com rigidez extrema — a dieta vira um regime quase militar.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>No começo, uma sensação de controle e até orgulho. Depois de um tempo, obsessão com comida, irritabilidade e uma vontade cada vez mais difícil de conter.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>O corpo humano interpreta restrição severa como escassez — não sabe diferenciar "dieta" de "fome real". Ele reage biologicamente, aumentando hormônios da fome (grelina) e reduzindo os da saciedade (leptina), além de deixar a mente hiperfocada em comida.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Restrição extrema quase sempre é seguida de compensação (comer em excesso) — é biologia, não fraqueza. Quanto mais rígida a dieta, maior a chance estatística de recuperar o peso perdido e mais.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Trocar restrição total por moderação estruturada, incluindo os alimentos que a pessoa gosta em porções adequadas. Dietas sustentáveis permitem prazer — e é exatamente isso que as torna sustentáveis.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Quanto mais eu me proíbo, mais eu penso naquilo o dia inteiro."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Ancel Keys (Minnesota Starvation Experiment), Traci Mann (*Secrets from the Eating Lab*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-17">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;17</span>
+    <h3>Medo de Sentir Fome</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você evita passar mais de duas horas sem comer, carrega lanches por precaução, ou pelo contrário: tem pavor de comer "demais" e passa fome por horas de propósito, achando que isso "acelera" o emagrecimento.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Ansiedade em relação à própria fome — como se sentir fome fosse, em si, um problema a ser evitado a qualquer custo, seja comendo antecipadamente, seja reprimindo.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Anos de dietas que trataram a fome como "inimiga" (ou, no extremo oposto, dietas que geraram episódios reais de fome extrema e sofrimento) desconectaram a pessoa dos próprios sinais internos — fome virou gatilho de medo, não uma informação neutra do corpo.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Sem confiar nos próprios sinais de fome e saciedade, a pessoa depende inteiramente de regras externas (horários, quantidades fixas), o que é frágil e insustentável a longo prazo.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Reaprender, aos poucos e com apoio profissional se necessário, a reconhecer fome física em diferentes intensidades — sem urgência nem pânico. Fome moderada antes das refeições é normal e esperada, não um sinal de descontrole.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu tenho medo da minha própria fome — como se ela fosse me trair."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Evelyn Tribole &amp; Elyse Resch (*Intuitive Eating*), Ellyn Satter.</p>
+  </div>
+</article>
+
+<article class="card" id="b-18">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;18</span>
+    <h3>Efeito Sanfona (Weight Cycling)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você já emagreceu e engordou o mesmo peso (às vezes mais) tantas vezes que perdeu a conta. Cada nova dieta começa com esperança e termina no mesmo lugar — ou pior.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Descrença crescente na própria capacidade de mudar, mesmo tentando de verdade a cada nova vez. Uma exaustão emocional que vai além do físico.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Dietas radicais de curto prazo, sem mudança real de hábitos, geram perda de peso rápida (em parte massa magra) seguida de reganho igualmente rápido — muitas vezes o corpo reganha mais gordura proporcionalmente do que tinha antes, um mecanismo de proteção evolutiva contra "escassez".</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Cada ciclo de sanfona pode tornar o próximo emagrecimento mais difícil metabolicamente, além de desgastar a autoconfiança — a pessoa começa a acreditar que "seu corpo não funciona", quando na verdade o método é que não funcionava.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Abandonar dietas de curto prazo e restrição extrema em favor de mudanças graduais, sustentáveis e centradas em preservar massa muscular — o objetivo não é perder peso rápido, é não precisar recuperar.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu já emagreci o mesmo peso tantas vezes que nem sei mais o que é o meu corpo de verdade."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Sophie Deram (*O Peso das Dietas*), Traci Mann (*Secrets from the Eating Lab*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-19">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;19</span>
+    <h3>Dieta de Segunda a Sexta, Solta no Fim de Semana</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>De segunda a sexta você segue tudo à risca. No fim de semana, "libera geral" — e muitas vezes essa liberação sozinha desfaz o déficit calórico da semana inteira.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Alívio genuíno ao "descansar" da rigidez, seguido, no domingo à noite ou segunda de manhã, de peso na consciência e vontade de recomeçar "com tudo".</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Regras alimentares muito rígidas de segunda a sexta criam uma pressão psicológica que precisa de válvula de escape — o fim de semana vira essa válvula, reforçando o ciclo restrição-descontrole em looping semanal.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Dois dias de exagero podem anular cinco dias de esforço, e o padrão se repete toda semana indefinidamente, sem gerar progresso real, mesmo com muito esforço percebido.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Criar um padrão alimentar mais parecido de segunda a domingo, com flexibilidade real (não regras extremas) todos os dias — isso reduz a necessidade psicológica da "válvula de escape" do fim de semana.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Minha vida alimentar tem duas personalidades: a de segunda a sexta e a do fim de semana."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Janet Polivy &amp; Peter Herman (restraint theory), Kelly McGonigal.</p>
+  </div>
+</article>
+
+<article class="card" id="b-20">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;20</span>
+    <h3>Autopunição Pós-Exagero</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Depois de comer "demais", você pula a próxima refeição, faz jejum punitivo ou se castiga com treino exagerado — como se precisasse "pagar" pelo que comeu.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Raiva de si mesma transformada em ação drástica — a punição parece a única forma de "consertar" o erro.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Crescemos com uma cultura que trata comida como questão moral ("comi mal, fui má"), e o corpo vira palco de punição por uma culpa que, na verdade, é emocional, não física.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Restringir ainda mais após um exagero reforça exatamente o ciclo de restrição-compulsão descrito antes — a punição não previne o próximo episódio, ela alimenta.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Depois de comer além do planejado, a próxima refeição deve ser normal, não compensatória. Tratar o corpo com neutralidade, não com vingança, é o que quebra o ciclo.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu trato meu corpo como se ele precisasse pagar pelo que eu comi."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Kristin Neff (autocompaixão), Brené Brown (vergonha e resiliência).</p>
+  </div>
+</article>
+
+<article class="card" id="b-21">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;21</span>
+    <h3>Moralização da Comida (Comida Boa x Comida Má)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você chama alimentos de "limpos" ou "sujos", sente-se "boa" quando come salada e "culpada" quando come pizza — como se o valor moral da pessoa dependesse do prato.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Autojulgamento constante ligado às próprias escolhas alimentares, quase como um tribunal interno funcionando o dia inteiro.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>A cultura das dietas (e das redes sociais) transformou comida em identidade moral — "comer limpo" virou sinônimo de "ser uma pessoa melhor". Isso é reforçado por décadas de marketing de indústria de dietas.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Gera ansiedade em torno de cada escolha alimentar, o que paradoxalmente aumenta o risco de compulsão e de comer escondido — comida vira campo de batalha moral, não nutrição.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Praticar linguagem neutra: comida é só comida — mais ou menos nutritiva, não "boa" ou "má". Nenhuma refeição isolada define caráter, saúde ou sucesso.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu me sinto uma pessoa melhor nos dias que como salada, e pior nos dias que não como."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Michael Pollan, Evelyn Tribole &amp; Elyse Resch, Ellyn Satter.</p>
+  </div>
+</article>
+  </div>
+</section>
+
+<section class="cluster" id="c-corpo">
+  <div class="cluster-head">
+    <span class="cluster-tag">Bloco 04</span>
+    <h2>O corpo visto, comparado e adiado</h2>
+    <p>Vergonha, comparação e as formas mais silenciosas de adiar a própria mudança.</p>
+  </div>
+  <div class="card-grid">
+    
+<article class="card" id="b-22">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;22</span>
+    <h3>Vergonha do Corpo</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Evitar espelhos, fotos, festas, praia, provas de roupa. Escolher sempre a cadeira "mais discreta", vestir preto para "disfarçar", cancelar planos por não gostar de como está o corpo naquele dia.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma vontade de desaparecer, de não ser vista — vergonha não é só desconforto, é a sensação de que o próprio corpo é um erro a ser escondido.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Vergonha corporal é construída por décadas de exposição a padrões inatingíveis, comentários (mesmo "bem-intencionados") sobre peso, e uma cultura que trata o valor da mulher como proporcional ao tamanho do corpo.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Paradoxalmente, vergonha não motiva mudança sustentável — ela paralisa. Estudos em psicologia mostram que vergonha crônica está associada a mais compulsão alimentar, mais isolamento e menos comportamentos de autocuidado, não menos.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Separar autoestima de peso corporal — trabalhar a relação com o corpo em paralelo ao processo de emagrecimento, não depois dele. Autocompaixão, não autocrítica, é o que sustenta mudança de longo prazo.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não evito só o espelho. Eu evito viver plenamente enquanto meu corpo não estiver do jeito que eu acho que precisa estar."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Brené Brown (*Daring Greatly*), Kristin Neff, Deb Burgard (Health at Every Size).</p>
+  </div>
+</article>
+
+<article class="card" id="b-23">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;23</span>
+    <h3>Comparação Corporal (Redes Sociais e Corpo do Passado)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Rolar o feed e se comparar com corpos de influenciadoras, ou puxar fotos antigas e pensar "eu era tão melhor antes" — cada comparação deixando um rastro de insatisfação.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma inadequação instantânea, mesmo sabendo racionalmente que fotos são editadas e que corpos mudam com o tempo (gestação, idade, saúde).</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Comparação social é um mecanismo psicológico automático e antigo — mas as redes sociais amplificaram sua frequência e intensidade a níveis que o cérebro humano não foi desenhado para processar.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Motivação baseada em comparação é instável e desgastante — funciona por impulsos curtos e intensos, seguidos de desânimo, em vez de sustentar constância real ao longo do tempo.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Curar deliberadamente o próprio feed, e trocar a métrica de comparação: em vez de "como eu era" ou "como ela é", usar "como eu estou em relação a mim mesma na semana passada".</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu me comparo com uma versão de mim que talvez nunca mais volte — e isso me paralisa."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Leon Festinger (teoria da comparação social), Jean Twenge (pesquisas sobre redes sociais e autoimagem).</p>
+  </div>
+</article>
+
+<article class="card" id="b-24">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;24</span>
+    <h3>Autossabotagem no Emagrecimento</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você compra os ingredientes certos e não cozinha. Marca a academia e cancela na última hora. Está indo bem por dias e, sem motivo aparente, "estraga" tudo justo quando os resultados começam a aparecer.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma confusão real — "por que eu faço isso comigo mesma, se é o que eu mais quero?"</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Autossabotagem frequentemente está ligada a conflitos internos não conscientes: medo de mudança (mesmo positiva), medo de atenção masculina ou social ao emagrecer, identidade construída em torno do corpo atual, ou simplesmente medo de tentar de verdade e falhar de novo.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Interrompe o progresso justo no momento em que ele começaria a se consolidar, reforçando a crença de "eu não consigo mesmo", quando na verdade existe um medo específico por trás, ainda não nomeado.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Perguntar-se, com honestidade, "o que eu ganho quando saboto?" — muitas vezes a resposta revela um medo específico (de decepcionar, de se expor, de mudar de identidade) que pode ser trabalhado diretamente.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu quero emagrecer de verdade, mas parece que uma parte de mim trabalha contra isso."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> BJ Fogg (*Tiny Habits*), James Clear (*Atomic Habits* — identidade e comportamento), Kelly McGonigal.</p>
+  </div>
+</article>
+
+<article class="card" id="b-25">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;25</span>
+    <h3>Procrastinação do "Segunda eu Começo"</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Toda decisão de mudança é adiada para a "próxima segunda-feira", o "dia 1 do mês" ou "depois dessa data especial" — e enquanto isso, "já que ainda não começei", vale comer à vontade.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Alívio de adiar, misturado com uma sensação incômoda de estar sempre "prestes a começar", nunca de fato começando.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Datas simbólicas (segunda-feira, dia 1) funcionam psicologicamente como um "reset" que separa o "eu antigo" do "eu novo" — mas essa separação também vira desculpa para exagerar "antes" de começar, porque psicologicamente ainda não conta.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Cria ciclos de exagero recorrentes toda vez que uma nova data de início se aproxima, além de adiar indefinidamente o começo real da mudança.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Começar pequeno, hoje, sem esperar a data "perfeita" — mudança sustentável não precisa de um marco simbólico, precisa de uma ação pequena e possível agora.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu já perdi a conta de quantas segundas-feiras eu prometi que seriam 'a última vez'."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> BJ Fogg (*Tiny Habits*), James Clear (*Atomic Habits*).</p>
+  </div>
+</article>
+  </div>
+</section>
+
+<section class="cluster" id="c-sistema">
+  <div class="cluster-head">
+    <span class="cluster-tag">Bloco 05</span>
+    <h2>Sistema, ambiente e biologia</h2>
+    <p>Força de vontade, sono, decisão e ambiente — o que sustenta (ou derruba) tudo o que vem antes.</p>
+  </div>
+  <div class="card-grid">
+    
+<article class="card" id="b-26">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;26</span>
+    <h3>Baixo Autocontrole Percebido (Esgotamento da Força de Vontade)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você resiste ao doce a manhã inteira, segura a vontade em cada reunião, evita a padaria no caminho — e à noite, exausta de tanto "resistir", cede a tudo de uma vez.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>A sensação física de estar "sem gasolina" para continuar resistindo — como se a força de vontade fosse um estoque que se esgota ao longo do dia.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>A pesquisa em psicologia sobre **ego depletion** (esgotamento do ego) mostra que autocontrole funciona, em parte, como um recurso limitado: cada decisão que exige resistência consome reserva mental, deixando menos disponível para a próxima.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Planos que dependem de resistir a tentações o dia inteiro estão condenados a falhar à noite, quando o estoque de autocontrole já foi consumido por outras dezenas de decisões do dia (trabalho, filhos, trânsito, finanças).</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Reduzir o número de decisões alimentares difíceis ao longo do dia (planejamento prévio, ambiente sem tentação constante) em vez de depender de força de vontade renovada a cada momento — economizar reserva mental para quando ela realmente for necessária.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não sou fraca à noite. Eu estou esgotada de resistir o dia inteiro."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Roy Baumeister &amp; John Tierney (*Willpower*), Kelly McGonigal (*The Willpower Instinct*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-27">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;27</span>
+    <h3>Fadiga de Decisão Alimentar</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Depois de um dia cheio de decisões — trabalho, casa, filhos, agenda —, na hora de decidir o que comer no jantar, você simplesmente não tem mais energia mental para escolher a opção mais trabalhosa ou saudável.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Um cansaço mental específico, mesmo sem cansaço físico intenso — a simples ideia de "pensar em mais uma coisa" já parece insuportável.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Cada decisão consciente consome recursos cognitivos limitados. Quanto mais decisões uma pessoa toma ao longo do dia, pior (e mais impulsiva) tende a ser a qualidade das decisões seguintes — fenômeno bem documentado na psicologia cognitiva.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>À noite, quando a fadiga de decisão está no pico, a pessoa tende a escolher o caminho de menor esforço — geralmente delivery ou ultraprocessado —, mesmo tendo boas intenções pela manhã.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Planejar refeições (principalmente o jantar) com antecedência, em momentos de energia mental mais alta, para eliminar a necessidade de decidir "no cansaço".</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Não é que eu não saiba o que é saudável. É que às 19h eu não tenho mais cabeça pra decidir isso."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Roy Baumeister, Daniel Kahneman (*Thinking, Fast and Slow*).</p>
+  </div>
+</article>
+
+<article class="card" id="b-28">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;28</span>
+    <h3>Identidade Antiga ("Eu Sou Assim Mesmo")</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>"Eu sempre fui gordinha", "minha família toda é assim", "eu nunca consegui manter dieta nenhuma" — frases que soam como fato, mas na verdade são identidade internalizada, repetida por anos.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma resignação silenciosa — como se mudar fosse ir contra quem você "realmente é", não apenas mudar um hábito.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Comportamentos repetidos por muito tempo se tornam parte da autoimagem. O cérebro busca coerência entre identidade e ação — se "eu sou uma pessoa que não consegue manter dieta" faz parte de quem você acredita ser, qualquer sucesso tende a ser sabotado, consciente ou inconscientemente, para manter essa coerência.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Mudanças de comportamento baseadas só em força de vontade, sem mudança de identidade, tendem a durar pouco — porque a pessoa está, no fundo, "voltando a ser quem ela acredita que é" a cada recaída.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Trabalhar pequenas evidências de uma nova identidade ("eu sou uma pessoa que cuida do corpo", não "eu estou de dieta") através de ações pequenas e repetidas — identidade muda por acúmulo de provas, não por decisão única.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Não é que eu não consiga emagrecer. É que, no fundo, eu nem acredito que sou o tipo de pessoa que consegue."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> James Clear (*Atomic Habits*), Charles Duhigg.</p>
+  </div>
+</article>
+
+<article class="card" id="b-29">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;29</span>
+    <h3>Falta de Constância / Dependência de Motivação</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Você começa cheia de energia — nova academia, novo aplicativo, novo plano — e em duas, três semanas, sem aquele "gás" inicial, tudo para. Sempre foi assim, em todas as tentativas.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Frustração por "sempre começar bem e nunca terminar", como se faltasse alguma peça específica de disciplina que outras pessoas têm e você não.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Motivação é, por natureza, instável — ela oscila com sono, hormônios, humor, estresse do dia. Depender dela para sustentar uma mudança é depender de algo que, cientificamente, não é feito para durar.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa interpreta a queda natural da motivação como fracasso pessoal ("eu não tenho disciplina"), quando na verdade o problema é estrutural: hábitos duradouros dependem de sistemas e rotina, não de picos emocionais de motivação.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Construir hábitos pequenos o suficiente para acontecerem mesmo em dias de motivação zero (o oposto de metas grandiosas que só funcionam no pico de energia inicial) — consistência de sistema supera intensidade de motivação.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu sempre começo com tudo e não sei por que nunca sustento."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> BJ Fogg (*Tiny Habits* — "motivação é pouco confiável"), James Clear.</p>
+  </div>
+</article>
+
+<article class="card" id="b-30">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;30</span>
+    <h3>Ambiente Alimentar Sabotador</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Armário cheio de guloseimas "para as crianças", geladeira sem nada pronto e saudável para comer rápido, porções gigantes na cozinha por hábito de anos — o ambiente inteiro está desenhado contra o objetivo.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>A sensação de estar "lutando contra o próprio ambiente" o tempo todo, gastando energia mental em resistir a estímulos que estão, literalmente, dentro de casa.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Pesquisas em ciência do comportamento mostram, de forma consistente, que o ambiente prediz comportamento com mais força do que a força de vontade. Comida visível, acessível e em porções grandes é consumida em quantidade muito maior — independente da intenção da pessoa.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa se culpa por "falta de disciplina" quando, na verdade, está competindo contra um ambiente desenhado (mesmo sem querer) para maximizar o consumo — uma batalha desigual, travada várias vezes por dia.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Redesenhar o ambiente em vez de depender só de força de vontade: guardar tentações fora da vista, deixar opções saudáveis visíveis e de fácil acesso, usar pratos menores. Ambiente bem desenhado poupa decisões conscientes.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu não sou fraca. Minha casa inteira está desenhada para eu comer mais do que eu quero."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Brian Wansink, Wendy Wood (*Good Habits, Bad Habits*), BJ Fogg.</p>
+  </div>
+</article>
+
+<article class="card" id="b-31">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;31</span>
+    <h3>Pressão Social para Comer</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>"Só mais um pouquinho, vai", "você vai recusar minha comida?", "nossa, você tá comendo assim, tá de dieta de novo?" — a pressão do grupo empurra decisões que você não faria sozinha.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Desconforto de ser vista como "diferente" ou "chata" por manter uma escolha alimentar diante dos outros — muitas vezes é mais fácil ceder do que sustentar o "não".</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Somos seres profundamente sociais, e o medo de julgamento ou exclusão do grupo é um motivador poderoso e antigo — ceder à pressão social em torno de comida é, evolutivamente, uma forma de manter pertencimento.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Decisões alimentares deixam de ser sobre o próprio corpo e passam a ser sobre gerenciar a reação alheia — o que torna praticamente impossível manter consistência em ambientes sociais recorrentes (família, trabalho, amizades).</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Preparar, com antecedência, frases simples e gentis de recusa ("estou bem assim, obrigada", "vou deixar para a próxima") e lembrar que a incômoda reação do outro não é sua responsabilidade de resolver.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu digo sim pra comida mais pra não desagradar o outro do que porque eu realmente quero."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Robert Cialdini (*Influence* — prova social), Ellyn Satter.</p>
+  </div>
+</article>
+
+<article class="card" id="b-32">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;32</span>
+    <h3>Privação de Sono e Fome Hormonal</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Depois de uma noite mal dormida, o dia inteiro parece pedir açúcar e carboidrato — uma vontade diferente, mais intensa, quase incontrolável, mesmo em quem normalmente tem bom controle alimentar.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Fome física real e mais intensa, além de menos capacidade de resistir a impulsos — como se o "freio" interno estivesse desligado.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>Sono insuficiente altera diretamente os hormônios da fome: aumenta a grelina (que estimula apetite) e reduz a leptina (que sinaliza saciedade). Some a isso a redução da função do córtex pré-frontal (responsável por decisões racionais) quando privado de sono — é uma tempestade hormonal e cognitiva perfeita para comer mais.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>Especialmente relevante para mulheres na perimenopausa e menopausa, cujo sono já é naturalmente mais fragmentado — dietas podem parecer "não funcionar", quando na verdade o sono ruim está sabotando o processo em nível hormonal, antes mesmo da comida entrar em cena.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Tratar sono como parte não negociável da estratégia de emagrecimento, tão importante quanto alimentação e treino — priorizar rotina de sono é, muitas vezes, mais eficaz do que qualquer ajuste na dieta isoladamente.</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Nas noites que durmo mal, é como se meu corpo inteiro pedisse açúcar no dia seguinte."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Matthew Walker (*Why We Sleep*), Eve Van Cauter (pesquisas sobre sono, grelina e leptina).</p>
+  </div>
+</article>
+
+<article class="card" id="b-33">
+  <div class="card-head">
+    <span class="card-num">N&ordm;&nbsp;33</span>
+    <h3>Tomada de Decisão Alimentar sob Emoção (Sistema 1 x Sistema 2)</h3>
+  </div>
+  <div class="card-body">
+    <div class="field"><span class="field-label">Como aparece na vida real</span><p>Em momentos de calma, você planeja tudo com clareza — o cardápio, os horários, as porções. Mas no calor da emoção (fome real, estresse, cansaço), as decisões saem completamente diferentes do que foi planejado.</p></div>
+    <div class="field"><span class="field-label">O que você sente</span><p>Uma desconexão entre "a pessoa que planeja" e "a pessoa que executa" — como se fossem duas versões diferentes de você, e a segunda sempre vencesse na hora H.</p></div>
+    <div class="field"><span class="field-label">Por que isso acontece</span><p>O psicólogo Daniel Kahneman descreve dois sistemas de pensamento: o **Sistema 1**, rápido, automático e emocional, e o **Sistema 2**, lento, racional e deliberado. O planejamento alimentar acontece no Sistema 2 (calmo, racional); mas a execução, muitas vezes, acontece sob domínio do Sistema 1 (impulsivo, emocional) — por isso planos bons falham na prática.</p></div>
+    <div class="field"><span class="field-label">Como atrapalha o emagrecimento</span><p>A pessoa acredita que "sabe o que fazer, mas não consegue fazer", concluindo (erroneamente) que o problema é falta de conhecimento ou disciplina — quando na verdade é um desalinhamento entre o sistema que planeja e o sistema que age sob emoção.</p></div>
+    <div class="field"><span class="field-label">Solução prática</span><p>Tomar as decisões alimentares mais importantes (o que comprar, o que preparar, o que ter disponível) no Sistema 2 — com calma, antecipadamente —, deixando o mínimo possível de decisões críticas para o momento de emoção intensa (Sistema 1).</p></div>
+  </div>
+  <blockquote class="quote-id"><p>&ldquo;"Eu sei exatamente o que fazer. O problema é que, na hora, é como se outra pessoa decidisse por mim."&rdquo;</p><span>frase de identificação</span></blockquote>
+  <div class="card-foot">
+    <p class="refs"><strong>Referências —</strong> Daniel Kahneman (*Thinking, Fast and Slow*), Roy Baumeister.</p>
+  </div>
+</article>
+  </div>
+</section>
+
+      <footer class="page-foot">
+        <p>Método Emagrecimento Blindado — conteúdo educativo sobre comportamento alimentar. Finalidade educativa; não substitui acompanhamento médico, nutricional ou psicológico individualizado.</p>
+      </footer>
+    </main>
+  </div>
+</div>
+
+</body>
+</html>
