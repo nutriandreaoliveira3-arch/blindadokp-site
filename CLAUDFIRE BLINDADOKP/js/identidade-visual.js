@@ -111,7 +111,7 @@
         ? " Quer aprofundar ainda mais depois que a IA responder? Peça na mesma conversa: \"aprofunde com posicionamento de marca, arquétipos e regras de aplicação para todos os canais\"."
         : "");
 
-    var assunto = "Documento Mestre de Identidade Visual (" + (data.rota === "completa" ? "rota completa" : "rota expressa") + ") — " + data.contato_nome;
+    var assunto = "Documento Mestre de Identidade Visual (" + (data.rota === "completa" ? "Rota Blindada PRO" : "Rota Blindada") + ") — " + data.contato_nome;
     var corpo = buildResumoEmail(data);
 
     var btnAvisar = document.getElementById("btnAvisar");
@@ -141,7 +141,7 @@
 
   function buildResumoEmail(data) {
     var linhas = [
-      "Rota: " + (data.rota === "completa" ? "Completa" : "Expressa"),
+      "Rota: " + (data.rota === "completa" ? "Rota Blindada PRO" : "Rota Blindada"),
       "Nome: " + data.contato_nome,
       "E-mail: " + data.contato_email,
       "WhatsApp: " + data.contato_telefone,
