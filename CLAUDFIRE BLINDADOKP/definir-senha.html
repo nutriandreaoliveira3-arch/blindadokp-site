@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Crie sua senha de acesso BlindadoKP.">
+  <title>Criar senha — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#skills">Skills profissionais</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:480px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:28px;">
+          <p class="eyebrow">BEM-VINDA</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Crie sua senha</h2>
+        </div>
+
+        <form id="setPasswordForm" class="wizard-card reveal" style="display:grid;gap:20px;" novalidate>
+          <div class="field">
+            <label for="password">Nova senha</label>
+            <p class="hint">Mínimo de 8 caracteres.</p>
+            <input type="password" id="password" name="password" minlength="8" required>
+          </div>
+          <div class="field">
+            <label for="passwordConfirm">Confirmar senha</label>
+            <input type="password" id="passwordConfirm" name="passwordConfirm" minlength="8" required>
+          </div>
+          <p id="formError" style="display:none;color:#e08a72;font-size:13.5px;margin:0;"></p>
+          <button type="submit" class="button button-gold" style="width:100%;">CRIAR SENHA E ENTRAR</button>
+        </form>
+
+        <p id="noTokenMessage" class="reveal" style="display:none;color:var(--muted);font-size:14px;">
+          Este link de ativação parece inválido ou incompleto. Confira o e-mail que enviamos após sua compra, ou
+          <a href="login.html" style="color:var(--gold-light);">entre com sua senha</a> se já criou uma.
+        </p>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script>
+    var token = new URLSearchParams(window.location.search).get('token');
+    var form = document.getElementById('setPasswordForm');
+    var errorEl = document.getElementById('formError');
+
+    if (!token) {
+      form.style.display = 'none';
+      document.getElementById('noTokenMessage').style.display = 'block';
+    }
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      errorEl.style.display = 'none';
+
+      var password = document.getElementById('password').value;
+      var confirm = document.getElementById('passwordConfirm').value;
+      if (password !== confirm) {
+        errorEl.textContent = 'As senhas não são iguais.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        await BlindadoAuth.setPassword(token, password);
+        window.location.href = 'identidade-visual.html?comprado=1';
+      } catch (err) {
+        errorEl.textContent = err.message || 'Não foi possível criar sua senha.';
+        errorEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

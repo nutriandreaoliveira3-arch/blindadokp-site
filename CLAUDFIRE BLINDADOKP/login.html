@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Entrar na sua conta BlindadoKP.">
+  <title>Entrar — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#skills">Skills profissionais</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:480px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:28px;">
+          <p class="eyebrow">ÁREA DE ACESSO</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Entrar</h2>
+        </div>
+
+        <form id="loginForm" class="wizard-card reveal" style="display:grid;gap:20px;" novalidate>
+          <div class="field">
+            <label for="email">E-mail</label>
+            <input type="email" id="email" name="email" required>
+          </div>
+          <div class="field">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" required>
+          </div>
+          <p id="loginError" style="display:none;color:#e08a72;font-size:13.5px;margin:0;"></p>
+          <button type="submit" class="button button-gold" style="width:100%;">ENTRAR</button>
+          <p style="margin:0;color:var(--muted);font-size:13px;text-align:center;">
+            Comprou e ainda não criou sua senha? Confira o e-mail de ativação que enviamos após a compra.
+          </p>
+        </form>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script>
+    var form = document.getElementById('loginForm');
+    var errorEl = document.getElementById('loginError');
+    var params = new URLSearchParams(window.location.search);
+    var redirectTo = params.get('proximo') || 'identidade-visual.html';
+
+    form.addEventListener('submit', async function (event) {
+      event.preventDefault();
+      errorEl.style.display = 'none';
+      try {
+        var data = await BlindadoAuth.login(
+          document.getElementById('email').value,
+          document.getElementById('password').value
+        );
+        window.location.href = redirectTo;
+      } catch (err) {
+        errorEl.textContent = err.message || 'Não foi possível entrar. Confira e-mail e senha.';
+        errorEl.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

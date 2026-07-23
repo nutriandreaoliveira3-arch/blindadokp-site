@@ -15,31 +15,34 @@
   // TODO(Andréa): troque pelo link de checkout real assim que criar o produto na Greenn.
   // Passo a passo: Greenn > Produtos > Novo produto > "Rota Blindada PRO" > R$ 97 > produto digital de acesso único.
   // No campo de URL de agradecimento/redirecionamento após a compra, cole:
-  // https://www.blindadokp.com.br/identidade-visual.html?acesso=pro
+  // https://www.blindadokp.com.br/identidade-visual.html?comprado=1
   // Depois é só me mandar o link de checkout que aparece lá que eu troco a linha abaixo.
   var GREENN_CHECKOUT_URL_PRO = "https://pay.greenn.com.br/SUBSTITUA-PELO-LINK-DA-GREENN-AQUI";
-  var ACESSO_PRO_KEY = "blindadokp_rota_pro_acesso";
+
+  var entitlements = [];
 
   function temAcessoPro() {
-    if (localStorage.getItem(ACESSO_PRO_KEY) === "1") return true;
-    if (new URLSearchParams(window.location.search).get("acesso") === "pro") {
-      localStorage.setItem(ACESSO_PRO_KEY, "1");
-      return true;
+    return entitlements.indexOf("rota_blindada_pro") !== -1;
+  }
+
+  async function carregarAcesso() {
+    entitlements = await BlindadoAuth.getEntitlements();
+    if (temAcessoPro() && proPriceLabel) {
+      proPriceLabel.textContent = "45–75 minutos · Liberado ✓";
     }
-    return false;
   }
 
   if (btnComprarPro) btnComprarPro.href = GREENN_CHECKOUT_URL_PRO;
-  if (temAcessoPro() && proPriceLabel) proPriceLabel.textContent = "45–75 minutos · Liberado ✓";
+
+  var comprasRecentesEl = document.getElementById("comprasRecentesAviso");
+  if (comprasRecentesEl && new URLSearchParams(window.location.search).get("comprado") === "1") {
+    comprasRecentesEl.hidden = false;
+  }
+
+  var acessoPronto = carregarAcesso();
 
   var steps = [allFieldsets[0]]; // só a etapa de escolha de rota, até o usuário decidir
   var current = 0;
-
-  // Chegou direto do checkout da Greenn já liberado: seleciona a rota PRO e avança sozinho.
-  if (temAcessoPro() && new URLSearchParams(window.location.search).get("acesso") === "pro") {
-    var radioPro = form.querySelector('input[name="rota"][value="completa"]');
-    if (radioPro) radioPro.checked = true;
-  }
 
   function getSelectedRoute() {
     var checked = form.querySelector('input[name="rota"]:checked');
@@ -107,16 +110,22 @@
     showStep(current);
   });
 
-  form.addEventListener("submit", function (event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
     if (current === 0 && steps[0].dataset.stepName === "Escolha sua rota") {
       if (!currentStepIsValid()) return;
 
-      if (getSelectedRoute() === "completa" && !temAcessoPro()) {
-        routePurchase.hidden = false;
-        routePurchase.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        return;
+      if (getSelectedRoute() === "completa") {
+        btnAvancar.disabled = true;
+        await acessoPronto; // garante que já checamos o acesso real antes de decidir
+        btnAvancar.disabled = false;
+
+        if (!temAcessoPro()) {
+          routePurchase.hidden = false;
+          routePurchase.scrollIntoView({ behavior: "smooth", block: "nearest" });
+          return;
+        }
       }
 
       routePurchase.hidden = true;
@@ -380,10 +389,15 @@
 
   showStep(0);
 
-  // Voltou do checkout da Greenn já liberado: pula direto pra etapa de contato.
-  if (temAcessoPro() && new URLSearchParams(window.location.search).get("acesso") === "pro") {
-    rebuildSteps();
-    current = 1;
-    showStep(current);
-  }
+  // Acabou de criar a senha (veio de definir-senha.html) e já tem a Rota Blindada PRO:
+  // marca a rota PRO e pula direto pra etapa de contato.
+  acessoPronto.then(function () {
+    if (temAcessoPro() && new URLSearchParams(window.location.search).get("comprado") === "1") {
+      var radioPro = form.querySelector('input[name="rota"][value="completa"]');
+      if (radioPro) radioPro.checked = true;
+      rebuildSteps();
+      current = 1;
+      showStep(current);
+    }
+  });
 })();
