@@ -18,6 +18,7 @@ const authRoutes = require('./routes/auth');
 const webhookRoutes = require('./routes/webhooks');
 const accessRoutes = require('./routes/access');
 const promptRoutes = require('./routes/prompts');
+const moduleRoutes = require('./routes/modules');
 const userRoutes = require('./routes/users');
 
 const app = express();
@@ -34,6 +35,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/access', accessRoutes);
 app.use('/api/prompts', promptRoutes);
+app.use('/api/modules', moduleRoutes);
 app.use('/api/admin/users', userRoutes);
 
 const webRoot = path.join(__dirname, '..', 'CLAUDFIRE BLINDADOKP');

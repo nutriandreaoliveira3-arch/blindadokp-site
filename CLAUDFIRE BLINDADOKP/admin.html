@@ -1,0 +1,238 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Painel administrativo BlindadoKP.">
+  <title>Admin — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+  <style>
+    .admin-block { margin-bottom: 60px; }
+    .admin-item { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; padding: 16px 0; border-top: 1px solid rgba(255,255,255,.1); }
+    .admin-item-info { flex: 1; }
+    .admin-item-info strong { display: block; color: var(--cream); margin-bottom: 4px; }
+    .admin-item-info span { color: var(--muted); font-size: 13px; }
+    .btn-delete { background: transparent; border: 1px solid rgba(224,138,114,.5); color: #e08a72; border-radius: 6px; padding: 6px 12px; font-size: 12px; cursor: pointer; }
+    .btn-delete:hover { background: rgba(224,138,114,.12); }
+    select { background: #0c0b0a; border: 1px solid rgba(255,255,255,.16); color: var(--cream); padding: 13px 14px; font-size: 14.5px; border-radius: 6px; font-family: inherit; width: 100%; }
+    .admin-sub { margin: 12px 0 0 20px; padding-left: 16px; border-left: 2px solid rgba(255,255,255,.1); }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="membros.html">Área de membros</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:760px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:34px;">
+          <p class="eyebrow">ADMIN</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Cadastrar conteúdo</h2>
+        </div>
+
+        <p id="msgAcesso" style="color:var(--muted);">Verificando acesso...</p>
+
+        <div id="painel" hidden>
+
+          <div class="admin-block">
+            <h3 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin-bottom:18px;">Prompts (Máquina de Prompts)</h3>
+            <form id="formPrompt" class="wizard-card" style="display:grid;gap:16px;margin-bottom:20px;">
+              <div class="field"><label>Título</label><input type="text" id="promptTitle" required></div>
+              <div class="field"><label>Profissão</label><input type="text" id="promptProfession" placeholder="Nutricionista" required></div>
+              <div class="field"><label>Tipo de conteúdo</label><input type="text" id="promptType" placeholder="Postagem, Carrossel ou Identidade Visual" required></div>
+              <div class="field"><label>Texto do prompt</label><textarea id="promptBody" rows="6" required></textarea></div>
+              <button type="submit" class="button button-gold">ADICIONAR PROMPT</button>
+            </form>
+            <div id="promptsLista"></div>
+          </div>
+
+          <div class="admin-block">
+            <h3 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin-bottom:18px;">Módulos e aulas (skills)</h3>
+            <form id="formModulo" class="wizard-card" style="display:grid;gap:16px;margin-bottom:20px;">
+              <div class="field"><label>Título do módulo</label><input type="text" id="moduloTitle" required></div>
+              <div class="field"><label>Descrição (opcional)</label><input type="text" id="moduloDescription"></div>
+              <div class="field"><label>Produto que libera esse módulo</label>
+                <select id="moduloProduct" required></select>
+              </div>
+              <button type="submit" class="button button-gold">CRIAR MÓDULO</button>
+            </form>
+            <div id="modulosLista"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script>
+    var token = null;
+
+    function authHeaders() {
+      return { Authorization: "Bearer " + token, "Content-Type": "application/json" };
+    }
+
+    async function carregarPrompts() {
+      var res = await fetch("/api/prompts", { headers: authHeaders() });
+      var data = await res.json();
+      var html = "";
+      (data.prompts || []).forEach(function (p) {
+        html +=
+          '<div class="admin-item"><div class="admin-item-info"><strong>' +
+          p.title +
+          "</strong><span>" +
+          p.profession +
+          " · " +
+          p.content_type +
+          '</span></div><button class="btn-delete" onclick="excluirPrompt(\'' +
+          p.id +
+          "')\">Excluir</button></div>";
+      });
+      document.getElementById("promptsLista").innerHTML = html || '<p style="color:var(--muted);">Nenhum prompt cadastrado ainda.</p>';
+    }
+
+    window.excluirPrompt = async function (id) {
+      if (!confirm("Excluir esse prompt?")) return;
+      await fetch("/api/prompts/" + id, { method: "DELETE", headers: authHeaders() });
+      carregarPrompts();
+    };
+
+    document.getElementById("formPrompt").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      await fetch("/api/prompts", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          title: document.getElementById("promptTitle").value,
+          profession: document.getElementById("promptProfession").value,
+          content_type: document.getElementById("promptType").value,
+          body: document.getElementById("promptBody").value,
+        }),
+      });
+      event.target.reset();
+      carregarPrompts();
+    });
+
+    var produtosPorId = {};
+
+    async function carregarProdutos() {
+      var res = await fetch("/api/admin/users/products", { headers: authHeaders() });
+      var data = await res.json();
+      var select = document.getElementById("moduloProduct");
+      select.innerHTML = "";
+      (data.products || []).forEach(function (p) {
+        produtosPorId[p.id] = p.name;
+        var opt = document.createElement("option");
+        opt.value = p.id;
+        opt.textContent = p.name;
+        select.appendChild(opt);
+      });
+    }
+
+    async function carregarModulos() {
+      var res = await fetch("/api/modules", { headers: authHeaders() });
+      var data = await res.json();
+      var html = "";
+      (data.modules || []).forEach(function (mod) {
+        html +=
+          '<div class="admin-item" style="flex-direction:column;align-items:stretch;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;"><div class="admin-item-info"><strong>' +
+          mod.title +
+          "</strong><span>" +
+          (mod.product ? mod.product.name : "sem produto") +
+          '</span></div><button class="btn-delete" onclick="excluirModulo(\'' +
+          mod.id +
+          "')\">Excluir módulo</button></div>";
+
+        html += '<div class="admin-sub">';
+        (mod.lessons || []).forEach(function (lesson) {
+          html +=
+            '<div class="admin-item"><div class="admin-item-info"><strong>' +
+            lesson.title +
+            "</strong></div><button class=\"btn-delete\" onclick=\"excluirAula('" +
+            lesson.id +
+            "')\">Excluir aula</button></div>";
+        });
+        html +=
+          '<form onsubmit="return adicionarAula(event, \'' +
+          mod.id +
+          '\')" style="display:grid;gap:10px;margin-top:12px;">' +
+          '<input type="text" placeholder="Título da aula" class="aula-title" required style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
+          '<input type="text" placeholder="Link do vídeo (opcional)" class="aula-video" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
+          '<textarea placeholder="Conteúdo / manual (opcional)" class="aula-content" rows="3" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;"></textarea>' +
+          '<button type="submit" class="button button-outline" style="width:fit-content;">ADICIONAR AULA</button>' +
+          "</form></div></div>";
+      });
+      document.getElementById("modulosLista").innerHTML = html || '<p style="color:var(--muted);">Nenhum módulo cadastrado ainda.</p>';
+    }
+
+    window.excluirModulo = async function (id) {
+      if (!confirm("Excluir esse módulo e todas as aulas dentro dele?")) return;
+      await fetch("/api/modules/" + id, { method: "DELETE", headers: authHeaders() });
+      carregarModulos();
+    };
+
+    window.excluirAula = async function (id) {
+      if (!confirm("Excluir essa aula?")) return;
+      await fetch("/api/modules/lessons/" + id, { method: "DELETE", headers: authHeaders() });
+      carregarModulos();
+    };
+
+    window.adicionarAula = function (event, moduleId) {
+      event.preventDefault();
+      var form = event.target;
+      fetch("/api/modules/" + moduleId + "/lessons", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          title: form.querySelector(".aula-title").value,
+          video_url: form.querySelector(".aula-video").value,
+          content: form.querySelector(".aula-content").value,
+        }),
+      }).then(carregarModulos);
+      return false;
+    };
+
+    document.getElementById("formModulo").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      await fetch("/api/modules", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          title: document.getElementById("moduloTitle").value,
+          description: document.getElementById("moduloDescription").value,
+          product_id: document.getElementById("moduloProduct").value,
+        }),
+      });
+      event.target.reset();
+      carregarModulos();
+    });
+
+    (async function iniciar() {
+      token = BlindadoAuth.getToken();
+      if (!token) {
+        window.location.href = "login.html?proximo=admin.html";
+        return;
+      }
+      var res = await fetch("/api/auth/me", { headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok || data.user.role !== "admin") {
+        document.getElementById("msgAcesso").textContent = "Acesso restrito ao administrador.";
+        return;
+      }
+      document.getElementById("msgAcesso").hidden = true;
+      document.getElementById("painel").hidden = false;
+      carregarPrompts();
+      carregarProdutos().then(carregarModulos);
+    })();
+  </script>
+</body>
+</html>

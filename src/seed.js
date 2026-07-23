@@ -7,6 +7,9 @@ const products = [
   { key: 'rota_blindada', name: 'Rota Blindada' },
   { key: 'rota_blindada_pro', name: 'Rota Blindada PRO' },
   { key: 'maquina_de_prompts', name: 'Máquina de Prompts' },
+  { key: 'skill_blindada_pro', name: 'Skill Blindada Pro' },
+  { key: 'skill_topclaudia', name: 'Skill TopClaudia' },
+  { key: 'skill_trafego', name: 'Skill de Tráfego' },
 ];
 
 const insertProduct = db.prepare(

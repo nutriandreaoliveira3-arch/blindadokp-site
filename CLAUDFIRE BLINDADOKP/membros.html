@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Sua área de membros BlindadoKP.">
+  <title>Área de Membros — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="maquina-de-prompts.html">Máquina de Prompts</a>
+        <a href="identidade-visual.html">Identidade Visual</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:760px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:34px;">
+          <p class="eyebrow">ÁREA DE MEMBROS</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Seu conteúdo</h2>
+        </div>
+
+        <p id="msgCarregando" style="color:var(--muted);">Carregando...</p>
+        <p id="msgSemAcesso" style="color:var(--muted);" hidden>
+          Você ainda não tem nenhuma skill liberada. <a href="index.html#skills" style="color:var(--gold-light);">Conhecer as skills →</a>
+        </p>
+
+        <div id="modulosLista"></div>
+
+        <div class="route-purchase reveal" style="margin-top:20px;">
+          <p class="route-purchase-title">Sessões 1:1 e suporte</p>
+          <p class="route-purchase-text">Se sua skill inclui sessões individuais de planejamento ou acesso ao grupo privado de suporte, fale direto com a Andréa pra agendar.</p>
+          <a class="button button-outline" href="mailto:contato@blindadokp.com.br?subject=Quero%20agendar%20minha%20sess%C3%A3o">FALAR COM A ANDRÉA</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script>
+    (async function () {
+      if (!BlindadoAuth.getToken()) {
+        window.location.href = "login.html?proximo=membros.html";
+        return;
+      }
+
+      var res = await fetch("/api/modules", {
+        headers: { Authorization: "Bearer " + BlindadoAuth.getToken() },
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        BlindadoAuth.logout();
+        window.location.href = "login.html?proximo=membros.html";
+        return;
+      }
+
+      var data = await res.json();
+      var modulos = (data.modules || []).filter(function (m) { return !m.product_id || !m.locked; });
+      document.getElementById("msgCarregando").hidden = true;
+
+      if (!modulos.length) {
+        document.getElementById("msgSemAcesso").hidden = false;
+        return;
+      }
+
+      var html = "";
+      modulos.forEach(function (mod) {
+        html += '<div class="prompt-group"><h3 class="prompt-group-title">' + mod.title + "</h3>";
+        if (mod.description) html += '<p style="color:var(--muted);font-size:14px;margin:-10px 0 16px;">' + mod.description + "</p>";
+        (mod.lessons || []).forEach(function (lesson) {
+          html += '<div class="feature-card" style="margin-bottom:14px;"><h4>' + lesson.title + "</h4>";
+          if (lesson.video_url) {
+            html += '<p style="margin-bottom:10px;"><a href="' + lesson.video_url + '" target="_blank" rel="noopener noreferrer" style="color:var(--gold-light);">▶ Assistir vídeo</a></p>';
+          }
+          if (lesson.content) {
+            html += "<p>" + lesson.content.replace(/\n/g, "<br>") + "</p>";
+          }
+          html += "</div>";
+        });
+        html += "</div>";
+      });
+      document.getElementById("modulosLista").innerHTML = html;
+    })();
+  </script>
+</body>
+</html>

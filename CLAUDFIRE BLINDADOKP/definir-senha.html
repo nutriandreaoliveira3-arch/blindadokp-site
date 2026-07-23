@@ -88,7 +88,14 @@
 
       try {
         await BlindadoAuth.setPassword(token, password);
-        window.location.href = 'identidade-visual.html?comprado=1';
+        var produtos = await BlindadoAuth.getEntitlements();
+        if (produtos.indexOf('rota_blindada_pro') !== -1 || produtos.indexOf('rota_blindada') !== -1) {
+          window.location.href = 'identidade-visual.html?comprado=1';
+        } else if (produtos.indexOf('maquina_de_prompts') !== -1) {
+          window.location.href = 'maquina-de-prompts.html?comprado=1';
+        } else {
+          window.location.href = 'membros.html';
+        }
       } catch (err) {
         errorEl.textContent = err.message || 'Não foi possível criar sua senha.';
         errorEl.style.display = 'block';
