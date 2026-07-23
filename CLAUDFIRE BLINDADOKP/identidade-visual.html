@@ -67,7 +67,7 @@
               <div class="route-grid" role="radiogroup" aria-label="Rota">
                 <label class="route-option">
                   <input type="radio" name="rota" value="expressa" required>
-                  <span><em>15–20 minutos</em><strong>Rota Blindada</strong><p>O essencial pra sair com uma primeira identidade coerente: marca, público, visual e limites.</p></span>
+                  <span><em id="freePriceLabel">15–20 minutos · grátis</em><strong>Rota Blindada</strong><p>O essencial pra sair com uma primeira identidade coerente: marca, público, visual e limites.</p></span>
                 </label>
                 <label class="route-option">
                   <input type="radio" name="rota" value="completa">
@@ -76,11 +76,11 @@
               </div>
 
               <div class="route-purchase" id="routePurchase" hidden>
-                <p class="route-purchase-title">Rota Blindada PRO — <span class="route-price">R$ 97</span></p>
-                <p class="route-purchase-text">Libera as 13 etapas extras da Rota Blindada PRO: posicionamento, personalidade de marca, sistema visual completo, fotografia, canais, referências e ética. No final, o prompt sai muito mais completo.</p>
-                <a class="button button-gold" id="btnComprarPro" href="#" target="_blank" rel="noopener noreferrer">COMPRAR AGORA — R$ 97</a>
-                <p class="route-purchase-note">Depois de comprar, você recebe um e-mail pra criar sua senha. Depois disso, é só entrar que a Rota Blindada PRO já fica liberada — inclusive em visitas futuras.</p>
-                <p class="route-purchase-note">Já comprou e já tem senha? <a href="login.html" style="color:var(--gold-light);">Entrar</a></p>
+                <p class="route-purchase-title" id="purchaseTitle">Rota Blindada PRO — <span class="route-price" id="purchasePrice">R$ 97</span></p>
+                <p class="route-purchase-text" id="purchaseText">Libera as 13 etapas extras da Rota Blindada PRO: posicionamento, personalidade de marca, sistema visual completo, fotografia, canais, referências e ética. No final, o prompt sai muito mais completo.</p>
+                <a class="button button-gold" id="btnComprar" href="#" target="_blank" rel="noopener noreferrer">COMPRAR AGORA — R$ 97</a>
+                <p class="route-purchase-note">Depois de confirmar, você recebe um e-mail pra criar sua senha. Depois disso, é só entrar que essa rota já fica liberada — inclusive em visitas futuras.</p>
+                <p class="route-purchase-note">Já tem conta? <a href="login.html?proximo=identidade-visual.html" style="color:var(--gold-light);">Entrar</a></p>
               </div>
             </fieldset>
 

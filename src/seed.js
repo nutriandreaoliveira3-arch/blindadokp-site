@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('./db');
 
 const products = [
+  { key: 'rota_blindada', name: 'Rota Blindada' },
   { key: 'rota_blindada_pro', name: 'Rota Blindada PRO' },
   { key: 'maquina_de_prompts', name: 'Máquina de Prompts' },
 ];
