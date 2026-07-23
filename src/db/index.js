@@ -41,6 +41,23 @@ CREATE TABLE IF NOT EXISTS user_products (
   PRIMARY KEY (user_id, product_id)
 );
 
+CREATE TABLE IF NOT EXISTS modules (
+  id TEXT PRIMARY KEY,
+  title TEXT NOT NULL,
+  description TEXT,
+  product_id TEXT REFERENCES products(id) ON DELETE CASCADE,
+  sort_order INTEGER NOT NULL DEFAULT 0
+);
+
+CREATE TABLE IF NOT EXISTS lessons (
+  id TEXT PRIMARY KEY,
+  module_id TEXT NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  title TEXT NOT NULL,
+  content TEXT,
+  video_url TEXT,
+  sort_order INTEGER NOT NULL DEFAULT 0
+);
+
 CREATE TABLE IF NOT EXISTS prompts (
   id TEXT PRIMARY KEY,
   title TEXT NOT NULL,
