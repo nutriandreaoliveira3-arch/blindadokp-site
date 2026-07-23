@@ -51,6 +51,10 @@
           <h2 style="font-size:clamp(32px,4vw,44px);">Vamos montar sua identidade.</h2>
         </div>
 
+        <p id="comprasRecentesAviso" class="route-purchase-note" style="margin-bottom:20px;" hidden>
+          Compra confirmada! Se ainda não criou sua senha, confira o e-mail que te enviamos — depois disso é só entrar que a Rota Blindada PRO já aparece liberada aqui.
+        </p>
+
         <form id="wizardForm" class="reveal" novalidate>
           <div class="wizard-progress" id="wizardProgress" aria-hidden="true"></div>
           <p class="wizard-step-label" id="wizardStepLabel"></p>
@@ -75,7 +79,8 @@
                 <p class="route-purchase-title">Rota Blindada PRO — <span class="route-price">R$ 97</span></p>
                 <p class="route-purchase-text">Libera as 13 etapas extras da Rota Blindada PRO: posicionamento, personalidade de marca, sistema visual completo, fotografia, canais, referências e ética. No final, o prompt sai muito mais completo.</p>
                 <a class="button button-gold" id="btnComprarPro" href="#" target="_blank" rel="noopener noreferrer">COMPRAR AGORA — R$ 97</a>
-                <p class="route-purchase-note">Depois de comprar, você volta pra esta página já liberado — não precisa preencher de novo.</p>
+                <p class="route-purchase-note">Depois de comprar, você recebe um e-mail pra criar sua senha. Depois disso, é só entrar que a Rota Blindada PRO já fica liberada — inclusive em visitas futuras.</p>
+                <p class="route-purchase-note">Já comprou e já tem senha? <a href="login.html" style="color:var(--gold-light);">Entrar</a></p>
               </div>
             </fieldset>
 
@@ -763,6 +768,7 @@
     <a class="mobile-cta" href="#comecar">COMEÇAR AGORA</a>
   </main>
 
+  <script src="js/auth-shared.js" defer></script>
   <script src="js/identidade-visual.js" defer></script>
 </body>
 </html>
