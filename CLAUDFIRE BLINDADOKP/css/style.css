@@ -266,6 +266,16 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
 .axis-row span:last-child { text-align: right; }
 .axis-slider { width: 100%; accent-color: var(--gold); }
 
+.route-purchase {
+  margin-top: 18px; padding: 26px; border: 1px solid rgba(202,163,74,.5); border-radius: 10px;
+  background: radial-gradient(circle at 88% 8%, rgba(202,163,74,.14), transparent 35%), #0c0b0a;
+}
+.route-purchase-title { margin: 0 0 8px; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: var(--gold-light); }
+.route-purchase-text { margin: 0 0 18px; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.route-purchase-note { margin: 14px 0 0; color: var(--muted); font-size: 12.5px; }
+.route-price { color: var(--gold-light); font-weight: 900; }
+.route-unlocked { color: var(--gold-light); font-weight: 900; }
+
 .wizard-actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 6px; }
 .btn-back { min-height: 52px; padding: 0 22px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .11em; cursor: pointer; }
 .btn-back:hover { color: var(--cream); }
