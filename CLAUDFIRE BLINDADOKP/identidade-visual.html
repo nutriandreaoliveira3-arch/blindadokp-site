@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Responda 20 perguntas rápidas e receba um prompt pronto pra gerar sua identidade visual completa em qualquer IA — grátis, sem baixar nada.">
+  <title>Documento Mestre de Identidade Visual — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#skills">Skills profissionais</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a class="header-button" href="#comecar">COMEÇAR AGORA</a>
+    </header>
+
+    <section class="product-hero">
+      <div class="page-shell">
+        <p class="eyebrow reveal">FERRAMENTA GRÁTIS</p>
+        <h1 class="reveal">Documento Mestre<br><em>de Identidade Visual</em></h1>
+        <p class="hero-lead reveal">Responda perguntas objetivas sobre sua marca e receba, no final, um prompt pronto — já com suas respostas dentro — pra colar em qualquer IA e sair com paleta, tipografia, logo e regras de uso completas.</p>
+        <div class="hero-actions reveal">
+          <a class="button button-gold" href="#comecar">Começar agora <span>↓</span></a>
+          <span>Leva de 15 a 20 minutos</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="manifesto-strip" aria-label="Como funciona">
+      <div class="page-shell manifesto-row">
+        <span>SEM BAIXAR ARQUIVO</span><i>◆</i>
+        <span>PROMPT PRONTO NO FINAL</span><i>◆</i>
+        <span>FUNCIONA EM QUALQUER IA</span>
+      </div>
+    </section>
+
+    <section class="section products-section" id="comecar">
+      <div class="page-shell wizard-shell">
+        <div class="section-heading reveal" style="display:block;margin-bottom:34px;">
+          <p class="eyebrow">ETAPA A ETAPA</p>
+          <h2 style="font-size:clamp(32px,4vw,44px);">Vamos montar sua identidade.</h2>
+        </div>
+
+        <form id="wizardForm" class="reveal" novalidate>
+          <div class="wizard-progress" aria-hidden="true">
+            <div class="wizard-progress-step is-active" data-step-dot="0"></div>
+            <div class="wizard-progress-step" data-step-dot="1"></div>
+            <div class="wizard-progress-step" data-step-dot="2"></div>
+            <div class="wizard-progress-step" data-step-dot="3"></div>
+            <div class="wizard-progress-step" data-step-dot="4"></div>
+          </div>
+          <p class="wizard-step-label">Etapa <strong><span id="stepAtual">1</span> de 5</strong> — <span id="stepNome">Contato</span></p>
+
+          <div class="wizard-card">
+
+            <fieldset class="wizard-fieldset is-active" data-step="0">
+              <h3>Quem está preenchendo?</h3>
+              <p class="step-intro">Pra te enviar o resultado e, se quiser, avisar a gente que você preencheu.</p>
+
+              <div class="field">
+                <label for="contato_nome">Seu nome</label>
+                <input type="text" id="contato_nome" name="contato_nome" required>
+              </div>
+              <div class="field">
+                <label for="contato_email">Seu e-mail</label>
+                <input type="email" id="contato_email" name="contato_email" required>
+              </div>
+              <div class="field">
+                <label for="contato_telefone">Seu WhatsApp</label>
+                <input type="tel" id="contato_telefone" name="contato_telefone" placeholder="(00) 00000-0000" required>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-step="1">
+              <h3>Sua marca</h3>
+
+              <div class="field">
+                <label for="marca_nome">Nome que deve aparecer na marca</label>
+                <p class="hint">Escreva exatamente como deve ser grafado.</p>
+                <input type="text" id="marca_nome" name="marca_nome" required>
+              </div>
+              <div class="field">
+                <label for="profissao">Profissão, especialidade ou tipo de negócio</label>
+                <p class="hint">Ex.: nutricionista clínica; personal trainer; confeitaria artesanal.</p>
+                <input type="text" id="profissao" name="profissao" required>
+              </div>
+              <div class="field">
+                <label for="oferta">O que você oferece ou vende</label>
+                <p class="hint">Principais serviços, produtos, atendimentos ou soluções.</p>
+                <textarea id="oferta" name="oferta" required></textarea>
+              </div>
+              <div class="field">
+                <label for="publico">Quem é o público principal</label>
+                <p class="hint">Idade aproximada, perfil, localização, profissão ou momento de vida.</p>
+                <textarea id="publico" name="publico" required></textarea>
+              </div>
+              <div class="field">
+                <label for="transformacao">Complete: "Eu ajudo ______ a conseguir ______"</label>
+                <input type="text" id="transformacao" name="transformacao" required>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-step="2">
+              <h3>Personalidade e visual</h3>
+
+              <div class="field">
+                <label for="cinco_palavras">Cinco palavras que a marca deve transmitir</label>
+                <p class="hint">Ex.: confiança, acolhimento, sofisticação, clareza, energia.</p>
+                <input type="text" id="cinco_palavras" name="cinco_palavras" required>
+              </div>
+              <div class="field">
+                <label for="nao_parecer">O que a marca não pode parecer</label>
+                <p class="hint">Ex.: infantil, fria, popular demais, agressiva, genérica.</p>
+                <input type="text" id="nao_parecer" name="nao_parecer" required>
+              </div>
+              <div class="field">
+                <label>Direção visual que mais combina</label>
+                <p class="hint">Escolha uma opção. Se não souber, escolha "decida por mim".</p>
+                <div class="choice-grid" role="radiogroup" aria-label="Direção visual">
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Minimalista elegante" required><span>Minimalista elegante</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Clínica e confiável"><span>Clínica e confiável</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Humana e acolhedora"><span>Humana e acolhedora</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Premium e exclusiva"><span>Premium e exclusiva</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Moderna e tecnológica"><span>Moderna e tecnológica</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Natural e orgânica"><span>Natural e orgânica</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Ousada e dinâmica"><span>Ousada e dinâmica</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Clássica e sofisticada"><span>Clássica e sofisticada</span></label>
+                  <label class="choice-option"><input type="radio" name="estilo_visual" value="Decida por mim"><span>Decida por mim</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="cores_desejadas">Cores que deseja usar</label>
+                <p class="hint">Nomes de cores ou códigos. Pode deixar em branco pra IA decidir.</p>
+                <input type="text" id="cores_desejadas" name="cores_desejadas">
+              </div>
+              <div class="field">
+                <label for="cores_proibidas">Cores que não deseja usar</label>
+                <p class="hint">Cores de concorrentes ou associações que quer evitar. (opcional)</p>
+                <input type="text" id="cores_proibidas" name="cores_proibidas">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-step="3">
+              <h3>Aplicações e limites</h3>
+
+              <div class="field">
+                <label for="logo">Preferência de logo</label>
+                <p class="hint">Ex.: só nome; iniciais; símbolo + nome; selo; não sei.</p>
+                <input type="text" id="logo" name="logo" required>
+              </div>
+              <div class="field">
+                <label for="imagens">Como devem ser as fotos e imagens</label>
+                <p class="hint">Ex.: pessoas reais, luz natural, fundo claro, sem fotos genéricas.</p>
+                <input type="text" id="imagens" name="imagens" required>
+              </div>
+              <div class="field">
+                <label for="aplicacoes">Onde a identidade será usada primeiro</label>
+                <p class="hint">Ex.: Instagram, site, consultório, e-book, cartão.</p>
+                <input type="text" id="aplicacoes" name="aplicacoes" required>
+              </div>
+              <div class="field">
+                <label for="referencias">Referências visuais (opcional)</label>
+                <p class="hint">Marcas cujo estilo você admira. Explique o que gosta, sem pedir cópia.</p>
+                <textarea id="referencias" name="referencias"></textarea>
+              </div>
+              <div class="field">
+                <label for="restricoes">Restrições profissionais, éticas ou legais</label>
+                <p class="hint">Ex.: conselho profissional, proibição de promessas, antes e depois.</p>
+                <textarea id="restricoes" name="restricoes" required></textarea>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-step="4">
+              <h3>Última pergunta</h3>
+
+              <div class="field">
+                <label>Nível de liberdade para a IA</label>
+                <div class="choice-grid" role="radiogroup" aria-label="Nível de liberdade para a IA">
+                  <label class="choice-option"><input type="radio" name="liberdade" value="Siga exatamente minhas escolhas" required><span>Siga exatamente minhas escolhas</span></label>
+                  <label class="choice-option"><input type="radio" name="liberdade" value="Proponha melhorias"><span>Proponha melhorias</span></label>
+                  <label class="choice-option"><input type="radio" name="liberdade" value="Decida por mim o que faltar"><span>Decida por mim o que faltar</span></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <div class="wizard-actions">
+              <button type="button" class="btn-back" id="btnVoltar">VOLTAR</button>
+              <button type="submit" class="button button-gold" id="btnAvancar">PRÓXIMA <span>→</span></button>
+            </div>
+          </div>
+        </form>
+
+        <div class="wizard-result" id="wizardResult">
+          <div class="wizard-card">
+            <h3 style="margin:0 0 8px;font-family:Georgia,serif;font-size:26px;font-weight:400;">Seu prompt está pronto.</h3>
+            <p style="margin:0;color:var(--muted);font-size:14.5px;line-height:1.6;">Copie e cole em qualquer IA — ChatGPT, Claude, Gemini. Ela vai devolver sua identidade visual completa: conceito, paleta, tipografia, logo, fotografia e um kit técnico em CSS/JSON.</p>
+
+            <div class="result-prompt">
+              <div class="result-prompt-head">
+                <span>prompt · criar identidade visual</span>
+                <button type="button" class="copy-btn" id="btnCopiar">Copiar</button>
+              </div>
+              <pre id="promptGerado"></pre>
+            </div>
+
+            <div class="result-actions">
+              <a class="button button-outline" id="btnAvisar" href="#" target="_blank" rel="noopener noreferrer">AVISAR A ANDRÉA POR E-MAIL</a>
+              <a class="button button-outline" href="maquina-de-prompts.html">VER O PROMPT PRA APLICAR NO SITE →</a>
+            </div>
+            <p class="result-note">O botão de avisar abre seu e-mail com um resumo já preenchido — só falta clicar em enviar. Quer aprofundar ainda mais depois que a IA responder? Peça na mesma conversa: "aprofunde com posicionamento de marca, arquétipos e regras de aplicação para todos os canais".</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section essence-section">
+      <div class="page-shell">
+        <div class="section-heading" style="margin-bottom:36px;">
+          <div>
+            <p class="eyebrow">PERGUNTAS FREQUENTES</p>
+            <h2>Antes de começar.</h2>
+          </div>
+        </div>
+        <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>Isso substitui um designer?</summary>
+            <p>Não. O prompt gera uma proposta completa e coerente pra começar — mas logo final, registro de marca e originalidade ainda precisam de validação humana antes do uso comercial.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Preciso saber usar alguma IA específica?</summary>
+            <p>Não. O prompt gerado funciona em qualquer IA de conversa — ChatGPT, Claude, Gemini ou similar. Você só copia e cola.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Meus dados ficam salvos em algum lugar?</summary>
+            <p>Não. Essa página não guarda nada em servidor — as respostas ficam só no seu navegador, viram o prompt na hora e somem se você recarregar a página.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact-section">
+      <div class="page-shell contact-inner reveal">
+        <span class="brand-symbol large">B</span>
+        <p class="eyebrow">DOCUMENTO MESTRE DE IDENTIDADE VISUAL</p>
+        <h2>Sua marca começa com decisões claras.</h2>
+        <a class="button button-gold" href="#comecar">COMEÇAR AGORA <span>↑</span></a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+
+    <a class="mobile-cta" href="#comecar">COMEÇAR AGORA</a>
+  </main>
+
+  <script src="js/identidade-visual.js" defer></script>
+</body>
+</html>
