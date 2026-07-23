@@ -162,6 +162,75 @@
       font-size: 14px;
     }
 
+    .preview-badge {
+      display: inline-block;
+      background: rgba(201, 162, 39, 0.15);
+      color: #a3800f;
+      border: 1px solid #C9A227;
+      letter-spacing: 0.05em;
+      font-size: 12px;
+      font-weight: bold;
+      padding: 5px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+
+    .prompt-preview {
+      background: #1C1C1C;
+      border-radius: 10px;
+      padding: 24px 24px 18px;
+      margin: 20px 0;
+    }
+
+    .prompt-preview-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .prompt-preview-head span {
+      color: #C9A227;
+      font-size: 12px;
+      font-weight: bold;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .copy-btn {
+      background: transparent;
+      color: #fff;
+      border: 1px solid rgba(201, 162, 39, 0.5);
+      border-radius: 6px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .copy-btn:hover {
+      background: rgba(201, 162, 39, 0.15);
+    }
+
+    .prompt-preview pre {
+      color: #eee;
+      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      margin: 0;
+      max-height: 380px;
+      overflow-y: auto;
+    }
+
+    .prompt-note {
+      color: #777;
+      font-size: 13.5px;
+      margin-top: 14px;
+    }
+
     footer {
       background: #1C1C1C;
       color: #fff;
@@ -197,7 +266,7 @@
   <div class="container">
     <span class="eyebrow-badge">EM DESENVOLVIMENTO</span>
     <h1>MÁQUINA DE PROMPTS</h1>
-    <p>O prompt certo pra cada tarefa — biblioteca organizada por profissão da saúde, pronta pra postar.</p>
+    <p>O prompt certo pra cada tarefa — biblioteca organizada por profissão da saúde, pronta pra postar, carrossel e agora também identidade visual.</p>
   </div>
 </header>
 
@@ -218,7 +287,47 @@
     <div class="tipos-row">
       <span class="tipo-card">POSTAGEM</span>
       <span class="tipo-card">CARROSSEL</span>
+      <span class="tipo-card">IDENTIDADE VISUAL</span>
     </div>
+  </div>
+
+  <div class="section">
+    <span class="preview-badge">PRÉVIA GRÁTIS</span>
+    <h2>Um prompt de identidade visual, de graça</h2>
+    <p>Este é um dos prompts que vão estar prontos na Máquina de Prompts. Ele pega um manual de identidade visual já pronto (o seu, ou o gerado a partir do <strong>Documento Mestre de Identidade Visual</strong>) e transforma em uma página de marca de verdade — cores, fontes, botões e tudo mais aplicados.</p>
+    <p style="color:#666;font-size:14px;">Funciona em qualquer app de IA que constrói páginas a partir de um prompt — Lovable, v0, Bolt.new, Replit ou similar. A maioria tem um plano gratuito suficiente para gerar essa primeira versão.</p>
+
+    <div class="prompt-preview">
+      <div class="prompt-preview-head">
+        <span>prompt · aplicar identidade em um app de ia</span>
+        <button class="copy-btn" onclick="copiarPromptIdentidade(this)">Copiar</button>
+      </div>
+      <pre id="promptIdentidadeVisual">ATUE COMO DIRETOR(A) DE ARTE E DESENVOLVEDOR(A) FRONT-END SÊNIOR.
+
+Leia o manual de identidade visual anexado e transforme as respostas em um design system original e utilizável. Se houver um manual de identidade gerado anteriormente, ele tem prioridade sobre preferências vagas.
+
+ANTES DE CONSTRUIR
+1. Resuma em até dez linhas a direção visual escolhida.
+2. Defina tokens de cor, tipografia, espaçamento, raios, bordas, sombras e estados de interação.
+3. Resolva campos ausentes com decisões coerentes e identifique as suposições.
+
+IMPLEMENTAÇÃO
+1. Crie uma página /brand-guidelines com paleta, tipografia, hierarquia, botões, cards, campos, ícones, exemplos de foto e regras de uso.
+2. Centralize os tokens em um único arquivo reutilizável, como src/styles/brand.css, e integre-os ao sistema existente.
+3. Use fontes gratuitas e carregamento eficiente.
+4. Garanta contraste, leitura em celular, navegação por teclado, estados de foco e responsividade.
+5. Crie componentes consistentes e reutilizáveis. Não aplique cores e estilos soltos em cada página.
+6. Use textos e imagens provisórios claramente identificados quando não houver conteúdo final.
+7. Não copie concorrentes ou marcas de referência.
+8. Respeite todas as restrições profissionais, éticas e legais informadas.
+
+PROJETO
+Construa o tipo de projeto indicado pelo usuário. Se não houver indicação, crie somente a página /brand-guidelines e uma landing page demonstrativa.
+
+ENTREGA
+Mostre a estrutura criada, os tokens principais, os componentes, as decisões assumidas e os pontos que ainda exigem logo vetorial, fotos reais ou validação humana. Não altere funcionalidades existentes que não sejam necessárias para aplicar a identidade visual.</pre>
+    </div>
+    <p class="prompt-note">Sem manual de identidade ainda? O Documento Mestre de Identidade Visual gera esse manual antes deste passo.</p>
   </div>
 
   <div class="section">
@@ -242,6 +351,17 @@
     <p>Desenvolvido por: Andréa Oliveira | @nutriandreaoliveira</p>
   </div>
 </footer>
+
+<script>
+function copiarPromptIdentidade(btn) {
+  var texto = document.getElementById('promptIdentidadeVisual').innerText;
+  navigator.clipboard.writeText(texto).then(function () {
+    var original = btn.textContent;
+    btn.textContent = 'Copiado';
+    setTimeout(function () { btn.textContent = original; }, 1600);
+  });
+}
+</script>
 
 </body>
 </html>
