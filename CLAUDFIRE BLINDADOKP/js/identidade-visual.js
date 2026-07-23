@@ -8,9 +8,38 @@
   var btnVoltar = document.getElementById("btnVoltar");
   var btnAvancar = document.getElementById("btnAvancar");
   var wizardResult = document.getElementById("wizardResult");
+  var routePurchase = document.getElementById("routePurchase");
+  var btnComprarPro = document.getElementById("btnComprarPro");
+  var proPriceLabel = document.getElementById("proPriceLabel");
+
+  // TODO(Andréa): troque pelo link de checkout real assim que criar o produto na Greenn.
+  // Passo a passo: Greenn > Produtos > Novo produto > "Rota Blindada PRO" > R$ 97 > produto digital de acesso único.
+  // No campo de URL de agradecimento/redirecionamento após a compra, cole:
+  // https://www.blindadokp.com.br/identidade-visual.html?acesso=pro
+  // Depois é só me mandar o link de checkout que aparece lá que eu troco a linha abaixo.
+  var GREENN_CHECKOUT_URL_PRO = "https://pay.greenn.com.br/SUBSTITUA-PELO-LINK-DA-GREENN-AQUI";
+  var ACESSO_PRO_KEY = "blindadokp_rota_pro_acesso";
+
+  function temAcessoPro() {
+    if (localStorage.getItem(ACESSO_PRO_KEY) === "1") return true;
+    if (new URLSearchParams(window.location.search).get("acesso") === "pro") {
+      localStorage.setItem(ACESSO_PRO_KEY, "1");
+      return true;
+    }
+    return false;
+  }
+
+  if (btnComprarPro) btnComprarPro.href = GREENN_CHECKOUT_URL_PRO;
+  if (temAcessoPro() && proPriceLabel) proPriceLabel.textContent = "45–75 minutos · Liberado ✓";
 
   var steps = [allFieldsets[0]]; // só a etapa de escolha de rota, até o usuário decidir
   var current = 0;
+
+  // Chegou direto do checkout da Greenn já liberado: seleciona a rota PRO e avança sozinho.
+  if (temAcessoPro() && new URLSearchParams(window.location.search).get("acesso") === "pro") {
+    var radioPro = form.querySelector('input[name="rota"][value="completa"]');
+    if (radioPro) radioPro.checked = true;
+  }
 
   function getSelectedRoute() {
     var checked = form.querySelector('input[name="rota"]:checked');
@@ -83,6 +112,14 @@
 
     if (current === 0 && steps[0].dataset.stepName === "Escolha sua rota") {
       if (!currentStepIsValid()) return;
+
+      if (getSelectedRoute() === "completa" && !temAcessoPro()) {
+        routePurchase.hidden = false;
+        routePurchase.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        return;
+      }
+
+      routePurchase.hidden = true;
       rebuildSteps();
       current = 1;
       showStep(current);
@@ -334,5 +371,19 @@
     return texto;
   }
 
+  // Esconde o card de compra se a pessoa voltar pra Rota Blindada (grátis) depois de vê-lo.
+  Array.prototype.slice.call(form.querySelectorAll('input[name="rota"]')).forEach(function (radio) {
+    radio.addEventListener("change", function () {
+      if (radio.value === "expressa") routePurchase.hidden = true;
+    });
+  });
+
   showStep(0);
+
+  // Voltou do checkout da Greenn já liberado: pula direto pra etapa de contato.
+  if (temAcessoPro() && new URLSearchParams(window.location.search).get("acesso") === "pro") {
+    rebuildSteps();
+    current = 1;
+    showStep(current);
+  }
 })();
