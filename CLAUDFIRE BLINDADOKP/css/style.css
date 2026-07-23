@@ -276,6 +276,11 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
 .route-price { color: var(--gold-light); font-weight: 900; }
 .route-unlocked { color: var(--gold-light); font-weight: 900; }
 
+.prompt-group { margin: 0 0 36px; }
+.prompt-group-title { margin: 0 0 16px; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: var(--gold-light); }
+.prompt-group-subtitle { margin: -10px 0 16px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.prompt-empty { padding: 34px; text-align: center; border: 1px dashed rgba(255,255,255,.18); border-radius: 10px; color: var(--muted); font-size: 14.5px; }
+
 .wizard-actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 6px; }
 .btn-back { min-height: 52px; padding: 0 22px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .11em; cursor: pointer; }
 .btn-back:hover { color: var(--cream); }
