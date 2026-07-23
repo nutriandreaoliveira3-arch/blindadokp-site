@@ -212,6 +212,65 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
   .plan-card { padding: 32px 24px; }
 }
 
+/* ---- Assistente de identidade visual (identidade-visual.html) ---- */
+.wizard-shell { max-width: 760px; margin: 0 auto; }
+.wizard-progress { display: flex; gap: 8px; margin-bottom: 14px; }
+.wizard-progress-step { flex: 1; height: 4px; border-radius: 2px; background: rgba(255,255,255,.1); transition: background .3s ease; }
+.wizard-progress-step.is-active, .wizard-progress-step.is-done { background: var(--gold); }
+.wizard-step-label { margin: 0 0 30px; color: var(--muted); font-size: 12px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.wizard-step-label strong { color: var(--gold-light); }
+
+.wizard-card { padding: 44px; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(145deg, #171512, #0f0e0c); }
+.wizard-fieldset { display: none; margin: 0; padding: 0; border: 0; }
+.wizard-fieldset.is-active { display: grid; gap: 24px; }
+.wizard-fieldset h3 { margin: 0; font-family: Georgia, serif; font-size: 26px; font-weight: 400; }
+.wizard-fieldset > p.step-intro { margin: -14px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+
+.field { display: grid; gap: 8px; }
+.field label { font-size: 13.5px; font-weight: 700; color: var(--cream); }
+.field .hint { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.field input[type="text"], .field input[type="email"], .field input[type="tel"], .field textarea {
+  width: 100%; background: #0c0b0a; border: 1px solid rgba(255,255,255,.16); color: var(--cream);
+  padding: 13px 14px; font-size: 14.5px; font-family: inherit; border-radius: 6px;
+}
+.field textarea { resize: vertical; min-height: 72px; }
+.field input:focus, .field textarea:focus { outline: none; border-color: var(--gold); }
+
+.choice-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
+.choice-option { position: relative; }
+.choice-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.choice-option span {
+  display: block; padding: 12px 14px; border: 1px solid rgba(255,255,255,.16); border-radius: 6px;
+  font-size: 13.5px; color: var(--muted); cursor: pointer; transition: border-color .2s ease, color .2s ease, background .2s ease;
+}
+.choice-option input:checked + span { border-color: var(--gold); color: var(--gold-light); background: rgba(202,163,74,.1); }
+.choice-option input:focus-visible + span { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+
+.wizard-actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 6px; }
+.btn-back { min-height: 52px; padding: 0 22px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .11em; cursor: pointer; }
+.btn-back:hover { color: var(--cream); }
+
+.wizard-result { display: none; }
+.wizard-result.is-active { display: block; }
+.result-prompt { margin: 26px 0; padding: 26px; border: 1px solid rgba(255,255,255,.14); border-radius: 10px; background: #0c0b0a; }
+.result-prompt-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; flex-wrap: wrap; }
+.result-prompt-head span { color: var(--gold-light); font-size: 10.5px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.copy-btn { background: transparent; color: var(--cream); border: 1px solid rgba(202,163,74,.5); border-radius: 6px; padding: 7px 15px; font-size: 12px; font-weight: 700; cursor: pointer; }
+.copy-btn:hover { background: rgba(202,163,74,.15); }
+.result-prompt pre {
+  color: #ece7dd; font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  font-size: 12.5px; line-height: 1.7; white-space: pre-wrap; margin: 0; max-height: 460px; overflow-y: auto;
+}
+.result-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 22px; }
+.result-actions .button { min-height: 52px; }
+.result-note { margin-top: 18px; color: var(--muted); font-size: 13px; line-height: 1.6; }
+
+@media (max-width: 620px) {
+  .wizard-card { padding: 26px 20px; }
+  .wizard-actions { flex-direction: column-reverse; align-items: stretch; }
+  .wizard-actions .button, .btn-back { width: 100%; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }
