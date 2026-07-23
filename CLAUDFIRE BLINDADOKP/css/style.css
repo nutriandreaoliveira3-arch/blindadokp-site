@@ -174,6 +174,44 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
   .mobile-cta { display: block; position: fixed; z-index: 30; left: 12px; right: 12px; bottom: 12px; padding: 16px; text-align: center; background: linear-gradient(100deg, #b88b2d, #f0d482); color: #17110a; font-size: 10px; font-weight: 900; letter-spacing: .12em; box-shadow: 0 12px 38px #000; }
 }
 
+/* ---- Componentes de página de produto/venda (video-blindado.html, maquina-de-prompts.html etc.) ---- */
+.product-hero { padding: 176px 0 88px; background: #0c0b0a; border-bottom: 1px solid var(--line); }
+.product-hero h1 { margin: 0 0 22px; font-family: Georgia, serif; font-size: clamp(40px, 5.4vw, 64px); font-weight: 400; line-height: 1.06; letter-spacing: -.03em; }
+.product-hero h1 em { display: block; color: var(--gold-light); font-style: normal; }
+.product-hero .hero-lead { max-width: 640px; margin: 0; color: var(--muted); font-size: 18px; line-height: 1.78; }
+
+.feature-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.feature-card { padding: 30px 28px; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(145deg, #171512, #0f0e0c); }
+.feature-card h4 { margin: 0 0 10px; color: var(--gold-light); font-family: Georgia, serif; font-size: 19px; font-weight: 400; letter-spacing: -.01em; }
+.feature-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+
+.plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.plan-card { position: relative; padding: 42px 34px; border: 1px solid rgba(255,255,255,.12); background: linear-gradient(145deg, #171512, #0f0e0c); }
+.plan-card-featured { border-color: rgba(202,163,74,.6); background: radial-gradient(circle at 85% 10%, rgba(202,163,74,.16), transparent 33%), linear-gradient(145deg, #1c1914, #0e0d0b); }
+.plan-badge { position: absolute; top: -13px; left: 34px; padding: 6px 14px; background: var(--gold); color: #17110a; font-size: 10px; font-weight: 900; letter-spacing: .1em; }
+.plan-name { margin: 0 0 4px; color: var(--gold-light); font-size: 11px; font-weight: 900; letter-spacing: .18em; text-transform: uppercase; }
+.plan-price { margin: 14px 0 4px; font-family: Georgia, serif; font-size: 46px; color: var(--cream); font-weight: 400; }
+.plan-price span { font-size: 14px; color: var(--muted); font-family: Arial, sans-serif; }
+.plan-list { list-style: none; margin: 26px 0 32px; padding: 0; display: grid; gap: 12px; }
+.plan-list li { position: relative; padding-left: 24px; color: var(--muted); font-size: 14px; line-height: 1.55; }
+.plan-list li::before { content: "—"; position: absolute; left: 0; color: var(--gold); }
+.plan-list li.is-limited { color: #7a7469; }
+.plan-list li.is-limited::before { content: "·"; color: #7a7469; }
+.plan-card .button { width: 100%; }
+
+.faq-list { display: grid; gap: 1px; background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.08); }
+.faq-item { padding: 24px 28px; background: #0c0b0a; }
+.faq-item summary { cursor: pointer; color: var(--cream); font-size: 15.5px; font-weight: 700; list-style: none; }
+.faq-item summary::-webkit-details-marker { display: none; }
+.faq-item summary::before { content: "+ "; color: var(--gold); }
+.faq-item[open] summary::before { content: "\2013 "; }
+.faq-item p { margin: 14px 0 0; color: var(--muted); font-size: 14.5px; line-height: 1.7; }
+
+@media (max-width: 620px) {
+  .product-hero { padding: 128px 0 56px; }
+  .plan-card { padding: 32px 24px; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   * { transition: none !important; }

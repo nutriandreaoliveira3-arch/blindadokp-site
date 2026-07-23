@@ -1,374 +1,183 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EDITOR DE VÍDEO BLINDADO — a partir de R$ 37/mês</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f9f9f9;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    header {
-      background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%);
-      color: #fff;
-      padding: 40px 0;
-      text-align: center;
-      border-bottom: 4px solid #C9A227;
-    }
-
-    header h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-      color: #C9A227;
-    }
-
-    header p {
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .section {
-      background: white;
-      padding: 40px;
-      margin: 40px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .section h2 {
-      color: #C9A227;
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-
-    .section h3 {
-      color: #1C1C1C;
-      font-size: 18px;
-      margin: 20px 0 10px;
-    }
-
-    .section p {
-      margin-bottom: 15px;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-
-    .section ul {
-      margin-left: 30px;
-      margin-bottom: 15px;
-    }
-
-    .section li {
-      margin-bottom: 10px;
-    }
-
-    .cta-button {
-      display: inline-block;
-      background: #C9A227;
-      color: #1C1C1C;
-      padding: 18px 50px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 18px;
-      text-decoration: none;
-      margin: 20px 0;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .cta-button:hover {
-      background: #FFD700;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
-    }
-
-    .problem {
-      background: rgba(255, 0, 0, 0.05);
-      border-left: 4px solid #ff4444;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 4px;
-    }
-
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 20px;
-      margin: 20px 0;
-    }
-
-    .feature-box {
-      background: #f0f0f0;
-      padding: 20px;
-      border-radius: 8px;
-      border-left: 4px solid #C9A227;
-    }
-
-    .feature-box h4 {
-      color: #C9A227;
-      margin-bottom: 10px;
-    }
-
-    .plans-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 24px;
-      margin: 20px 0;
-    }
-
-    .plan-card {
-      background: #f9f9f9;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 30px 26px;
-      text-align: center;
-    }
-
-    .plan-card.plan-pro {
-      border-color: #C9A227;
-      background: rgba(201, 162, 39, 0.04);
-      position: relative;
-    }
-
-    .plan-card.plan-pro::before {
-      content: "MAIS COMPLETO";
-      position: absolute;
-      top: -13px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: #C9A227;
-      color: #1C1C1C;
-      font-size: 11px;
-      font-weight: bold;
-      letter-spacing: 0.05em;
-      padding: 5px 14px;
-      border-radius: 20px;
-    }
-
-    .plan-card h3 {
-      color: #1C1C1C;
-      font-size: 20px;
-      margin: 6px 0 4px;
-    }
-
-    .plan-price {
-      font-size: 40px;
-      color: #C9A227;
-      font-weight: bold;
-      margin: 12px 0 4px;
-    }
-
-    .plan-price span {
-      font-size: 15px;
-      color: #666;
-      font-weight: normal;
-    }
-
-    .plan-card ul {
-      text-align: left;
-      margin: 20px 0 24px;
-      padding-left: 0;
-      list-style: none;
-    }
-
-    .plan-card li {
-      padding: 6px 0 6px 26px;
-      position: relative;
-      font-size: 14.5px;
-    }
-
-    .plan-card li::before {
-      content: "✓";
-      position: absolute;
-      left: 0;
-      color: #C9A227;
-      font-weight: bold;
-    }
-
-    .plan-card li.limited::before {
-      content: "•";
-      color: #999;
-    }
-
-    .plan-card .cta-button {
-      width: 100%;
-      padding: 14px 0;
-      font-size: 15px;
-    }
-
-    .formats-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
-
-    .formats-row span {
-      background: #1C1C1C;
-      color: #C9A227;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-size: 13px;
-      font-weight: bold;
-    }
-
-    footer {
-      background: #1C1C1C;
-      color: #fff;
-      text-align: center;
-      padding: 30px 0;
-      margin-top: 60px;
-      border-top: 4px solid #C9A227;
-    }
-
-    footer p {
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 28px;
-      }
-
-      .section {
-        padding: 20px;
-      }
-
-      .plan-price {
-        font-size: 32px;
-      }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Editor de Vídeo Blindado: corte automático, legenda, capa e exportação pra Stories, Reels, TikTok, YouTube e LinkedIn — a partir de R$ 37/mês.">
+  <title>Editor de Vídeo Blindado — a partir de R$ 37/mês</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
 </head>
-
 <body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#skills">Skills profissionais</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a class="header-button" href="#planos">VER PLANOS</a>
+    </header>
 
-<header>
-  <div class="container">
-    <h1>EDITOR DE VÍDEO BLINDADO</h1>
-    <p>Uma ideia. Vários formatos. Mais presença. — edição automática pra quem grava conteúdo mas trava na edição.</p>
-  </div>
-</header>
-
-<div class="container">
-
-  <div class="section">
-    <h2>🚨 O Problema</h2>
-    <div class="problem">
-      <p><strong>Você grava o vídeo, mas edição trava tudo.</strong></p>
-      <p>Cortar silêncio, legendar, adicionar capa e exportar pra cada rede social separadamente toma horas que deveriam ir pro atendimento, não pro CapCut.</p>
-    </div>
-  </div>
-
-  <div class="section">
-    <h2>✅ O Que o Editor Já Faz</h2>
-    <div class="features">
-      <div class="feature-box">
-        <h4>✓ Corte Automático</h4>
-        <p>Detecta e corta silêncios e travas na fala, com transições suaves entre os cortes</p>
+    <section class="product-hero">
+      <div class="page-shell">
+        <p class="eyebrow reveal">EDITOR DE VÍDEO BLINDADO</p>
+        <h1 class="reveal">Uma ideia. Vários formatos.<br><em>Mais presença.</em></h1>
+        <p class="hero-lead reveal">Envia o vídeo bruto, o sistema corta o silêncio, legenda, aplica sua marca e exporta já nos formatos certos — pra você voltar pra atender, não pro CapCut.</p>
+        <div class="hero-actions reveal">
+          <a class="button button-gold" href="#planos">Ver planos <span>↓</span></a>
+          <span>A partir de R$ 37/mês</span>
+        </div>
       </div>
-      <div class="feature-box">
-        <h4>✓ Legenda Automática</h4>
-        <p>Transcrição e legenda queimada no vídeo, sem digitar nada</p>
+    </section>
+
+    <section class="manifesto-strip" aria-label="Formatos de exportação">
+      <div class="page-shell manifesto-row">
+        <span>VERTICAL · STORIES, REELS, TIKTOK</span><i>◆</i>
+        <span>HORIZONTAL · YOUTUBE</span><i>◆</i>
+        <span>QUADRADO · LINKEDIN</span>
       </div>
-      <div class="feature-box">
-        <h4>✓ Sua Logo no Vídeo</h4>
-        <p>Aplica sua marca automaticamente em todo vídeo exportado</p>
+    </section>
+
+    <section class="section products-section">
+      <div class="page-shell">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">JÁ FUNCIONA HOJE</p>
+            <h2>O editor faz o trabalho pesado por você.</h2>
+          </div>
+          <p>Cada recurso abaixo já está no ar — nada aqui é promessa de "em breve".</p>
+        </div>
+
+        <div class="feature-grid reveal">
+          <div class="feature-card">
+            <h4>Corte automático</h4>
+            <p>Detecta e corta silêncios e travas na fala, com transições suaves entre os cortes.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Legenda automática</h4>
+            <p>Transcrição e legenda queimada no vídeo, sem digitar nada.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Sua logo no vídeo</h4>
+            <p>Aplica sua marca automaticamente em todo vídeo exportado.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Trilha sonora</h4>
+            <p>Biblioteca de músicas de fundo prontas pra usar.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Capas personalizadas</h4>
+            <p>Cores e tipografia da capa configuráveis pra combinar com sua identidade.</p>
+          </div>
+          <div class="feature-card">
+            <h4>3 formatos de uma vez</h4>
+            <p>Exporta o mesmo vídeo já cortado nos formatos certos pra cada rede.</p>
+          </div>
+        </div>
       </div>
-      <div class="feature-box">
-        <h4>✓ Trilha Sonora</h4>
-        <p>Biblioteca de músicas de fundo prontas pra usar</p>
+    </section>
+
+    <section class="section skills-section" id="planos">
+      <div class="page-shell">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">INVESTIMENTO</p>
+            <h2>Dois planos, sem contrato de fidelidade.</h2>
+          </div>
+          <p>Assinatura mensal — cancela quando quiser, sem multa.</p>
+        </div>
+
+        <div class="plans-grid reveal">
+          <div class="plan-card">
+            <p class="plan-name">Básico</p>
+            <p class="plan-price">R$ 37<span>/mês</span></p>
+            <ul class="plan-list">
+              <li>Corte automático de silêncio</li>
+              <li>Legenda automática</li>
+              <li>Sua logo aplicada no vídeo</li>
+              <li class="is-limited">3 músicas de fundo</li>
+              <li class="is-limited">3 opções de cor de capa</li>
+              <li class="is-limited">3 opções de tipografia</li>
+              <li>Exportação 9:16 / 16:9 / 1:1</li>
+              <li>10 vídeos por mês</li>
+            </ul>
+            <a href="https://payfast.greenn.com.br/ebzezg3" class="button button-outline">COMEÇAR NO BÁSICO</a>
+          </div>
+          <div class="plan-card plan-card-featured">
+            <span class="plan-badge">MAIS COMPLETO</span>
+            <p class="plan-name">Pró</p>
+            <p class="plan-price">R$ 57<span>/mês</span></p>
+            <ul class="plan-list">
+              <li>Corte automático de silêncio</li>
+              <li>Legenda automática</li>
+              <li>Sua logo aplicada no vídeo</li>
+              <li>Biblioteca completa de músicas</li>
+              <li>Todas as cores de capa</li>
+              <li>Todas as opções de tipografia</li>
+              <li>Zoom (suave ou reativo à voz)</li>
+              <li>Detecção de repetição/travada (beta)</li>
+              <li>Corte por palavra-chave (beta)</li>
+              <li>Exportação 9:16 / 16:9 / 1:1</li>
+              <li>40 vídeos por mês</li>
+            </ul>
+            <a href="https://payfast.greenn.com.br/32qtany" class="button button-gold">COMEÇAR NO PRÓ</a>
+          </div>
+        </div>
       </div>
-      <div class="feature-box">
-        <h4>✓ Capas Personalizadas</h4>
-        <p>Cores e tipografia da capa configuráveis pra combinar com sua identidade</p>
+    </section>
+
+    <section class="section essence-section">
+      <div class="page-shell">
+        <div class="section-heading" style="margin-bottom:36px;">
+          <div>
+            <p class="eyebrow">PERGUNTAS FREQUENTES</p>
+            <h2>Antes de assinar.</h2>
+          </div>
+        </div>
+        <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>Preciso saber editar vídeo?</summary>
+            <p>Não. Você envia o vídeo bruto e o sistema corta, legenda e exporta sozinho.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Qual a diferença entre Básico e Pró?</summary>
+            <p>O Básico já tem tudo que edita o vídeo (corte, legenda, logo, exportação nos 3 formatos), mas limita a 3 opções de música, cor de capa e tipografia. O Pró libera a biblioteca completa dos três, além de zoom e dos recursos de corte avançado.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Dá pra trocar de plano depois?</summary>
+            <p>Sim, o plano é mensal — sem contrato de fidelidade.</p>
+          </details>
+        </div>
       </div>
-      <div class="feature-box">
-        <h4>✓ 3 Formatos de Uma Vez</h4>
-        <p>Exporta o mesmo vídeo já cortado nos formatos certos pra cada rede</p>
+    </section>
+
+    <section class="section contact-section">
+      <div class="page-shell contact-inner reveal">
+        <span class="brand-symbol large">B</span>
+        <p class="eyebrow">EDITOR DE VÍDEO BLINDADO</p>
+        <h2>Pronta pra parar de perder tempo editando?</h2>
+        <a class="button button-gold" href="#planos">VER PLANOS <span>↑</span></a>
       </div>
-    </div>
-    <div class="formats-row">
-      <span>9:16 STORIES / REELS / TIKTOK</span>
-      <span>16:9 YOUTUBE</span>
-      <span>1:1 LINKEDIN</span>
-    </div>
-  </div>
+    </section>
 
-  <div class="section">
-    <h2>💰 Planos</h2>
-    <div class="plans-grid">
-      <div class="plan-card">
-        <h3>BÁSICO</h3>
-        <div class="plan-price">R$ 37<span>/mês</span></div>
-        <ul>
-          <li>Corte automático de silêncio</li>
-          <li>Legenda automática</li>
-          <li>Sua logo aplicada no vídeo</li>
-          <li class="limited">3 músicas de fundo</li>
-          <li class="limited">3 opções de cor de capa</li>
-          <li class="limited">3 opções de tipografia</li>
-          <li>Exportação 9:16 / 16:9 / 1:1</li>
-        </ul>
-        <a href="https://payfast.greenn.com.br/ebzezg3" class="cta-button">COMEÇAR NO BÁSICO</a>
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
       </div>
-      <div class="plan-card plan-pro">
-        <h3>PRÓ</h3>
-        <div class="plan-price">R$ 57<span>/mês</span></div>
-        <ul>
-          <li>Corte automático de silêncio</li>
-          <li>Legenda automática</li>
-          <li>Sua logo aplicada no vídeo</li>
-          <li>Biblioteca completa de músicas</li>
-          <li>Todas as cores de capa</li>
-          <li>Todas as opções de tipografia</li>
-          <li>Exportação 9:16 / 16:9 / 1:1</li>
-        </ul>
-        <a href="https://payfast.greenn.com.br/32qtany" class="cta-button">COMEÇAR NO PRÓ</a>
-      </div>
-    </div>
-  </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
 
-  <div class="section">
-    <h2>❓ Perguntas Frequentes</h2>
-
-    <h3>P: Preciso saber editar vídeo?</h3>
-    <p>R: Não. Você envia o vídeo bruto e o sistema corta, legenda e exporta sozinho.</p>
-
-    <h3>P: Qual a diferença entre Básico e Pró?</h3>
-    <p>R: O Básico já tem tudo que edita o vídeo (corte, legenda, logo, exportação nos 3 formatos), mas limita a 3 opções de música, cor de capa e tipografia. O Pró libera a biblioteca completa dos três.</p>
-
-    <h3>P: Dá pra trocar de plano depois?</h3>
-    <p>R: Sim, o plano é mensal — sem contrato de fidelidade.</p>
-  </div>
-
-</div>
-
-<footer>
-  <div class="container">
-    <p><strong>EDITOR DE VÍDEO BLINDADO</strong> — Cortes, legendas, capas e exportação automática</p>
-    <p>Desenvolvido por: Andréa Oliveira | @nutriandreaoliveira</p>
-  </div>
-</footer>
-
+    <a class="mobile-cta" href="#planos">VER PLANOS</a>
+  </main>
 </body>
 </html>
