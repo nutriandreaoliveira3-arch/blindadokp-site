@@ -9,30 +9,59 @@
   var btnAvancar = document.getElementById("btnAvancar");
   var wizardResult = document.getElementById("wizardResult");
   var routePurchase = document.getElementById("routePurchase");
-  var btnComprarPro = document.getElementById("btnComprarPro");
+  var btnComprar = document.getElementById("btnComprar");
+  var freePriceLabel = document.getElementById("freePriceLabel");
   var proPriceLabel = document.getElementById("proPriceLabel");
+  var purchaseTitle = document.getElementById("purchaseTitle");
+  var purchasePrice = document.getElementById("purchasePrice");
+  var purchaseText = document.getElementById("purchaseText");
 
-  // TODO(Andréa): troque pelo link de checkout real assim que criar o produto na Greenn.
-  // Passo a passo: Greenn > Produtos > Novo produto > "Rota Blindada PRO" > R$ 97 > produto digital de acesso único.
-  // No campo de URL de agradecimento/redirecionamento após a compra, cole:
-  // https://www.blindadokp.com.br/identidade-visual.html?comprado=1
-  // Depois é só me mandar o link de checkout que aparece lá que eu troco a linha abaixo.
-  var GREENN_CHECKOUT_URL_PRO = "https://pay.greenn.com.br/SUBSTITUA-PELO-LINK-DA-GREENN-AQUI";
+  // Links de checkout reais criados na Greenn (Rota Blindada é R$ 0 — usado só pra
+  // capturar o lead formalmente antes de liberar o acesso, igual à rota paga).
+  var ROUTE_INFO = {
+    expressa: {
+      productKey: "rota_blindada",
+      priceLabel: "grátis",
+      checkoutUrl: "https://payfast.greenn.com.br/mn7psuj",
+      buttonLabel: "GARANTIR ACESSO GRÁTIS",
+      title: "Rota Blindada — <span class=\"route-price\">grátis</span>",
+      text: "Confirme seu acesso pelo checkout (sem custo) pra liberar a Rota Blindada: marca, público, visual e limites.",
+    },
+    completa: {
+      productKey: "rota_blindada_pro",
+      priceLabel: "R$ 97",
+      checkoutUrl: "https://payfast.greenn.com.br/g2bmfrg",
+      buttonLabel: "COMPRAR AGORA — R$ 97",
+      title: "Rota Blindada PRO — <span class=\"route-price\">R$ 97</span>",
+      text: "Libera as 13 etapas extras da Rota Blindada PRO: posicionamento, personalidade de marca, sistema visual completo, fotografia, canais, referências e ética. No final, o prompt sai muito mais completo.",
+    },
+  };
 
   var entitlements = [];
 
-  function temAcessoPro() {
-    return entitlements.indexOf("rota_blindada_pro") !== -1;
+  function temAcesso(rota) {
+    return entitlements.indexOf(ROUTE_INFO[rota].productKey) !== -1;
   }
 
   async function carregarAcesso() {
     entitlements = await BlindadoAuth.getEntitlements();
-    if (temAcessoPro() && proPriceLabel) {
+    if (temAcesso("expressa") && freePriceLabel) {
+      freePriceLabel.textContent = "15–20 minutos · Liberado ✓";
+    }
+    if (temAcesso("completa") && proPriceLabel) {
       proPriceLabel.textContent = "45–75 minutos · Liberado ✓";
     }
   }
 
-  if (btnComprarPro) btnComprarPro.href = GREENN_CHECKOUT_URL_PRO;
+  function mostrarPainelCompra(rota) {
+    var info = ROUTE_INFO[rota];
+    purchaseTitle.innerHTML = info.title;
+    purchaseText.textContent = info.text;
+    btnComprar.textContent = info.buttonLabel;
+    btnComprar.href = info.checkoutUrl;
+    routePurchase.hidden = false;
+    routePurchase.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }
 
   var comprasRecentesEl = document.getElementById("comprasRecentesAviso");
   if (comprasRecentesEl && new URLSearchParams(window.location.search).get("comprado") === "1") {
@@ -116,16 +145,14 @@
     if (current === 0 && steps[0].dataset.stepName === "Escolha sua rota") {
       if (!currentStepIsValid()) return;
 
-      if (getSelectedRoute() === "completa") {
-        btnAvancar.disabled = true;
-        await acessoPronto; // garante que já checamos o acesso real antes de decidir
-        btnAvancar.disabled = false;
+      var rotaEscolhida = getSelectedRoute();
+      btnAvancar.disabled = true;
+      await acessoPronto; // garante que já checamos o acesso real antes de decidir
+      btnAvancar.disabled = false;
 
-        if (!temAcessoPro()) {
-          routePurchase.hidden = false;
-          routePurchase.scrollIntoView({ behavior: "smooth", block: "nearest" });
-          return;
-        }
+      if (!temAcesso(rotaEscolhida)) {
+        mostrarPainelCompra(rotaEscolhida);
+        return;
       }
 
       routePurchase.hidden = true;
@@ -380,24 +407,28 @@
     return texto;
   }
 
-  // Esconde o card de compra se a pessoa voltar pra Rota Blindada (grátis) depois de vê-lo.
+  // Esconde o card de compra se a pessoa trocar de rota depois de vê-lo — a próxima
+  // tentativa de avançar decide de novo, pra rota certa.
   Array.prototype.slice.call(form.querySelectorAll('input[name="rota"]')).forEach(function (radio) {
     radio.addEventListener("change", function () {
-      if (radio.value === "expressa") routePurchase.hidden = true;
+      routePurchase.hidden = true;
     });
   });
 
   showStep(0);
 
-  // Acabou de criar a senha (veio de definir-senha.html) e já tem a Rota Blindada PRO:
-  // marca a rota PRO e pula direto pra etapa de contato.
+  // Acabou de criar a senha (veio de definir-senha.html): marca a rota que ela liberou
+  // e pula direto pra etapa de contato. Prioriza a PRO se ela tiver as duas.
   acessoPronto.then(function () {
-    if (temAcessoPro() && new URLSearchParams(window.location.search).get("comprado") === "1") {
-      var radioPro = form.querySelector('input[name="rota"][value="completa"]');
-      if (radioPro) radioPro.checked = true;
-      rebuildSteps();
-      current = 1;
-      showStep(current);
-    }
+    if (new URLSearchParams(window.location.search).get("comprado") !== "1") return;
+
+    var rotaLiberada = temAcesso("completa") ? "completa" : temAcesso("expressa") ? "expressa" : null;
+    if (!rotaLiberada) return;
+
+    var radio = form.querySelector('input[name="rota"][value="' + rotaLiberada + '"]');
+    if (radio) radio.checked = true;
+    rebuildSteps();
+    current = 1;
+    showStep(current);
   });
 })();
