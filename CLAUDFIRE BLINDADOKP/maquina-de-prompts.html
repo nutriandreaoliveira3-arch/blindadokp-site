@@ -1,308 +1,97 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MÁQUINA DE PROMPTS — em breve</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-      line-height: 1.6;
-      color: #333;
-      background: #f9f9f9;
-    }
-
-    .container {
-      max-width: 900px;
-      margin: 0 auto;
-      padding: 0 20px;
-    }
-
-    header {
-      background: linear-gradient(135deg, #1C1C1C 0%, #2a2a2a 100%);
-      color: #fff;
-      padding: 40px 0;
-      text-align: center;
-      border-bottom: 4px solid #C9A227;
-    }
-
-    .eyebrow-badge {
-      display: inline-block;
-      background: rgba(201, 162, 39, 0.15);
-      color: #C9A227;
-      border: 1px solid #C9A227;
-      letter-spacing: 0.1em;
-      font-size: 11px;
-      font-weight: bold;
-      padding: 6px 14px;
-      border-radius: 20px;
-      margin-bottom: 16px;
-    }
-
-    header h1 {
-      font-size: 42px;
-      margin-bottom: 10px;
-      color: #C9A227;
-    }
-
-    header p {
-      font-size: 18px;
-      color: rgba(255, 255, 255, 0.9);
-      max-width: 700px;
-      margin: 0 auto;
-    }
-
-    .section {
-      background: white;
-      padding: 40px;
-      margin: 40px 0;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    }
-
-    .section h2 {
-      color: #C9A227;
-      font-size: 28px;
-      margin-bottom: 20px;
-    }
-
-    .section p {
-      margin-bottom: 15px;
-      line-height: 1.8;
-      font-size: 16px;
-    }
-
-    .cta-button {
-      display: inline-block;
-      background: #C9A227;
-      color: #1C1C1C;
-      padding: 18px 50px;
-      border-radius: 6px;
-      font-weight: bold;
-      font-size: 18px;
-      text-decoration: none;
-      margin: 20px 0;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s ease;
-    }
-
-    .cta-button:hover {
-      background: #FFD700;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
-    }
-
-    .cta-block {
-      text-align: center;
-      padding: 40px 0;
-      background: rgba(201, 162, 39, 0.05);
-      border-radius: 8px;
-    }
-
-    .preco {
-      font-size: 44px;
-      color: #C9A227;
-      font-weight: bold;
-      text-align: center;
-      margin: 20px 0 6px;
-    }
-
-    .preco-de {
-      text-align: center;
-      color: #999;
-      text-decoration: line-through;
-      font-size: 18px;
-      margin-bottom: 4px;
-    }
-
-    .preco-nota {
-      text-align: center;
-      color: #666;
-      font-size: 14px;
-      margin-bottom: 10px;
-    }
-
-    .categorias-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 14px;
-      margin: 20px 0;
-    }
-
-    .categoria-card {
-      background: #f0f0f0;
-      padding: 16px;
-      border-radius: 8px;
-      border-left: 4px solid #C9A227;
-      font-weight: 600;
-      color: #1C1C1C;
-      font-size: 14.5px;
-    }
-
-    .tipos-row {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      margin: 20px 0;
-    }
-
-    .tipo-card {
-      background: #1C1C1C;
-      color: #C9A227;
-      padding: 14px 22px;
-      border-radius: 8px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    .preview-badge {
-      display: inline-block;
-      background: rgba(201, 162, 39, 0.15);
-      color: #a3800f;
-      border: 1px solid #C9A227;
-      letter-spacing: 0.05em;
-      font-size: 12px;
-      font-weight: bold;
-      padding: 5px 12px;
-      border-radius: 20px;
-      margin-bottom: 14px;
-    }
-
-    .prompt-preview {
-      background: #1C1C1C;
-      border-radius: 10px;
-      padding: 24px 24px 18px;
-      margin: 20px 0;
-    }
-
-    .prompt-preview-head {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 14px;
-      flex-wrap: wrap;
-    }
-
-    .prompt-preview-head span {
-      color: #C9A227;
-      font-size: 12px;
-      font-weight: bold;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-    }
-
-    .copy-btn {
-      background: transparent;
-      color: #fff;
-      border: 1px solid rgba(201, 162, 39, 0.5);
-      border-radius: 6px;
-      padding: 6px 14px;
-      font-size: 12px;
-      font-weight: bold;
-      cursor: pointer;
-    }
-
-    .copy-btn:hover {
-      background: rgba(201, 162, 39, 0.15);
-    }
-
-    .prompt-preview pre {
-      color: #eee;
-      font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-      font-size: 13px;
-      line-height: 1.7;
-      white-space: pre-wrap;
-      margin: 0;
-      max-height: 380px;
-      overflow-y: auto;
-    }
-
-    .prompt-note {
-      color: #777;
-      font-size: 13.5px;
-      margin-top: 14px;
-    }
-
-    footer {
-      background: #1C1C1C;
-      color: #fff;
-      text-align: center;
-      padding: 30px 0;
-      margin-top: 60px;
-      border-top: 4px solid #C9A227;
-    }
-
-    footer p {
-      margin-bottom: 10px;
-    }
-
-    @media (max-width: 768px) {
-      header h1 {
-        font-size: 28px;
-      }
-
-      .section {
-        padding: 20px;
-      }
-
-      .preco {
-        font-size: 34px;
-      }
-    }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Biblioteca de prompts prontos por profissão da saúde — postagem, carrossel e identidade visual. Copie, cole e use.">
+  <title>Máquina de Prompts — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
 </head>
-
 <body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="index.html#produtos">Produtos</a>
+        <a href="index.html#skills">Skills profissionais</a>
+        <a href="index.html#contato">Contato</a>
+      </nav>
+      <a class="header-button" href="#biblioteca">VER BIBLIOTECA</a>
+    </header>
 
-<header>
-  <div class="container">
-    <span class="eyebrow-badge">EM DESENVOLVIMENTO</span>
-    <h1>MÁQUINA DE PROMPTS</h1>
-    <p>O prompt certo pra cada tarefa — biblioteca organizada por profissão da saúde, pronta pra postar, carrossel e agora também identidade visual.</p>
-  </div>
-</header>
-
-<div class="container">
-
-  <div class="section">
-    <h2>O Que Está Sendo Construído</h2>
-    <p>Uma biblioteca prática de prompts prontos, organizada por categoria de profissão de saúde — sem precisar adaptar nada, só copiar, colar e usar.</p>
-    <h3 style="margin-top:24px;color:#1C1C1C;">Categorias por profissão</h3>
-    <div class="categorias-grid">
-      <div class="categoria-card">Nutricionista</div>
-      <div class="categoria-card">Fisioterapeuta</div>
-      <div class="categoria-card">Dentista</div>
-      <div class="categoria-card">Médico(a)</div>
-      <div class="categoria-card">+ outras profissões da saúde</div>
-    </div>
-    <h3 style="margin-top:24px;color:#1C1C1C;">Tipos de conteúdo</h3>
-    <div class="tipos-row">
-      <span class="tipo-card">POSTAGEM</span>
-      <span class="tipo-card">CARROSSEL</span>
-      <span class="tipo-card">IDENTIDADE VISUAL</span>
-    </div>
-  </div>
-
-  <div class="section">
-    <span class="preview-badge">PRÉVIA GRÁTIS</span>
-    <h2>Um prompt de identidade visual, de graça</h2>
-    <p>Este é um dos prompts que vão estar prontos na Máquina de Prompts. Ele pega um manual de identidade visual já pronto (o seu, ou o gerado a partir do <strong>Documento Mestre de Identidade Visual</strong>) e transforma em uma página de marca de verdade — cores, fontes, botões e tudo mais aplicados.</p>
-    <p style="color:#666;font-size:14px;">Funciona em qualquer app de IA que constrói páginas a partir de um prompt — Lovable, v0, Bolt.new, Replit ou similar. A maioria tem um plano gratuito suficiente para gerar essa primeira versão.</p>
-
-    <div class="prompt-preview">
-      <div class="prompt-preview-head">
-        <span>prompt · aplicar identidade em um app de ia</span>
-        <button class="copy-btn" onclick="copiarPromptIdentidade(this)">Copiar</button>
+    <section class="product-hero">
+      <div class="page-shell">
+        <p class="eyebrow reveal">MÁQUINA DE PROMPTS</p>
+        <h1 class="reveal">O prompt certo<br><em>pra cada tarefa.</em></h1>
+        <p class="hero-lead reveal">Biblioteca de prompts prontos, organizada por profissão da saúde e por tipo de conteúdo — postagem, carrossel e identidade visual. Sem precisar adaptar nada: copia, cola e usa.</p>
+        <div class="hero-actions reveal">
+          <a class="button button-gold" href="#biblioteca">Ver biblioteca <span>↓</span></a>
+          <span>R$ 97 de lançamento · depois R$ 197</span>
+        </div>
       </div>
-      <pre id="promptIdentidadeVisual">ATUE COMO DIRETOR(A) DE ARTE E DESENVOLVEDOR(A) FRONT-END SÊNIOR.
+    </section>
+
+    <section class="manifesto-strip" aria-label="Categorias">
+      <div class="page-shell manifesto-row">
+        <span>NUTRICIONISTA · FISIOTERAPEUTA · DENTISTA · MÉDICO(A)</span><i>◆</i>
+        <span>POSTAGEM · CARROSSEL · IDENTIDADE VISUAL</span>
+      </div>
+    </section>
+
+    <section class="section products-section">
+      <div class="page-shell">
+        <div class="section-heading reveal">
+          <div>
+            <p class="eyebrow">O QUE TEM DENTRO</p>
+            <h2>Uma biblioteca prática, por categoria.</h2>
+          </div>
+          <p>Nada de adaptar prompt genérico — cada um já nasce pensado pra profissão e pro formato certo.</p>
+        </div>
+
+        <div class="feature-grid reveal">
+          <div class="feature-card">
+            <h4>Por profissão</h4>
+            <p>Nutricionista, fisioterapeuta, dentista, médico(a) e outras profissões da saúde.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Postagem</h4>
+            <p>Prompts prontos pra gerar legendas e posts educativos, sem soar genérico.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Carrossel</h4>
+            <p>Estrutura de capa, slides e legenda pronta pra copiar e adaptar ao seu tema.</p>
+          </div>
+          <div class="feature-card">
+            <h4>Identidade visual</h4>
+            <p>Inclui o prompt de aplicar sua identidade em um app de IA — veja a prévia abaixo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section skills-section">
+      <div class="page-shell">
+        <div class="section-heading reveal" style="margin-bottom:36px;">
+          <div>
+            <p class="eyebrow">PRÉVIA GRÁTIS</p>
+            <h2>Um prompt de identidade visual, de graça.</h2>
+          </div>
+          <p>Este é um dos prompts que estão dentro da Máquina de Prompts — pra você já sentir a qualidade antes de comprar.</p>
+        </div>
+
+        <p style="color:var(--muted);font-size:14.5px;max-width:70ch;margin:0 0 8px;">Pega um manual de identidade visual já pronto (o seu, ou o gerado pelo <a href="identidade-visual.html" style="color:var(--gold-light);">Documento Mestre de Identidade Visual</a>) e transforma em uma página de marca de verdade — cores, fontes, botões e tudo mais aplicados. Funciona em qualquer app de IA que constrói páginas a partir de um prompt: Lovable, v0, Bolt.new, Replit ou similar.</p>
+
+        <div class="result-prompt">
+          <div class="result-prompt-head">
+            <span>prompt · aplicar identidade em um app de ia</span>
+            <button type="button" class="copy-btn" id="btnCopiarPreview">Copiar</button>
+          </div>
+          <pre id="promptIdentidadeVisual">ATUE COMO DIRETOR(A) DE ARTE E DESENVOLVEDOR(A) FRONT-END SÊNIOR.
 
 Leia o manual de identidade visual anexado e transforme as respostas em um design system original e utilizável. Se houver um manual de identidade gerado anteriormente, ele tem prioridade sobre preferências vagas.
 
@@ -326,42 +115,84 @@ Construa o tipo de projeto indicado pelo usuário. Se não houver indicação, c
 
 ENTREGA
 Mostre a estrutura criada, os tokens principais, os componentes, as decisões assumidas e os pontos que ainda exigem logo vetorial, fotos reais ou validação humana. Não altere funcionalidades existentes que não sejam necessárias para aplicar a identidade visual.</pre>
-    </div>
-    <p class="prompt-note">Sem manual de identidade ainda? O Documento Mestre de Identidade Visual gera esse manual antes deste passo.</p>
-  </div>
+        </div>
+      </div>
+    </section>
 
-  <div class="section">
-    <h2>💰 Preço Previsto de Lançamento</h2>
-    <div class="cta-block">
-      <div class="preco">R$ 97</div>
-      <p class="preco-nota">Preço de lançamento para os primeiros compradores</p>
-      <p class="preco-de">Depois: R$ 197</p>
-      <p style="max-width:520px;margin:16px auto 0;color:#777;font-size:13.5px;">
-        Produto ainda em desenvolvimento — preço e data de lançamento podem mudar até o dia do lançamento oficial.
-      </p>
-      <a href="mailto:contato@blindadokp.com.br?subject=Quero%20ser%20avisado(a)%20do%20lan%C3%A7amento%20da%20M%C3%A1quina%20de%20Prompts" class="cta-button">QUERO SER AVISADO(A) DO LANÇAMENTO</a>
-    </div>
-  </div>
+    <section class="section products-section" id="biblioteca">
+      <div class="page-shell" style="max-width:760px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:28px;">
+          <p class="eyebrow">SUA BIBLIOTECA</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Acesso completo</h2>
+        </div>
 
-</div>
+        <p id="comprasRecentesAviso" class="route-purchase-note" style="margin-bottom:20px;" hidden>
+          Compra confirmada! Se ainda não criou sua senha, confira o e-mail que te enviamos — depois disso é só entrar que sua biblioteca já aparece liberada aqui.
+        </p>
 
-<footer>
-  <div class="container">
-    <p><strong>MÁQUINA DE PROMPTS</strong> — Prompts prontos por profissão da saúde</p>
-    <p>Desenvolvido por: Andréa Oliveira | @nutriandreaoliveira</p>
-  </div>
-</footer>
+        <div class="route-purchase reveal" id="comprarBloco">
+          <p class="route-purchase-title">Máquina de Prompts — <span class="route-price">R$ 97</span></p>
+          <p class="route-purchase-text">Acesso completo à biblioteca de prompts, organizada por profissão e por tipo de conteúdo. Preço de lançamento pros primeiros compradores — depois sobe pra R$ 197.</p>
+          <a class="button button-gold" id="btnComprar" href="#" target="_blank" rel="noopener noreferrer">COMPRAR AGORA — R$ 97</a>
+          <p class="route-purchase-note">Depois de comprar, você recebe um e-mail pra criar sua senha. Depois disso, é só entrar que a biblioteca já fica liberada — inclusive em visitas futuras.</p>
+          <p class="route-purchase-note">Já comprou e já tem senha? <a href="login.html?proximo=maquina-de-prompts.html" style="color:var(--gold-light);">Entrar</a></p>
+        </div>
 
-<script>
-function copiarPromptIdentidade(btn) {
-  var texto = document.getElementById('promptIdentidadeVisual').innerText;
-  navigator.clipboard.writeText(texto).then(function () {
-    var original = btn.textContent;
-    btn.textContent = 'Copiado';
-    setTimeout(function () { btn.textContent = original; }, 1600);
-  });
-}
-</script>
+        <div id="bibliotecaBloco" class="reveal" hidden>
+          <div id="bibliotecaConteudo"></div>
+        </div>
+      </div>
+    </section>
 
+    <section class="section essence-section">
+      <div class="page-shell">
+        <div class="section-heading" style="margin-bottom:36px;">
+          <div>
+            <p class="eyebrow">PERGUNTAS FREQUENTES</p>
+            <h2>Antes de comprar.</h2>
+          </div>
+        </div>
+        <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>Os prompts servem só pra nutricionista?</summary>
+            <p>Não. A biblioteca é organizada por profissão da saúde — nutricionista, fisioterapeuta, dentista, médico(a) e outras — cada uma com prompts pensados pro seu contexto.</p>
+          </details>
+          <details class="faq-item">
+            <summary>Preciso saber usar alguma IA específica?</summary>
+            <p>Não. Os prompts funcionam em qualquer IA de conversa — ChatGPT, Claude, Gemini ou similar. Você só copia e cola.</p>
+          </details>
+          <details class="faq-item">
+            <summary>O acesso é vitalício?</summary>
+            <p>Sim — é uma compra única, sem mensalidade. Novos prompts adicionados à biblioteca ficam disponíveis pra quem já comprou.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <section class="section contact-section">
+      <div class="page-shell contact-inner reveal">
+        <span class="brand-symbol large">B</span>
+        <p class="eyebrow">MÁQUINA DE PROMPTS</p>
+        <h2>O prompt certo, sempre à mão.</h2>
+        <a class="button button-gold" href="#biblioteca">VER BIBLIOTECA <span>↑</span></a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+
+    <a class="mobile-cta" href="#biblioteca">VER BIBLIOTECA</a>
+  </main>
+
+  <script src="js/auth-shared.js" defer></script>
+  <script src="js/maquina-de-prompts.js" defer></script>
 </body>
 </html>
