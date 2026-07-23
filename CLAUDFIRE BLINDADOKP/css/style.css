@@ -245,6 +245,26 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
 }
 .choice-option input:checked + span { border-color: var(--gold); color: var(--gold-light); background: rgba(202,163,74,.1); }
 .choice-option input:focus-visible + span { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+.choice-option input:disabled + span { opacity: .35; cursor: not-allowed; }
+.choice-hint { margin: -4px 0 2px; color: var(--muted); font-size: 12.5px; }
+
+.route-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
+.route-option { position: relative; }
+.route-option input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.route-option span {
+  display: block; padding: 26px 24px; border: 1px solid rgba(255,255,255,.16); border-radius: 8px;
+  cursor: pointer; transition: border-color .2s ease, background .2s ease;
+}
+.route-option input:checked + span { border-color: var(--gold); background: radial-gradient(circle at 85% 10%, rgba(202,163,74,.14), transparent 40%), rgba(202,163,74,.06); }
+.route-option input:focus-visible + span { outline: 2px solid var(--gold-light); outline-offset: 2px; }
+.route-option em { display: block; margin-bottom: 8px; color: var(--gold-light); font-style: normal; font-size: 10.5px; font-weight: 900; letter-spacing: .12em; text-transform: uppercase; }
+.route-option strong { display: block; margin-bottom: 8px; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: var(--cream); }
+.route-option p { margin: 0; color: var(--muted); font-size: 13.5px; line-height: 1.6; }
+
+.axis-row { display: grid; grid-template-columns: 90px 1fr 90px; align-items: center; gap: 14px; }
+.axis-row span { font-size: 12.5px; color: var(--muted); }
+.axis-row span:last-child { text-align: right; }
+.axis-slider { width: 100%; accent-color: var(--gold); }
 
 .wizard-actions { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 6px; }
 .btn-back { min-height: 52px; padding: 0 22px; border: 1px solid rgba(255,255,255,.2); background: transparent; color: var(--muted); font-size: 11px; font-weight: 900; letter-spacing: .11em; cursor: pointer; }
