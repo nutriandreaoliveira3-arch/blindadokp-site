@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Responda 20 perguntas rápidas e receba um prompt pronto pra gerar sua identidade visual completa em qualquer IA — grátis, sem baixar nada.">
+  <meta name="description" content="Responda perguntas objetivas e receba um prompt pronto pra gerar sua identidade visual completa em qualquer IA — grátis, sem baixar nada. Rota rápida ou rota completa.">
   <title>Documento Mestre de Identidade Visual — BlindadoKP</title>
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="assets/site.webmanifest">
@@ -28,10 +28,10 @@
       <div class="page-shell">
         <p class="eyebrow reveal">FERRAMENTA GRÁTIS</p>
         <h1 class="reveal">Documento Mestre<br><em>de Identidade Visual</em></h1>
-        <p class="hero-lead reveal">Responda perguntas objetivas sobre sua marca e receba, no final, um prompt pronto — já com suas respostas dentro — pra colar em qualquer IA e sair com paleta, tipografia, logo e regras de uso completas.</p>
+        <p class="hero-lead reveal">Responda perguntas objetivas sobre sua marca e receba, no final, um prompt pronto — já com suas respostas dentro — pra colar em qualquer IA e sair com paleta, tipografia, logo e regras de uso completas. Escolha a rota rápida ou a rota completa.</p>
         <div class="hero-actions reveal">
           <a class="button button-gold" href="#comecar">Começar agora <span>↓</span></a>
-          <span>Leva de 15 a 20 minutos</span>
+          <span>Rota Expressa: 15–20 min · Rota Completa: 45–75 min</span>
         </div>
       </div>
     </section>
@@ -52,18 +52,27 @@
         </div>
 
         <form id="wizardForm" class="reveal" novalidate>
-          <div class="wizard-progress" aria-hidden="true">
-            <div class="wizard-progress-step is-active" data-step-dot="0"></div>
-            <div class="wizard-progress-step" data-step-dot="1"></div>
-            <div class="wizard-progress-step" data-step-dot="2"></div>
-            <div class="wizard-progress-step" data-step-dot="3"></div>
-            <div class="wizard-progress-step" data-step-dot="4"></div>
-          </div>
-          <p class="wizard-step-label">Etapa <strong><span id="stepAtual">1</span> de 5</strong> — <span id="stepNome">Contato</span></p>
+          <div class="wizard-progress" id="wizardProgress" aria-hidden="true"></div>
+          <p class="wizard-step-label" id="wizardStepLabel"></p>
 
           <div class="wizard-card">
 
-            <fieldset class="wizard-fieldset is-active" data-step="0">
+            <fieldset class="wizard-fieldset is-active" data-route="all" data-step-name="Escolha sua rota">
+              <h3>Qual rota combina com seu momento?</h3>
+              <p class="step-intro">As duas levam ao mesmo tipo de prompt final; o que muda é a profundidade estratégica.</p>
+              <div class="route-grid" role="radiogroup" aria-label="Rota">
+                <label class="route-option">
+                  <input type="radio" name="rota" value="expressa" required>
+                  <span><em>15–20 minutos</em><strong>Rota Expressa</strong><p>O essencial pra sair com uma primeira identidade coerente: marca, público, visual e limites.</p></span>
+                </label>
+                <label class="route-option">
+                  <input type="radio" name="rota" value="completa">
+                  <span><em>45–75 minutos</em><strong>Rota Completa</strong><p>Tudo da Expressa + posicionamento, personalidade de marca, sistema visual detalhado, aplicações e ética.</p></span>
+                </label>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="all" data-step-name="Contato">
               <h3>Quem está preenchendo?</h3>
               <p class="step-intro">Pra te enviar o resultado e, se quiser, avisar a gente que você preencheu.</p>
 
@@ -81,7 +90,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="wizard-fieldset" data-step="1">
+            <fieldset class="wizard-fieldset" data-route="all" data-step-name="Sua marca">
               <h3>Sua marca</h3>
 
               <div class="field">
@@ -110,7 +119,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="wizard-fieldset" data-step="2">
+            <fieldset class="wizard-fieldset" data-route="all" data-step-name="Personalidade e visual">
               <h3>Personalidade e visual</h3>
 
               <div class="field">
@@ -150,7 +159,7 @@
               </div>
             </fieldset>
 
-            <fieldset class="wizard-fieldset" data-step="3">
+            <fieldset class="wizard-fieldset" data-route="all" data-step-name="Aplicações e limites">
               <h3>Aplicações e limites</h3>
 
               <div class="field">
@@ -180,8 +189,8 @@
               </div>
             </fieldset>
 
-            <fieldset class="wizard-fieldset" data-step="4">
-              <h3>Última pergunta</h3>
+            <fieldset class="wizard-fieldset" data-route="all" data-step-name="Última pergunta">
+              <h3>Última pergunta da rota Expressa</h3>
 
               <div class="field">
                 <label>Nível de liberdade para a IA</label>
@@ -190,6 +199,474 @@
                   <label class="choice-option"><input type="radio" name="liberdade" value="Proponha melhorias"><span>Proponha melhorias</span></label>
                   <label class="choice-option"><input type="radio" name="liberdade" value="Decida por mim o que faltar"><span>Decida por mim o que faltar</span></label>
                 </div>
+              </div>
+            </fieldset>
+
+            <!-- ROTA COMPLETA — a partir daqui, só aparece pra quem escolheu "completa" -->
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Negócio e posicionamento">
+              <h3>Negócio e posicionamento</h3>
+
+              <div class="field">
+                <label for="comp_nome_completo">Nome completo do profissional, empresa ou projeto</label>
+                <input type="text" id="comp_nome_completo" name="comp_nome_completo" required>
+              </div>
+              <div class="field">
+                <label for="comp_nome_curto">Nome curto, sigla ou assinatura desejada</label>
+                <p class="hint">Ex.: nome + especialidade; iniciais; slogan curto.</p>
+                <input type="text" id="comp_nome_curto" name="comp_nome_curto">
+              </div>
+              <div class="field">
+                <label for="comp_local">Cidade, região e forma de atendimento</label>
+                <p class="hint">Presencial, online, nacional, internacional ou híbrido.</p>
+                <input type="text" id="comp_local" name="comp_local" required>
+              </div>
+              <div class="field">
+                <label for="comp_historia">História resumida da marca</label>
+                <p class="hint">Como começou, por que existe e qual momento vive hoje.</p>
+                <textarea id="comp_historia" name="comp_historia" required></textarea>
+              </div>
+              <div class="field">
+                <label for="comp_missao">Missão em uma frase</label>
+                <input type="text" id="comp_missao" name="comp_missao" required>
+              </div>
+              <div class="field">
+                <label for="comp_diferencial">Principal diferencial</label>
+                <p class="hint">O que você faz de forma diferente, mais segura, mais humana, mais rápida ou mais especializada?</p>
+                <textarea id="comp_diferencial" name="comp_diferencial" required></textarea>
+              </div>
+              <div class="field">
+                <label for="comp_portfolio">Principais serviços ou produtos, em ordem de prioridade</label>
+                <textarea id="comp_portfolio" name="comp_portfolio" required></textarea>
+              </div>
+              <div class="field">
+                <label>Faixa de posicionamento</label>
+                <div class="choice-grid" role="radiogroup" aria-label="Faixa de posicionamento">
+                  <label class="choice-option"><input type="radio" name="comp_faixa" value="Acessível" required><span>Acessível</span></label>
+                  <label class="choice-option"><input type="radio" name="comp_faixa" value="Intermediária"><span>Intermediária</span></label>
+                  <label class="choice-option"><input type="radio" name="comp_faixa" value="Premium"><span>Premium</span></label>
+                  <label class="choice-option"><input type="radio" name="comp_faixa" value="Luxo"><span>Luxo</span></label>
+                  <label class="choice-option"><input type="radio" name="comp_faixa" value="Ainda não definido"><span>Ainda não definido</span></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Público e percepção">
+              <h3>Público e percepção</h3>
+
+              <div class="field">
+                <label for="comp_cliente_ideal">Descreva o cliente ideal como uma pessoa real</label>
+                <p class="hint">Idade, rotina, momento de vida, prioridades, medos e desejos.</p>
+                <textarea id="comp_cliente_ideal" name="comp_cliente_ideal" required></textarea>
+              </div>
+              <div class="field">
+                <label for="comp_dor">Qual problema faz essa pessoa procurar você</label>
+                <textarea id="comp_dor" name="comp_dor" required></textarea>
+              </div>
+              <div class="field">
+                <label for="comp_sentimento">O que ela deseja sentir ao encontrar sua marca</label>
+                <p class="hint">Ex.: alívio, segurança, esperança, exclusividade, energia, clareza.</p>
+                <input type="text" id="comp_sentimento" name="comp_sentimento" required>
+              </div>
+              <div class="field">
+                <label for="comp_gatilhos">O que gera confiança nesse público</label>
+                <p class="hint">Ex.: credenciais, linguagem simples, método, resultados, tradição, tecnologia.</p>
+                <input type="text" id="comp_gatilhos" name="comp_gatilhos" required>
+              </div>
+              <div class="field">
+                <label for="comp_nao_publico">Quem não é seu público</label>
+                <p class="hint">Ajuda a evitar uma identidade genérica.</p>
+                <input type="text" id="comp_nao_publico" name="comp_nao_publico">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Essência e personalidade">
+              <h3>Essência e personalidade</h3>
+
+              <div class="field">
+                <label for="comp_valores">Cinco valores inegociáveis</label>
+                <p class="hint">Ex.: ética, ciência, inovação, acolhimento, transparência.</p>
+                <input type="text" id="comp_valores" name="comp_valores" required>
+              </div>
+              <div class="field">
+                <label for="comp_personalidade">A personalidade da marca em uma frase</label>
+                <p class="hint">Ex.: "Uma especialista segura, atual e acolhedora que explica sem complicar."</p>
+                <input type="text" id="comp_personalidade" name="comp_personalidade" required>
+              </div>
+              <div class="field">
+                <label>Posicione a marca nos eixos abaixo</label>
+                <p class="hint">Arraste pro lado que mais combina. Deixar no meio também é uma resposta válida.</p>
+                <div class="axis-row"><span>Formal</span><input type="range" min="0" max="100" value="50" name="eixo_formal_proxima" class="axis-slider"><span>Próxima</span></div>
+                <div class="axis-row"><span>Clássica</span><input type="range" min="0" max="100" value="50" name="eixo_classica_moderna" class="axis-slider"><span>Moderna</span></div>
+                <div class="axis-row"><span>Discreta</span><input type="range" min="0" max="100" value="50" name="eixo_discreta_expressiva" class="axis-slider"><span>Expressiva</span></div>
+                <div class="axis-row"><span>Suave</span><input type="range" min="0" max="100" value="50" name="eixo_suave_forte" class="axis-slider"><span>Forte</span></div>
+                <div class="axis-row"><span>Acessível</span><input type="range" min="0" max="100" value="50" name="eixo_acessivel_exclusiva" class="axis-slider"><span>Exclusiva</span></div>
+                <div class="axis-row"><span>Técnica</span><input type="range" min="0" max="100" value="50" name="eixo_tecnica_emocional" class="axis-slider"><span>Emocional</span></div>
+              </div>
+              <div class="field">
+                <label>Arquétipos que mais combinam</label>
+                <p class="choice-hint">Escolha no máximo dois.</p>
+                <div class="choice-grid" data-max="2" id="arquetiposGrid">
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Sábio (conhecimento)"><span>Sábio — conhecimento</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Cuidador (proteção)"><span>Cuidador — proteção</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Criador (originalidade)"><span>Criador — originalidade</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Governante (excelência)"><span>Governante — excelência</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Herói (superação)"><span>Herói — superação</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Explorador (liberdade)"><span>Explorador — liberdade</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Pessoa comum (proximidade)"><span>Pessoa comum — proximidade</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Mago (transformação)"><span>Mago — transformação</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Inocente (leveza)"><span>Inocente — leveza</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Amante (conexão)"><span>Amante — conexão</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Rebelde (ruptura)"><span>Rebelde — ruptura</span></label>
+                  <label class="choice-option"><input type="checkbox" name="comp_arquetipos" value="Bobo (diversão)"><span>Bobo — diversão</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="comp_palavras_proibidas">Três palavras proibidas para descrever a marca</label>
+                <input type="text" id="comp_palavras_proibidas" name="comp_palavras_proibidas">
+              </div>
+              <div class="field">
+                <label for="comp_slogan">Slogan atual ou ideia de mensagem central (opcional)</label>
+                <p class="hint">Se não tiver, a IA sugere opções depois.</p>
+                <input type="text" id="comp_slogan" name="comp_slogan">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Direção estética e cores">
+              <h3>Direção estética e cores</h3>
+
+              <div class="field">
+                <label>Nível de simplicidade visual</label>
+                <p class="hint">1 = muito limpa · 5 = rica em detalhes.</p>
+                <div class="axis-row"><span>Muito limpa</span><input type="range" min="1" max="5" value="3" name="vis_simplicidade" class="axis-slider"><span>Rica em detalhes</span></div>
+              </div>
+              <div class="field">
+                <label for="vis_primeira_impressao">Sensação que a primeira impressão deve causar</label>
+                <input type="text" id="vis_primeira_impressao" name="vis_primeira_impressao" required>
+              </div>
+              <div class="field">
+                <label for="vis_evitar_estilos">Estilos que devem ser evitados</label>
+                <p class="hint">Ex.: neon, retrô, delicado demais, corporativo frio, infantil, esotérico.</p>
+                <input type="text" id="vis_evitar_estilos" name="vis_evitar_estilos">
+              </div>
+              <div class="field">
+                <label for="cor_principal">Cor principal desejada e por quê</label>
+                <input type="text" id="cor_principal" name="cor_principal">
+              </div>
+              <div class="field">
+                <label for="cores_secundarias">Cores secundárias desejadas</label>
+                <input type="text" id="cores_secundarias" name="cores_secundarias">
+              </div>
+              <div class="field">
+                <label for="cores_destaque">Cores de destaque</label>
+                <p class="hint">Usadas em botões, chamadas, detalhes e ações.</p>
+                <input type="text" id="cores_destaque" name="cores_destaque">
+              </div>
+              <div class="field">
+                <label for="cores_fundos">Preferência de fundos</label>
+                <p class="hint">Claro, escuro, alternado ou decida por mim.</p>
+                <input type="text" id="cores_fundos" name="cores_fundos">
+              </div>
+              <div class="field">
+                <label for="cores_obrigatorias">Existe cor obrigatória por uniforme, espaço, produto ou marca atual? (opcional)</label>
+                <input type="text" id="cores_obrigatorias" name="cores_obrigatorias">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Tipografia">
+              <h3>Tipografia</h3>
+
+              <div class="field">
+                <label for="tipo_sensacao">Sensação desejada nas letras</label>
+                <p class="hint">Ex.: autoridade, leveza, luxo, tecnologia, proximidade, energia.</p>
+                <input type="text" id="tipo_sensacao" name="tipo_sensacao" required>
+              </div>
+              <div class="field">
+                <label>Família visual preferida</label>
+                <div class="choice-grid" role="radiogroup" aria-label="Família visual">
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Serifada (clássica/editorial)" required><span>Serifada</span></label>
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Sem serifa (limpa/moderna)"><span>Sem serifa</span></label>
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Geométrica (tecnológica)"><span>Geométrica</span></label>
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Humanista (próxima)"><span>Humanista</span></label>
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Manuscrita (uso pontual)"><span>Manuscrita</span></label>
+                  <label class="choice-option"><input type="radio" name="tipo_familia" value="Decida por mim"><span>Decida por mim</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="tipo_peso">Preferência de peso e presença</label>
+                <p class="hint">Leve, regular, forte, contraste entre títulos e textos.</p>
+                <input type="text" id="tipo_peso" name="tipo_peso">
+              </div>
+              <div class="field">
+                <label for="tipo_atual">Há alguma fonte atual que deve permanecer? (opcional)</label>
+                <input type="text" id="tipo_atual" name="tipo_atual">
+              </div>
+              <div class="field">
+                <label for="tipo_gratuita">Precisa usar apenas fontes gratuitas?</label>
+                <p class="hint">Recomendação: sim, preferencialmente Google Fonts.</p>
+                <input type="text" id="tipo_gratuita" name="tipo_gratuita" value="Sim, Google Fonts">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Logo e assinatura">
+              <h3>Logo e assinatura</h3>
+
+              <div class="field">
+                <label>Formato de logo preferido</label>
+                <div class="choice-grid" role="radiogroup" aria-label="Formato de logo">
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Só o nome" required><span>Só o nome</span></label>
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Iniciais/monograma"><span>Iniciais/monograma</span></label>
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Símbolo + nome"><span>Símbolo + nome</span></label>
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Selo/emblema"><span>Selo/emblema</span></label>
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Assinatura pessoal"><span>Assinatura pessoal</span></label>
+                  <label class="choice-option"><input type="radio" name="logo_formato" value="Decida por mim"><span>Decida por mim</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="logo_destaque">Nome que deve ter maior destaque</label>
+                <input type="text" id="logo_destaque" name="logo_destaque">
+              </div>
+              <div class="field">
+                <label for="logo_iniciais">Iniciais que podem formar um monograma (opcional)</label>
+                <input type="text" id="logo_iniciais" name="logo_iniciais">
+              </div>
+              <div class="field">
+                <label for="logo_simbolos">Símbolos ou elementos que fazem sentido</label>
+                <p class="hint">Ex.: formas abstratas, letras, natureza, movimento.</p>
+                <input type="text" id="logo_simbolos" name="logo_simbolos">
+              </div>
+              <div class="field">
+                <label for="logo_proibidos">Símbolos que não podem ser usados</label>
+                <input type="text" id="logo_proibidos" name="logo_proibidos">
+              </div>
+              <div class="field">
+                <label for="logo_uso">Uso prioritário do logo</label>
+                <p class="hint">Ex.: foto de perfil, fachada, bordado, site, embalagem, marca d'água.</p>
+                <input type="text" id="logo_uso" name="logo_uso">
+              </div>
+              <div class="field">
+                <label for="logo_atual">Logo atual: manter, modernizar ou substituir? (opcional)</label>
+                <input type="text" id="logo_atual" name="logo_atual">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Fotografia e direção de arte">
+              <h3>Fotografia e direção de arte</h3>
+
+              <div class="field">
+                <label for="img_sujeitos">Quem ou o que deve aparecer nas imagens</label>
+                <p class="hint">Profissional, equipe, clientes representativos, objetos, ambientes, produto.</p>
+                <input type="text" id="img_sujeitos" name="img_sujeitos" required>
+              </div>
+              <div class="field">
+                <label for="img_ambientes">Ambientes e cenários desejados</label>
+                <input type="text" id="img_ambientes" name="img_ambientes">
+              </div>
+              <div class="field">
+                <label for="img_luz">Iluminação</label>
+                <p class="hint">Natural, clara, dramática, quente, fria, estúdio, ambiente real.</p>
+                <input type="text" id="img_luz" name="img_luz">
+              </div>
+              <div class="field">
+                <label for="img_composicao">Enquadramento e composição</label>
+                <p class="hint">Close, plano médio, espaço para texto, movimento, câmera frontal, editorial.</p>
+                <input type="text" id="img_composicao" name="img_composicao">
+              </div>
+              <div class="field">
+                <label for="img_tratamento">Tratamento das fotos</label>
+                <p class="hint">Natural, alto contraste, desaturado, quente, frio, preto e branco pontual.</p>
+                <input type="text" id="img_tratamento" name="img_tratamento">
+              </div>
+              <div class="field">
+                <label for="img_restricoes">O que não pode aparecer</label>
+                <textarea id="img_restricoes" name="img_restricoes"></textarea>
+              </div>
+              <div class="field">
+                <label>Uso de imagens geradas por IA</label>
+                <div class="choice-grid" role="radiogroup" aria-label="Uso de imagens por IA">
+                  <label class="choice-option"><input type="radio" name="img_ia" value="Permitido" required><span>Permitido</span></label>
+                  <label class="choice-option"><input type="radio" name="img_ia" value="Permitido com limites"><span>Permitido com limites</span></label>
+                  <label class="choice-option"><input type="radio" name="img_ia" value="Proibido"><span>Proibido</span></label>
+                </div>
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Elementos gráficos">
+              <h3>Elementos gráficos</h3>
+
+              <div class="field">
+                <label for="graf_formas">Preferência de formas</label>
+                <p class="hint">Retas, curvas, orgânicas, geométricas, molduras, recortes.</p>
+                <input type="text" id="graf_formas" name="graf_formas">
+              </div>
+              <div class="field">
+                <label for="graf_icones">Ícones</label>
+                <p class="hint">Linha fina, preenchidos, minimalistas, técnicos, desenhados à mão ou decida por mim.</p>
+                <input type="text" id="graf_icones" name="graf_icones">
+              </div>
+              <div class="field">
+                <label for="graf_texturas">Texturas e padrões</label>
+                <p class="hint">Nenhum, papel, grão, linhas, formas orgânicas, padrão próprio.</p>
+                <input type="text" id="graf_texturas" name="graf_texturas">
+              </div>
+              <div class="field">
+                <label for="graf_assinatura">Elementos de assinatura visual</label>
+                <p class="hint">Ex.: faixa, contorno, brilho, bloco de cor, moldura, detalhe dourado.</p>
+                <input type="text" id="graf_assinatura" name="graf_assinatura">
+              </div>
+              <div class="field">
+                <label for="graf_ui">Preferência de cantos e botões</label>
+                <p class="hint">Retos, levemente arredondados, muito arredondados ou decida por mim.</p>
+                <input type="text" id="graf_ui" name="graf_ui">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Canais e materiais">
+              <h3>Canais e materiais</h3>
+
+              <div class="field">
+                <label for="app_canais">Três canais mais importantes</label>
+                <p class="hint">Ex.: Instagram, site, WhatsApp, consultório, loja, YouTube.</p>
+                <input type="text" id="app_canais" name="app_canais" required>
+              </div>
+              <div class="field">
+                <label>Materiais que precisam ser criados</label>
+                <p class="choice-hint">Marque todos os necessários.</p>
+                <div class="choice-grid">
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Foto de perfil"><span>Foto de perfil</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Capas de Reels"><span>Capas de Reels</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Carrosséis"><span>Carrosséis</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Stories"><span>Stories</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Apresentação"><span>Apresentação</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="E-book/PDF"><span>E-book/PDF</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Site"><span>Site</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Página de vendas"><span>Página de vendas</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Cartão"><span>Cartão</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Receituário"><span>Receituário</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Uniforme"><span>Uniforme</span></label>
+                  <label class="choice-option"><input type="checkbox" name="app_materiais" value="Fachada"><span>Fachada</span></label>
+                </div>
+              </div>
+              <div class="field">
+                <label for="app_conteudo">Formato de conteúdo mais frequente</label>
+                <p class="hint">Vídeo, texto, carrossel, fotografia, aula, artigo, catálogo.</p>
+                <input type="text" id="app_conteudo" name="app_conteudo">
+              </div>
+              <div class="field">
+                <label for="app_fundos">Precisa funcionar em fundo claro e escuro?</label>
+                <input type="text" id="app_fundos" name="app_fundos">
+              </div>
+              <div class="field">
+                <label for="app_pequeno">Precisa funcionar em tamanho muito pequeno?</label>
+                <p class="hint">Ex.: ícone, avatar, bordado, selo, favicon.</p>
+                <input type="text" id="app_pequeno" name="app_pequeno">
+              </div>
+              <div class="field">
+                <label for="app_lovable">Projeto que pretende criar (site, app, landing page...)</label>
+                <input type="text" id="app_lovable" name="app_lovable">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Referências e concorrência">
+              <h3>Referências e concorrência</h3>
+
+              <div class="field">
+                <label for="ref_admira">Três marcas ou perfis que admira</label>
+                <p class="hint">Diga exatamente o que gosta em cada um.</p>
+                <textarea id="ref_admira" name="ref_admira"></textarea>
+              </div>
+              <div class="field">
+                <label for="ref_concorrentes">Três concorrentes ou marcas do mesmo setor</label>
+                <p class="hint">Usado só pra diferenciar, nunca pra copiar.</p>
+                <textarea id="ref_concorrentes" name="ref_concorrentes"></textarea>
+              </div>
+              <div class="field">
+                <label for="ref_generico">O que está repetitivo ou genérico no seu mercado</label>
+                <textarea id="ref_generico" name="ref_generico"></textarea>
+              </div>
+              <div class="field">
+                <label for="ref_links">Links de Pinterest, moodboards ou imagens (opcional)</label>
+                <input type="text" id="ref_links" name="ref_links">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Ética, acessibilidade e direitos">
+              <h3>Ética, acessibilidade e uso responsável</h3>
+
+              <div class="field">
+                <label for="reg_conselho">Conselho profissional ou regras do setor</label>
+                <p class="hint">Ex.: CRN, CRM, CRO, CRP, OAB, regulamentação financeira, educacional ou publicitária.</p>
+                <input type="text" id="reg_conselho" name="reg_conselho">
+              </div>
+              <div class="field">
+                <label for="reg_proibicoes">Promessas, comparações ou conteúdos proibidos</label>
+                <textarea id="reg_proibicoes" name="reg_proibicoes"></textarea>
+              </div>
+              <div class="field">
+                <label for="reg_avisos">Avisos legais ou credenciais que devem aparecer</label>
+                <input type="text" id="reg_avisos" name="reg_avisos">
+              </div>
+              <div class="field">
+                <label for="reg_acessibilidade">Necessidades de acessibilidade</label>
+                <p class="hint">Contraste alto, letras maiores, legendas, linguagem simples.</p>
+                <input type="text" id="reg_acessibilidade" name="reg_acessibilidade" value="Contraste AA, texto mínimo 16px, legendas">
+              </div>
+              <div class="field">
+                <label for="reg_diversidade">Diversidade e representação</label>
+                <p class="hint">Quais públicos, idades, corpos, tons de pele e contextos devem ser representados?</p>
+                <input type="text" id="reg_diversidade" name="reg_diversidade">
+              </div>
+              <div class="field">
+                <label for="reg_direitos">Restrições de direitos autorais e marcas (opcional)</label>
+                <p class="hint">Elementos registrados, licenciados ou que não podem ser alterados.</p>
+                <input type="text" id="reg_direitos" name="reg_direitos">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Arquivos existentes">
+              <h3>Arquivos existentes</h3>
+
+              <div class="field">
+                <label for="arq_logos">Links ou nomes dos arquivos de logo existentes (opcional)</label>
+                <input type="text" id="arq_logos" name="arq_logos">
+              </div>
+              <div class="field">
+                <label for="arq_fotos">Fotos profissionais disponíveis (opcional)</label>
+                <input type="text" id="arq_fotos" name="arq_fotos">
+              </div>
+              <div class="field">
+                <label for="arq_manual">Manual, paleta ou fontes atuais (opcional)</label>
+                <input type="text" id="arq_manual" name="arq_manual">
+              </div>
+              <div class="field">
+                <label for="arq_materiais">Materiais que devem servir de referência (opcional)</label>
+                <p class="hint">Ex.: site, apresentação, embalagem, uniforme, ambiente físico.</p>
+                <input type="text" id="arq_materiais" name="arq_materiais">
+              </div>
+            </fieldset>
+
+            <fieldset class="wizard-fieldset" data-route="completa" data-step-name="Decisão final">
+              <h3>Decisão final</h3>
+
+              <div class="field">
+                <label for="final_manter">O que obrigatoriamente deve permanecer</label>
+                <input type="text" id="final_manter" name="final_manter">
+              </div>
+              <div class="field">
+                <label for="final_mudar">O que pode mudar</label>
+                <input type="text" id="final_mudar" name="final_mudar">
+              </div>
+              <div class="field">
+                <label for="final_nunca">O que nunca deve ser usado</label>
+                <input type="text" id="final_nunca" name="final_nunca">
+              </div>
+              <div class="field">
+                <label for="final_prioridade">Qual é a prioridade número 1 desta nova identidade</label>
+                <input type="text" id="final_prioridade" name="final_prioridade" required>
+              </div>
+              <div class="field">
+                <label for="final_observacoes">Observações finais para a IA (opcional)</label>
+                <textarea id="final_observacoes" name="final_observacoes"></textarea>
               </div>
             </fieldset>
 
@@ -217,7 +694,7 @@
               <a class="button button-outline" id="btnAvisar" href="#" target="_blank" rel="noopener noreferrer">AVISAR A ANDRÉA POR E-MAIL</a>
               <a class="button button-outline" href="maquina-de-prompts.html">VER O PROMPT PRA APLICAR NO SITE →</a>
             </div>
-            <p class="result-note">O botão de avisar abre seu e-mail com um resumo já preenchido — só falta clicar em enviar. Quer aprofundar ainda mais depois que a IA responder? Peça na mesma conversa: "aprofunde com posicionamento de marca, arquétipos e regras de aplicação para todos os canais".</p>
+            <p class="result-note" id="resultNote"></p>
           </div>
         </div>
       </div>
@@ -232,6 +709,10 @@
           </div>
         </div>
         <div class="faq-list reveal">
+          <details class="faq-item">
+            <summary>Qual a diferença entre as duas rotas?</summary>
+            <p>A Expressa (15–20 min) gera uma primeira identidade coerente com o essencial: marca, público, visual e limites. A Completa (45–75 min) aprofunda posicionamento, personalidade de marca, sistema visual detalhado, aplicações, referências e ética — pra uma marca mais estratégica e pronta pra vários canais.</p>
+          </details>
           <details class="faq-item">
             <summary>Isso substitui um designer?</summary>
             <p>Não. O prompt gera uma proposta completa e coerente pra começar — mas logo final, registro de marca e originalidade ainda precisam de validação humana antes do uso comercial.</p>
