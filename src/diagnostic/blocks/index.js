@@ -6,6 +6,7 @@ const positioning = require('./positioning');
 const differentiation = require('./differentiation');
 const offer = require('./offer');
 const pricingMonetization = require('./pricing_monetization');
+const communication = require('./communication');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
@@ -14,6 +15,7 @@ const IMPLEMENTED_BLOCKS = {
   [differentiation.id]: differentiation,
   [offer.id]: offer,
   [pricingMonetization.id]: pricingMonetization,
+  [communication.id]: communication,
 };
 
 function getBlockModule(blockId) {
