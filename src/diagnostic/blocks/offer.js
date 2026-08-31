@@ -189,15 +189,26 @@ function buildQuestions(context) {
 // de IA. Implementadas aqui: regra 02 (transformação vaga, com os exemplos
 // literais dados na especificação) e regra 04 (diferencial declarado no
 // Bloco 4 mas não incorporado à oferta).
-function analyze(answers, context) {
-  const offerName =
-    answers.primary_growth_offer ||
+// Resolve o nome da oferta prioritária escolhida no Bloco 5, seja ela
+// digitada direto (answers.primary_growth_offer) ou selecionada a partir
+// das ofertas já cadastradas no Bloco 1 (answers.primary_growth_offer_id).
+// Exportada pra outros blocos (ex.: Precificação) que reaproveitam a
+// mesma oferta sem perguntar de novo.
+function resolveOfferName(offerAnswers, context) {
+  if (!offerAnswers) return null;
+  return (
+    offerAnswers.primary_growth_offer ||
     (context &&
       context.business_current &&
       Array.isArray(context.business_current.offers) &&
-      answers.primary_growth_offer_id &&
-      context.business_current.offers[Number(String(answers.primary_growth_offer_id).replace('offer_', ''))]?.offer_name) ||
-    null;
+      offerAnswers.primary_growth_offer_id &&
+      context.business_current.offers[Number(String(offerAnswers.primary_growth_offer_id).replace('offer_', ''))]?.offer_name) ||
+    null
+  );
+}
+
+function analyze(answers, context) {
+  const offerName = resolveOfferName(answers, context);
 
   const derived = {
     offer_focus: offerName,
@@ -236,4 +247,4 @@ function analyze(answers, context) {
   return { derived, redFlags };
 }
 
-module.exports = { id: 'offer', questions: BASE_QUESTIONS, buildQuestions, analyze };
+module.exports = { id: 'offer', questions: BASE_QUESTIONS, buildQuestions, analyze, resolveOfferName };
