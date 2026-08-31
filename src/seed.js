@@ -11,6 +11,7 @@ const products = [
   { key: 'skill_topclaudia', name: 'Skill TopClaudia' },
   { key: 'skill_trafego', name: 'Skill de Tráfego' },
   { key: 'claudio_skill_redes_sociais', name: 'Claudio Skill Redes Sociais com Ética' },
+  { key: 'mentoria_blindada_pro', name: 'Mentoria Blindada Pró' },
 ];
 
 const insertProduct = db.prepare(
