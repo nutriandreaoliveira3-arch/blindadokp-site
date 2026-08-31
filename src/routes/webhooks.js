@@ -6,6 +6,34 @@ const { sendActivationEmail } = require('../lib/email');
 
 const router = express.Router();
 
+// A Mentoria Blindada Pró inclui todas as skills (ver blindadamentoria.html:
+// "você não compra a mentoria e depois compra as skills separado — tudo já
+// está dentro"), então comprar/estornar o produto-pacote propaga acesso pras
+// chaves de produto individuais.
+const BUNDLES = {
+  mentoria_blindada_pro: [
+    'rota_blindada',
+    'rota_blindada_pro',
+    'maquina_de_prompts',
+    'skill_blindada_pro',
+    'skill_topclaudia',
+    'skill_trafego',
+    'claudio_skill_redes_sociais',
+  ],
+};
+
+function bundledProductIds(product) {
+  const bundleKeys = BUNDLES[product.key];
+  if (!bundleKeys) return [product.id];
+
+  const placeholders = bundleKeys.map(() => '?').join(', ');
+  const bundled = db
+    .prepare(`SELECT id FROM products WHERE key IN (${placeholders})`)
+    .all(...bundleKeys)
+    .map((p) => p.id);
+  return [product.id, ...bundled];
+}
+
 // A Greenn permite escolher, no painel, um token de webhook (Integração e Tokens).
 // Ela pode enviá-lo como header, query string ou dentro do próprio payload —
 // por isso aceitamos qualquer uma dessas formas.
@@ -127,16 +155,17 @@ router.post('/greenn', express.json(), async (req, res) => {
     }
 
     if (product) {
-      db.prepare(
+      const grantProduct = db.prepare(
         'INSERT OR IGNORE INTO user_products (user_id, product_id) VALUES (?, ?)'
-      ).run(userId, product.id);
+      );
+      bundledProductIds(product).forEach((productId) => grantProduct.run(userId, productId));
     }
   } else if (['refunded', 'chargedback', 'refused'].includes(info.status) && existing) {
     if (product) {
-      db.prepare('DELETE FROM user_products WHERE user_id = ? AND product_id = ?').run(
-        existing.id,
-        product.id
+      const revokeProduct = db.prepare(
+        'DELETE FROM user_products WHERE user_id = ? AND product_id = ?'
       );
+      bundledProductIds(product).forEach((productId) => revokeProduct.run(existing.id, productId));
     } else {
       // Não deu pra identificar qual produto foi estornado — por segurança,
       // bloqueia a conta inteira até calibrar o matching de produto.
