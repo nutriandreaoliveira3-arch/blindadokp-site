@@ -10,6 +10,7 @@ const communication = require('./communication');
 const marketingAcquisition = require('./marketing_acquisition');
 const salesConversion = require('./sales_conversion');
 const operationsDelivery = require('./operations_delivery');
+const artificialIntelligence = require('./artificial_intelligence');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
@@ -22,6 +23,7 @@ const IMPLEMENTED_BLOCKS = {
   [marketingAcquisition.id]: marketingAcquisition,
   [salesConversion.id]: salesConversion,
   [operationsDelivery.id]: operationsDelivery,
+  [artificialIntelligence.id]: artificialIntelligence,
 };
 
 function getBlockModule(blockId) {
