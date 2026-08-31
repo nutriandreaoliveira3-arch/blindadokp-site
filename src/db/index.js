@@ -69,6 +69,25 @@ CREATE TABLE IF NOT EXISTS prompts (
   updated_at TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
+CREATE TABLE IF NOT EXISTS diagnostics (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  status TEXT NOT NULL DEFAULT 'in_progress',
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+
+CREATE TABLE IF NOT EXISTS diagnostic_blocks (
+  diagnostic_id TEXT NOT NULL REFERENCES diagnostics(id) ON DELETE CASCADE,
+  block_id TEXT NOT NULL,
+  answers TEXT NOT NULL DEFAULT '{}',
+  derived TEXT NOT NULL DEFAULT '{}',
+  red_flags TEXT NOT NULL DEFAULT '[]',
+  completed_at TEXT,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (diagnostic_id, block_id)
+);
+
 CREATE TABLE IF NOT EXISTS greenn_events (
   id TEXT PRIMARY KEY,
   sale_id TEXT,

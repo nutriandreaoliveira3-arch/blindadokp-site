@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Diagnóstico Blindado 360 — entenda seu negócio antes de decidir o próximo passo.">
+  <title>Diagnóstico Blindado 360 — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/diagnostico.css">
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="membros.html">Área de membros</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:820px;">
+
+        <div id="diagOverview">
+          <div class="section-heading reveal" style="display:block;margin-bottom:34px;">
+            <p class="eyebrow">DIAGNÓSTICO BLINDADO 360</p>
+            <h2 style="font-size:clamp(28px,4vw,40px);">Seu negócio, em 15 áreas.</h2>
+            <p style="margin-top:14px;">Antes de qualquer recomendação, a Blindada Pro precisa entender como seu negócio funciona hoje. Responda um bloco de cada vez — dá pra sair e continuar depois.</p>
+          </div>
+          <p id="diagLoading" style="color:var(--muted);">Carregando...</p>
+          <ol id="diagBlockList" class="diag-block-list" hidden></ol>
+        </div>
+
+        <div id="diagBlock" hidden>
+          <button type="button" id="diagBackBtn" class="link-back">← Voltar pros blocos</button>
+          <div class="section-heading reveal" style="display:block;margin:18px 0 8px;">
+            <p class="eyebrow" id="diagBlockEyebrow">BLOCO 1 DE 15</p>
+            <h2 id="diagBlockTitle" style="font-size:clamp(26px,4vw,36px);">Negócio Atual</h2>
+          </div>
+          <form id="diagForm"></form>
+          <p id="diagFormError" class="diag-error" hidden></p>
+          <div class="diag-form-actions">
+            <button type="button" id="diagSaveBtn" class="button button-outline">Salvar e continuar depois</button>
+            <button type="button" id="diagCompleteBtn" class="button button-gold">Concluir bloco</button>
+          </div>
+        </div>
+
+        <div id="diagDone" hidden>
+          <div class="section-heading reveal" style="display:block;margin-bottom:20px;">
+            <p class="eyebrow">✅ BLOCO CONCLUÍDO</p>
+            <h2 style="font-size:clamp(26px,4vw,36px);">Negócio Atual concluído.</h2>
+            <p style="margin-top:14px;">Já identificamos alguns sinais importantes sobre sua estrutura atual. Eles serão cruzados com as próximas áreas antes de definirmos suas prioridades.</p>
+          </div>
+          <button type="button" id="diagBackFromDoneBtn" class="button button-gold">Voltar pros blocos</button>
+        </div>
+
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script src="js/diagnostico.js"></script>
+</body>
+</html>
