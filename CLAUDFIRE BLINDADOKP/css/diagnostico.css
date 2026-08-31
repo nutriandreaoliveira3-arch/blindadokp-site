@@ -1,0 +1,147 @@
+.diag-block-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+
+.diag-block-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 22px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(145deg, #171512, #0f0e0c);
+}
+
+.diag-block-item[data-state="available"] { cursor: pointer; }
+.diag-block-item[data-state="available"]:hover { border-color: rgba(202,163,74,.5); }
+.diag-block-item[data-state="locked"] { opacity: .55; }
+
+.diag-block-num {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border: 1px solid var(--gold);
+  border-radius: 50%;
+  color: var(--gold-light);
+  font-family: Georgia, serif;
+  font-size: 14px;
+}
+
+.diag-block-item[data-completed="true"] .diag-block-num { background: var(--gold); color: #17110a; }
+
+.diag-block-name { flex: 1; color: #fff; font-size: 15px; }
+.diag-block-status { color: var(--muted); font-size: 12px; letter-spacing: .04em; text-transform: uppercase; }
+.diag-block-item[data-completed="true"] .diag-block-status { color: var(--gold-light); }
+
+.link-back {
+  background: none;
+  border: none;
+  color: var(--gold-light);
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.diag-question {
+  margin-bottom: 34px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.diag-question:last-child { border-bottom: none; }
+
+.diag-question-content {
+  display: block;
+  margin: 0 0 18px;
+  color: #fff;
+  font-family: Georgia, serif;
+  font-size: 19px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+
+.diag-field { margin-bottom: 16px; }
+
+.diag-field label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--muted);
+  font-size: 12px;
+  letter-spacing: .03em;
+}
+
+.diag-field input[type="text"],
+.diag-field input[type="number"],
+.diag-field select,
+.diag-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  background: #0e0d0b;
+  border: 1px solid rgba(255,255,255,.16);
+  color: #fff;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.diag-field textarea { min-height: 90px; resize: vertical; }
+
+.diag-field input:focus,
+.diag-field select:focus,
+.diag-field textarea:focus { outline: none; border-color: var(--gold); }
+
+.diag-choice-list { display: flex; flex-direction: column; gap: 8px; }
+
+.diag-choice-list label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid rgba(255,255,255,.1);
+  color: #e8e4dd;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.diag-choice-list input { accent-color: var(--gold); }
+
+.diag-repeatable-row {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1.4fr auto;
+  gap: 10px;
+  align-items: end;
+  margin-bottom: 12px;
+}
+
+.diag-repeatable-remove {
+  padding: 12px 14px;
+  background: none;
+  border: 1px solid rgba(255,255,255,.16);
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.diag-repeatable-add {
+  margin-top: 4px;
+  padding: 10px 16px;
+  background: none;
+  border: 1px dashed var(--gold);
+  color: var(--gold-light);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.diag-hint { margin: 8px 0 0; color: var(--muted); font-size: 12px; }
+.diag-warning { margin: 8px 0 0; color: var(--gold-light); font-size: 12px; }
+
+.diag-form-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; }
+
+/* .button-outline/.button-gold nunca tinham sido aplicadas a um <button> de
+   verdade (só a <a>), então o fundo/borda padrão do navegador aparecia. */
+main button.button { background: none; cursor: pointer; }
+main button.button-gold { background: linear-gradient(100deg, #b88b2d, #f0d482); border: none; }
+
+.diag-error { color: #e08a6f; font-size: 13px; margin: 16px 0; }
+
+@media (max-width: 640px) {
+  .diag-repeatable-row { grid-template-columns: 1fr; }
+}

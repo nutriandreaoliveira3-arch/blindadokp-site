@@ -20,6 +20,7 @@ const accessRoutes = require('./routes/access');
 const promptRoutes = require('./routes/prompts');
 const moduleRoutes = require('./routes/modules');
 const userRoutes = require('./routes/users');
+const diagnosticRoutes = require('./routes/diagnostic');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -37,6 +38,7 @@ app.use('/api/access', accessRoutes);
 app.use('/api/prompts', promptRoutes);
 app.use('/api/modules', moduleRoutes);
 app.use('/api/admin/users', userRoutes);
+app.use('/api/diagnostic', diagnosticRoutes);
 
 const webRoot = path.join(__dirname, '..', 'CLAUDFIRE BLINDADOKP');
 app.use(express.static(webRoot));
