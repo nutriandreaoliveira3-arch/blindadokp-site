@@ -12,6 +12,7 @@ const salesConversion = require('./sales_conversion');
 const operationsDelivery = require('./operations_delivery');
 const artificialIntelligence = require('./artificial_intelligence');
 const automation = require('./automation');
+const ethics = require('./ethics');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
@@ -26,6 +27,7 @@ const IMPLEMENTED_BLOCKS = {
   [operationsDelivery.id]: operationsDelivery,
   [artificialIntelligence.id]: artificialIntelligence,
   [automation.id]: automation,
+  [ethics.id]: ethics,
 };
 
 function getBlockModule(blockId) {
