@@ -8,6 +8,7 @@ const offer = require('./offer');
 const pricingMonetization = require('./pricing_monetization');
 const communication = require('./communication');
 const marketingAcquisition = require('./marketing_acquisition');
+const salesConversion = require('./sales_conversion');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
@@ -18,6 +19,7 @@ const IMPLEMENTED_BLOCKS = {
   [pricingMonetization.id]: pricingMonetization,
   [communication.id]: communication,
   [marketingAcquisition.id]: marketingAcquisition,
+  [salesConversion.id]: salesConversion,
 };
 
 function getBlockModule(blockId) {
