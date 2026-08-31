@@ -36,6 +36,22 @@ function getOrCreateDiagnostic(userId) {
   return diagnostic;
 }
 
+// Respostas dos outros blocos já respondidos, pra blocos que reaproveitam
+// contexto (ex.: Bloco 5 reutilizando as ofertas cadastradas no Bloco 1 e o
+// diferencial do Bloco 4), sem obrigar a usuária a repetir informação.
+function getDiagnosticContext(diagnosticId) {
+  const rows = db.prepare('SELECT block_id, answers FROM diagnostic_blocks WHERE diagnostic_id = ?').all(diagnosticId);
+  const context = {};
+  rows.forEach((row) => {
+    context[row.block_id] = JSON.parse(row.answers);
+  });
+  return context;
+}
+
+function resolveQuestions(blockModule, context) {
+  return blockModule.buildQuestions ? blockModule.buildQuestions(context) : blockModule.questions;
+}
+
 // GET /api/diagnostic — visão geral: os 15 blocos e o progresso da usuária.
 router.get('/', (req, res) => {
   const diagnostic = getOrCreateDiagnostic(req.user.id);
@@ -64,6 +80,7 @@ router.get('/blocks/:blockId', (req, res) => {
   }
 
   const diagnostic = getOrCreateDiagnostic(req.user.id);
+  const context = getDiagnosticContext(diagnostic.id);
   const saved = db
     .prepare('SELECT * FROM diagnostic_blocks WHERE diagnostic_id = ? AND block_id = ?')
     .get(diagnostic.id, blockModule.id);
@@ -71,7 +88,7 @@ router.get('/blocks/:blockId', (req, res) => {
   res.json({
     block: {
       id: blockModule.id,
-      questions: blockModule.questions,
+      questions: resolveQuestions(blockModule, context),
     },
     answers: saved ? JSON.parse(saved.answers) : {},
     completed: !!saved?.completed_at,
@@ -89,9 +106,9 @@ function isConditionMet(conditional, answers) {
   return target === conditional.equals;
 }
 
-function validateRequiredFields(blockModule, answers) {
+function validateRequiredFields(questions, answers) {
   const missing = [];
-  for (const question of blockModule.questions) {
+  for (const question of questions) {
     for (const field of question.fields) {
       if (!field.required) continue;
       if (field.conditional && !isConditionMet(field.conditional, answers)) continue;
@@ -128,15 +145,17 @@ router.put('/blocks/:blockId', (req, res) => {
     return res.status(400).json({ error: 'Respostas inválidas.' });
   }
 
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  const context = getDiagnosticContext(diagnostic.id);
+
   if (completed) {
-    const missing = validateRequiredFields(blockModule, answers);
+    const missing = validateRequiredFields(resolveQuestions(blockModule, context), answers);
     if (missing.length > 0) {
       return res.status(400).json({ error: 'Preencha os campos obrigatórios.', missing });
     }
   }
 
-  const diagnostic = getOrCreateDiagnostic(req.user.id);
-  const { derived, redFlags } = blockModule.analyze(answers);
+  const { derived, redFlags } = blockModule.analyze(answers, context);
 
   db.prepare(
     `INSERT INTO diagnostic_blocks (diagnostic_id, block_id, answers, derived, red_flags, completed_at, updated_at)

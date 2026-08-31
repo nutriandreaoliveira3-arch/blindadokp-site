@@ -3,11 +3,15 @@
 const businessCurrent = require('./business_current');
 const targetAudience = require('./target_audience');
 const positioning = require('./positioning');
+const differentiation = require('./differentiation');
+const offer = require('./offer');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
   [targetAudience.id]: targetAudience,
   [positioning.id]: positioning,
+  [differentiation.id]: differentiation,
+  [offer.id]: offer,
 };
 
 function getBlockModule(blockId) {
