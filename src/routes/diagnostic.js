@@ -83,6 +83,9 @@ function isConditionMet(conditional, answers) {
   if (conditional.includes !== undefined) {
     return Array.isArray(target) && target.includes(conditional.includes);
   }
+  if (conditional.oneOf !== undefined) {
+    return conditional.oneOf.includes(target);
+  }
   return target === conditional.equals;
 }
 

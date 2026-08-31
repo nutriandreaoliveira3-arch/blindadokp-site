@@ -123,6 +123,9 @@
     if (field.conditional.includes !== undefined) {
       return Array.isArray(target) && target.indexOf(field.conditional.includes) !== -1;
     }
+    if (field.conditional.oneOf !== undefined) {
+      return field.conditional.oneOf.indexOf(target) !== -1;
+    }
     return target === field.conditional.equals;
   }
 
