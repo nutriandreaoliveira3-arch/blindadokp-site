@@ -78,15 +78,20 @@ router.get('/blocks/:blockId', (req, res) => {
   });
 });
 
+function isConditionMet(conditional, answers) {
+  const target = answers[conditional.field];
+  if (conditional.includes !== undefined) {
+    return Array.isArray(target) && target.includes(conditional.includes);
+  }
+  return target === conditional.equals;
+}
+
 function validateRequiredFields(blockModule, answers) {
   const missing = [];
   for (const question of blockModule.questions) {
     for (const field of question.fields) {
       if (!field.required) continue;
-      if (field.conditional) {
-        const conditionMet = answers[field.conditional.field] === field.conditional.equals;
-        if (!conditionMet) continue;
-      }
+      if (field.conditional && !isConditionMet(field.conditional, answers)) continue;
       const value = answers[field.id];
       if (field.type === 'multiselect') {
         if (!Array.isArray(value) || value.length === 0) missing.push(field.id);

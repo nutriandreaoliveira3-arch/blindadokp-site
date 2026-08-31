@@ -119,7 +119,11 @@
 
   function isConditionMet(field) {
     if (!field.conditional) return true;
-    return fieldValue(field.conditional.field) === field.conditional.equals;
+    var target = fieldValue(field.conditional.field);
+    if (field.conditional.includes !== undefined) {
+      return Array.isArray(target) && target.indexOf(field.conditional.includes) !== -1;
+    }
+    return target === field.conditional.equals;
   }
 
   function renderForm() {
@@ -236,6 +240,7 @@
             current = current.filter(function (v) { return v !== opt.value; });
           }
           setFieldValue(field.id, current);
+          refreshConditionals();
         });
         itemLabel.appendChild(checkbox);
         itemLabel.appendChild(document.createTextNode(opt.label));
