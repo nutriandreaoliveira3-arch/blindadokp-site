@@ -14,6 +14,7 @@ const artificialIntelligence = require('./artificial_intelligence');
 const automation = require('./automation');
 const ethics = require('./ethics');
 const experienceRetention = require('./experience_retention');
+const managementMetrics = require('./management_metrics');
 
 const IMPLEMENTED_BLOCKS = {
   [businessCurrent.id]: businessCurrent,
@@ -30,6 +31,7 @@ const IMPLEMENTED_BLOCKS = {
   [automation.id]: automation,
   [ethics.id]: ethics,
   [experienceRetention.id]: experienceRetention,
+  [managementMetrics.id]: managementMetrics,
 };
 
 function getBlockModule(blockId) {
