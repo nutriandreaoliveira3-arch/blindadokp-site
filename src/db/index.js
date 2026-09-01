@@ -112,5 +112,14 @@ if (!diagnosticsColumns.includes('general_score')) {
 if (!diagnosticsColumns.includes('scores_generated_at')) {
   db.exec('ALTER TABLE diagnostics ADD COLUMN scores_generated_at TEXT');
 }
+if (!diagnosticsColumns.includes('hard_rule_flags')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN hard_rule_flags TEXT');
+}
+if (!diagnosticsColumns.includes('candidate_priorities')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN candidate_priorities TEXT');
+}
+if (!diagnosticsColumns.includes('priorities_generated_at')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN priorities_generated_at TEXT');
+}
 
 module.exports = db;

@@ -5,6 +5,7 @@ const { requireAuth } = require('../middleware/auth');
 const { BLOCK_LIST } = require('../diagnostic/blockList');
 const { getBlockModule } = require('../diagnostic/blocks');
 const { computeDiagnosticScores, allBlocksCompleted } = require('../diagnostic/services/computeScores');
+const { computeDiagnosticPriorities } = require('../diagnostic/services/computePriorities');
 
 const router = express.Router();
 
@@ -218,6 +219,32 @@ router.get('/scores', (req, res) => {
     generalScore: diagnostic.general_score,
     blockScores: diagnostic.block_scores ? JSON.parse(diagnostic.block_scores).block_scores : null,
     scoresGeneratedAt: diagnostic.scores_generated_at,
+  });
+});
+
+// POST /api/diagnostic/priorities — roda as hard rules determinísticas e o
+// motor de prioridade em cima dos scores já calculados (não chama IA).
+router.post('/priorities', (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  try {
+    const result = computeDiagnosticPriorities(diagnostic.id);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    if (err.code === 'BLOCKS_INCOMPLETE' || err.code === 'SCORES_NOT_GENERATED') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error('Erro ao calcular prioridades do diagnóstico:', err);
+    res.status(500).json({ error: 'Não foi possível calcular as prioridades agora. Tente novamente em instantes.' });
+  }
+});
+
+// GET /api/diagnostic/priorities — retorna o último resultado salvo.
+router.get('/priorities', (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  res.json({
+    hardRuleFlags: diagnostic.hard_rule_flags ? JSON.parse(diagnostic.hard_rule_flags) : null,
+    candidatePriorities: diagnostic.candidate_priorities ? JSON.parse(diagnostic.candidate_priorities) : null,
+    prioritiesGeneratedAt: diagnostic.priorities_generated_at,
   });
 });
 
