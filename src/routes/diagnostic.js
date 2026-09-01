@@ -4,6 +4,7 @@ const db = require('../db');
 const { requireAuth } = require('../middleware/auth');
 const { BLOCK_LIST } = require('../diagnostic/blockList');
 const { getBlockModule } = require('../diagnostic/blocks');
+const { computeDiagnosticScores, allBlocksCompleted } = require('../diagnostic/services/computeScores');
 
 const router = express.Router();
 
@@ -67,7 +68,13 @@ router.get('/', (req, res) => {
   }));
 
   res.json({
-    diagnostic: { id: diagnostic.id, status: diagnostic.status },
+    diagnostic: {
+      id: diagnostic.id,
+      status: diagnostic.status,
+      allBlocksCompleted: blocks.every((b) => b.completed),
+      generalScore: diagnostic.general_score,
+      scoresGeneratedAt: diagnostic.scores_generated_at,
+    },
     blocks,
   });
 });
@@ -178,6 +185,40 @@ router.put('/blocks/:blockId', (req, res) => {
   db.prepare(`UPDATE diagnostics SET updated_at = datetime('now') WHERE id = ?`).run(diagnostic.id);
 
   res.json({ ok: true, completed: !!completed });
+});
+
+// POST /api/diagnostic/scores — calcula (ou recalcula) as notas dos 15
+// blocos e a nota geral. Exige os 15 blocos concluídos. Chama a IA da
+// Anthropic (ANTHROPIC_API_KEY) só pra aplicar as rubricas já definidas —
+// não gera o relatório final ainda (isso é uma fase futura).
+router.post('/scores', async (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  try {
+    const result = await computeDiagnosticScores(diagnostic.id);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    if (err.code === 'BLOCKS_INCOMPLETE') {
+      return res.status(400).json({ error: err.message });
+    }
+    if (String(err.message || '').includes('ANTHROPIC_API_KEY')) {
+      return res.status(503).json({ error: err.message });
+    }
+    console.error('Erro ao calcular scores do diagnóstico:', err);
+    res.status(500).json({ error: 'Não foi possível calcular os scores agora. Tente novamente em instantes.' });
+  }
+});
+
+// GET /api/diagnostic/scores — retorna o último resultado de scoring salvo.
+router.get('/scores', (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  const rows = db.prepare('SELECT block_id, completed_at FROM diagnostic_blocks WHERE diagnostic_id = ?').all(diagnostic.id);
+
+  res.json({
+    allBlocksCompleted: allBlocksCompleted(rows),
+    generalScore: diagnostic.general_score,
+    blockScores: diagnostic.block_scores ? JSON.parse(diagnostic.block_scores).block_scores : null,
+    scoresGeneratedAt: diagnostic.scores_generated_at,
+  });
 });
 
 module.exports = router;

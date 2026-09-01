@@ -97,4 +97,20 @@ CREATE TABLE IF NOT EXISTS greenn_events (
 );
 `);
 
+// Migração leve: adiciona as colunas de score do Diagnóstico 360 à tabela
+// diagnostics quando ainda não existirem (bancos criados antes da Fase 9 —
+// Scoring). block_scores/general_score guardam o resultado mais recente do
+// motor de pontuação; scores_generated_at marca quando foi calculado pela
+// última vez.
+const diagnosticsColumns = db.prepare('PRAGMA table_info(diagnostics)').all().map((c) => c.name);
+if (!diagnosticsColumns.includes('block_scores')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN block_scores TEXT');
+}
+if (!diagnosticsColumns.includes('general_score')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN general_score REAL');
+}
+if (!diagnosticsColumns.includes('scores_generated_at')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN scores_generated_at TEXT');
+}
+
 module.exports = db;
