@@ -1,5 +1,6 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
+const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { sendActivationEmail } = require('../lib/email');
@@ -30,11 +31,18 @@ router.get('/products', (req, res) => {
   res.json({ products });
 });
 
-// Cadastro manual (fora do fluxo da Greenn) — venda direta ou cortesia.
+// Cadastro manual (fora do fluxo da Greenn) — venda direta ou cortesia. Se
+// "password" for informado, a conta já é criada ativa com essa senha (útil
+// quando o e-mail de ativação ainda não está configurado, ou pra criar
+// contas de teste rapidamente). Sem "password", segue o fluxo normal: fica
+// pendente até a cliente definir a senha pelo link do e-mail de ativação.
 router.post('/', async (req, res) => {
-  const { name, email, productIds } = req.body || {};
+  const { name, email, productIds, password } = req.body || {};
   if (!name || !email) {
     return res.status(400).json({ error: 'Informe nome e e-mail.' });
+  }
+  if (password && password.length < 6) {
+    return res.status(400).json({ error: 'A senha precisa ter pelo menos 6 caracteres.' });
   }
 
   const normalizedEmail = email.toLowerCase().trim();
@@ -52,19 +60,28 @@ router.post('/', async (req, res) => {
   }
 
   const id = uuidv4();
-  const activationToken = uuidv4();
-  db.prepare(
-    `INSERT INTO users (id, name, email, role, status, activation_token)
-     VALUES (?, ?, ?, 'client', 'pending', ?)`
-  ).run(id, name, normalizedEmail, activationToken);
-
   const grantProduct = db.prepare('INSERT OR IGNORE INTO user_products (user_id, product_id) VALUES (?, ?)');
-  ids.forEach((productId) => grantProduct.run(id, productId));
 
-  try {
-    await sendActivationEmail({ to: normalizedEmail, name, activationToken });
-  } catch (err) {
-    console.error(`Falha ao enviar e-mail de ativação para ${normalizedEmail}:`, err.message);
+  if (password) {
+    const passwordHash = bcrypt.hashSync(password, 10);
+    db.prepare(
+      `INSERT INTO users (id, name, email, password_hash, role, status)
+       VALUES (?, ?, ?, ?, 'client', 'active')`
+    ).run(id, name, normalizedEmail, passwordHash);
+    ids.forEach((productId) => grantProduct.run(id, productId));
+  } else {
+    const activationToken = uuidv4();
+    db.prepare(
+      `INSERT INTO users (id, name, email, role, status, activation_token)
+       VALUES (?, ?, ?, 'client', 'pending', ?)`
+    ).run(id, name, normalizedEmail, activationToken);
+    ids.forEach((productId) => grantProduct.run(id, productId));
+
+    try {
+      await sendActivationEmail({ to: normalizedEmail, name, activationToken });
+    } catch (err) {
+      console.error(`Falha ao enviar e-mail de ativação para ${normalizedEmail}:`, err.message);
+    }
   }
 
   res.status(201).json({

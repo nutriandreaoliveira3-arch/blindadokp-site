@@ -68,6 +68,26 @@
             <div id="modulosLista"></div>
           </div>
 
+          <div class="admin-block">
+            <h3 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin-bottom:18px;">Clientes</h3>
+            <form id="formCliente" class="wizard-card" style="display:grid;gap:16px;margin-bottom:20px;">
+              <div class="field"><label>Nome</label><input type="text" id="clienteNome" required></div>
+              <div class="field"><label>E-mail</label><input type="email" id="clienteEmail" required></div>
+              <div class="field">
+                <label>Senha (opcional)</label>
+                <input type="text" id="clienteSenha" placeholder="Deixe em branco para enviar e-mail de ativação">
+                <span style="color:var(--muted);font-size:12.5px;display:block;margin-top:4px;">Se preencher, a conta já é criada ativa com essa senha (útil se o e-mail de ativação ainda não estiver configurado, ou para contas de teste). Se deixar em branco, tenta enviar o e-mail de ativação normal.</span>
+              </div>
+              <div class="field">
+                <label>Produtos liberados</label>
+                <div id="clienteProdutosLista" style="display:grid;gap:8px;"></div>
+              </div>
+              <button type="submit" class="button button-gold">CADASTRAR CLIENTE</button>
+              <p id="clienteMsg" style="color:var(--muted);"></p>
+            </form>
+            <div id="clientesLista"></div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -216,6 +236,81 @@
       carregarModulos();
     });
 
+    async function carregarProdutosCliente() {
+      var res = await fetch("/api/admin/users/products", { headers: authHeaders() });
+      var data = await res.json();
+      var container = document.getElementById("clienteProdutosLista");
+      container.innerHTML = "";
+      (data.products || []).forEach(function (p) {
+        produtosPorId[p.id] = p.name;
+        var label = document.createElement("label");
+        label.style.cssText = "display:flex;align-items:center;gap:8px;font-weight:400;";
+        var checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.value = p.id;
+        checkbox.className = "cliente-produto-checkbox";
+        label.appendChild(checkbox);
+        label.appendChild(document.createTextNode(p.name));
+        container.appendChild(label);
+      });
+    }
+
+    async function carregarClientes() {
+      var res = await fetch("/api/admin/users", { headers: authHeaders() });
+      var data = await res.json();
+      var html = "";
+      (data.users || []).forEach(function (u) {
+        var produtosNomes = (u.productIds || []).map(function (id) { return produtosPorId[id] || id; }).join(", ") || "nenhum";
+        html +=
+          '<div class="admin-item" style="flex-direction:column;align-items:stretch;">' +
+          '<div style="display:flex;justify-content:space-between;align-items:flex-start;gap:16px;">' +
+          '<div class="admin-item-info"><strong>' + u.name + " (" + u.role + ")</strong>" +
+          '<span style="display:block;">' + u.email + " · status: " + u.status + "</span>" +
+          '<span style="display:block;">Produtos: ' + produtosNomes + "</span></div>" +
+          (u.status === "inactive"
+            ? '<button class="btn-delete" style="border-color:rgba(120,200,150,.5);color:#78c896;" onclick="reativarCliente(\'' + u.id + '\')">Reativar</button>'
+            : '<button class="btn-delete" onclick="revogarCliente(\'' + u.id + '\')">Revogar acesso</button>') +
+          "</div></div>";
+      });
+      document.getElementById("clientesLista").innerHTML = html || '<p style="color:var(--muted);">Nenhuma cliente cadastrada ainda.</p>';
+    }
+
+    window.revogarCliente = async function (id) {
+      if (!confirm("Revogar o acesso dessa cliente?")) return;
+      await fetch("/api/admin/users/" + id + "/revoke", { method: "POST", headers: authHeaders() });
+      carregarClientes();
+    };
+
+    window.reativarCliente = async function (id) {
+      await fetch("/api/admin/users/" + id + "/reactivate", { method: "POST", headers: authHeaders() });
+      carregarClientes();
+    };
+
+    document.getElementById("formCliente").addEventListener("submit", async function (event) {
+      event.preventDefault();
+      var msg = document.getElementById("clienteMsg");
+      msg.textContent = "Cadastrando...";
+      var productIds = Array.from(document.querySelectorAll(".cliente-produto-checkbox:checked")).map(function (c) { return c.value; });
+      var res = await fetch("/api/admin/users", {
+        method: "POST",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          name: document.getElementById("clienteNome").value,
+          email: document.getElementById("clienteEmail").value,
+          password: document.getElementById("clienteSenha").value || undefined,
+          productIds: productIds,
+        }),
+      });
+      var data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || "Erro ao cadastrar.";
+        return;
+      }
+      msg.textContent = "Cliente cadastrada com sucesso.";
+      event.target.reset();
+      carregarClientes();
+    });
+
     (async function iniciar() {
       token = BlindadoAuth.getToken();
       if (!token) {
@@ -232,6 +327,7 @@
       document.getElementById("painel").hidden = false;
       carregarPrompts();
       carregarProdutos().then(carregarModulos);
+      carregarProdutosCliente().then(carregarClientes);
     })();
   </script>
 </body>
