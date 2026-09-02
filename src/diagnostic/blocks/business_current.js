@@ -16,6 +16,10 @@ const PROFESSION_CATEGORY_OPTIONS = [
   { value: 'psicologo', label: 'Psicólogo(a)' },
   { value: 'fonoaudiologo', label: 'Fonoaudiólogo(a)' },
   { value: 'enfermeiro', label: 'Enfermeiro(a)' },
+  { value: 'terapeuta_ocupacional', label: 'Terapeuta Ocupacional' },
+  { value: 'farmaceutico', label: 'Farmacêutico(a)' },
+  { value: 'biomedico', label: 'Biomédico(a)' },
+  { value: 'educador_fisico', label: 'Profissional de Educação Física' },
   { value: 'outro', label: 'Outra profissão' },
 ];
 
