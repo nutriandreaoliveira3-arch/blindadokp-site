@@ -210,4 +210,16 @@ CREATE TABLE IF NOT EXISTS client_deliverables (
 );
 `);
 
+// Configurações gerais do app (chave/valor) — hoje só guarda
+// auto_unlock_enabled (Admin → Configurações), pra dar pra Andréa desligar
+// a liberação automática enquanto ela valida o método na mão, sem precisar
+// mexer em código pra isso.
+db.exec(`
+CREATE TABLE IF NOT EXISTS app_settings (
+  key TEXT PRIMARY KEY,
+  value TEXT NOT NULL,
+  updated_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+`);
+
 module.exports = db;

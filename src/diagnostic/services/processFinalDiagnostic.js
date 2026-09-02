@@ -17,6 +17,7 @@ const { generateFinalDiagnostic } = require('../ai/generateFinalDiagnostic');
 const { validateFinalDiagnostic } = require('../ai/finalDiagnosticSchema');
 const { autoUnlockNextArea } = require('../unlocking/unlockEngine');
 const { generateClientDeliverables } = require('./generateClientDeliverables');
+const { isAutoUnlockEnabled } = require('../../lib/settings');
 
 const MAX_AI_VALIDATION_RETRIES = 2;
 
@@ -98,13 +99,19 @@ async function processFinalDiagnostic(diagnosticId) {
       ).run(JSON.stringify(finalReport), diagnosticId);
 
       // Liberação gradual (autoUnlockNextArea): libera a área de maior
-      // prioridade pra essa cliente. Roda depois do relatório já estar
-      // salvo — se falhar (ex.: nenhum módulo marcado com área ainda),
-      // não invalida o relatório, só fica sem liberar nada dessa vez.
-      try {
-        await autoUnlockNextArea(diagnostic.user_id, diagnosticId);
-      } catch (err) {
-        console.error(`Não foi possível liberar módulo automático pro diagnóstico ${diagnosticId}:`, err.message);
+      // prioridade pra essa cliente. Só roda se a liberação automática
+      // estiver ligada (Admin → Configurações) — enquanto a Andréa valida
+      // o método na mão, ela pode desligar isso e liberar tudo manualmente
+      // (Admin → Clientes), sem perder o gatilho automático pra quando
+      // quiser religar. Roda depois do relatório já estar salvo — se
+      // falhar (ex.: nenhum módulo marcado com área ainda), não invalida
+      // o relatório, só fica sem liberar nada dessa vez.
+      if (isAutoUnlockEnabled()) {
+        try {
+          await autoUnlockNextArea(diagnostic.user_id, diagnosticId);
+        } catch (err) {
+          console.error(`Não foi possível liberar módulo automático pro diagnóstico ${diagnosticId}:`, err.message);
+        }
       }
 
       // Entregáveis Premium (Dossiê, Manual de Ética, Assistente IA

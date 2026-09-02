@@ -56,6 +56,20 @@
         <div id="painel" hidden>
 
           <div class="admin-block">
+            <h3 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin-bottom:18px;">Configurações</h3>
+            <div class="admin-item" style="align-items:center;border-top:none;padding-top:0;">
+              <div class="admin-item-info">
+                <strong>Liberação automática por Diagnóstico 360</strong>
+                <span>Ligado: a área de maior prioridade libera sozinha assim que o relatório final fica pronto. Desligado: você libera cada área na mão, em "Liberação por Diagnóstico 360" dentro de cada cliente.</span>
+              </div>
+              <label style="display:flex;align-items:center;gap:8px;white-space:nowrap;">
+                <input type="checkbox" id="autoUnlockToggle">
+                <span id="autoUnlockStatus" style="color:var(--muted);font-size:13px;">Carregando...</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="admin-block">
             <h3 style="font-family:Georgia,serif;font-size:24px;font-weight:400;margin-bottom:18px;">Prompts (Máquina de Prompts)</h3>
             <form id="formPrompt" class="wizard-card" style="display:grid;gap:16px;margin-bottom:20px;">
               <div class="field"><label>Título</label><input type="text" id="promptTitle" required></div>
@@ -152,6 +166,27 @@
       });
       event.target.reset();
       carregarPrompts();
+    });
+
+    async function carregarConfiguracoes() {
+      var res = await fetch("/api/admin/settings", { headers: authHeaders() });
+      var data = await res.json();
+      var checkbox = document.getElementById("autoUnlockToggle");
+      var status = document.getElementById("autoUnlockStatus");
+      checkbox.checked = !!data.autoUnlockEnabled;
+      status.textContent = data.autoUnlockEnabled ? "Ligado" : "Desligado";
+    }
+
+    document.getElementById("autoUnlockToggle").addEventListener("change", async function (event) {
+      var status = document.getElementById("autoUnlockStatus");
+      status.textContent = "Salvando...";
+      var res = await fetch("/api/admin/settings/auto-unlock", {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({ enabled: event.target.checked }),
+      });
+      var data = await res.json();
+      status.textContent = data.autoUnlockEnabled ? "Ligado" : "Desligado";
     });
 
     var produtosPorId = {};
@@ -435,6 +470,7 @@
       }
       document.getElementById("msgAcesso").hidden = true;
       document.getElementById("painel").hidden = false;
+      carregarConfiguracoes();
       carregarPrompts();
       carregarAreasDoDiagnostico().then(function () {
         carregarProdutos().then(carregarModulos);
