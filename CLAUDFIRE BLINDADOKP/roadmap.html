@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Seu Roadmap Blindado — a trilha do seu Diagnóstico 360.">
+  <title>Roadmap Blindado — BlindadoKP</title>
+  <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+  <link rel="manifest" href="assets/site.webmanifest">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="js/main.js" defer></script>
+  <style>
+    .roadmap-list { display: grid; gap: 0; margin-top: 10px; }
+    .roadmap-item { position: relative; padding: 20px 0 20px 34px; border-left: 2px solid rgba(255,255,255,.12); }
+    .roadmap-item:last-child { border-left-color: transparent; }
+    .roadmap-item::before { content: ""; position: absolute; left: -7px; top: 22px; width: 12px; height: 12px; border-radius: 50%; background: #0c0b0a; border: 2px solid rgba(255,255,255,.25); }
+    .roadmap-item-unlocked::before { background: #78c896; border-color: #78c896; }
+    .roadmap-item-next::before { background: var(--gold); border-color: var(--gold); box-shadow: 0 0 0 4px rgba(202,163,74,.2); }
+    .roadmap-item-head { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .roadmap-item-title { color: var(--cream); font-family: Georgia, serif; font-size: 18px; font-weight: 400; margin: 0; }
+    .roadmap-badge { display: inline-block; padding: 3px 10px; border-radius: 10px; font-size: 11px; letter-spacing: .04em; text-transform: uppercase; }
+    .roadmap-badge-unlocked { background: rgba(120,200,150,.18); color: #78c896; }
+    .roadmap-badge-next { background: rgba(202,163,74,.18); color: var(--gold-light); }
+    .roadmap-badge-locked { background: rgba(255,255,255,.06); color: var(--muted); }
+    .roadmap-item-modules { margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.6; }
+    .roadmap-item-msg { margin: 8px 0 0; padding: 10px 14px; background: rgba(201,163,74,.08); border: 1px solid rgba(202,163,74,.25); color: #e8e4dd; font-size: 13px; line-height: 1.6; }
+  </style>
+</head>
+<body>
+  <main>
+    <header class="site-header">
+      <a class="brand" href="index.html" aria-label="BlindadoKP — início">
+        <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo">
+      </a>
+      <nav aria-label="Navegação principal">
+        <a href="membros.html">Área de membros</a>
+        <a href="diagnostico.html">Diagnóstico 360</a>
+      </nav>
+    </header>
+
+    <section class="section products-section" style="padding-top:176px;">
+      <div class="page-shell" style="max-width:760px;">
+        <div class="section-heading reveal" style="display:block;margin-bottom:34px;">
+          <p class="eyebrow">ROADMAP BLINDADO</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Sua trilha</h2>
+          <p style="color:var(--muted);font-size:15px;line-height:1.7;max-width:600px;margin-top:10px;">
+            A ordem das áreas do seu negócio, definida pelo seu Diagnóstico Blindado 360 — o que já foi liberado, o que vem a seguir, e o que ainda está por vir.
+          </p>
+        </div>
+
+        <p id="msgCarregando" style="color:var(--muted);">Carregando...</p>
+        <p id="msgVazio" style="color:var(--muted);" hidden>
+          Você ainda não tem um Diagnóstico Blindado 360 com prioridades calculadas.
+          <a href="diagnostico.html" style="color:var(--gold-light);">Começar o diagnóstico →</a>
+        </p>
+
+        <div id="roadmapLista" class="roadmap-list"></div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="page-shell footer-main">
+        <a class="brand footer-brand" href="index.html" aria-label="Voltar ao início">
+          <img src="images/blindadokp-logo.png" alt="BlindadoKP" width="516" height="418" class="brand-logo" loading="lazy">
+        </a>
+        <p>Produtos inteligentes. Estratégias reais. Negócios em movimento.</p>
+        <a href="https://www.blindadokp.com.br">www.blindadokp.com.br</a>
+      </div>
+      <div class="page-shell footer-bottom"><span>© 2026 BlindadoKP</span><span>Andréa Oliveira · Todos os direitos reservados</span></div>
+    </footer>
+  </main>
+
+  <script src="js/auth-shared.js"></script>
+  <script>
+    function el(tag, className, text) {
+      var e = document.createElement(tag);
+      if (className) e.className = className;
+      if (text !== undefined && text !== null) e.textContent = text;
+      return e;
+    }
+
+    function renderRoadmap(data) {
+      var container = document.getElementById("roadmapLista");
+      container.innerHTML = "";
+
+      if (!data.areas.length) {
+        document.getElementById("msgVazio").hidden = false;
+        return;
+      }
+
+      data.areas.forEach(function (area) {
+        var isNext = area.area === data.nextArea;
+        var statusClass = area.unlocked ? "roadmap-item-unlocked" : isNext ? "roadmap-item-next" : "";
+        var item = el("div", "roadmap-item " + statusClass);
+
+        var head = el("div", "roadmap-item-head");
+        head.appendChild(el("h3", "roadmap-item-title", (area.isTopPriority ? "★ " : "") + area.label));
+        var badge = area.unlocked
+          ? el("span", "roadmap-badge roadmap-badge-unlocked", "Liberado")
+          : isNext
+          ? el("span", "roadmap-badge roadmap-badge-next", "Próximo passo")
+          : el("span", "roadmap-badge roadmap-badge-locked", "Em breve");
+        head.appendChild(badge);
+        item.appendChild(head);
+
+        if (area.unlocked) {
+          var moduleTitles = area.modules.map(function (m) { return m.title; }).join(" · ");
+          var modulesP = el("p", "roadmap-item-modules", "Liberado: " + moduleTitles + " — ");
+          var link = el("a", null, "ver na Área de Membros →");
+          link.href = "membros.html";
+          link.style.color = "var(--gold-light)";
+          modulesP.appendChild(link);
+          item.appendChild(modulesP);
+
+          var aiMessage = area.modules.map(function (m) { return m.aiMessage; }).filter(Boolean)[0];
+          if (aiMessage) item.appendChild(el("p", "roadmap-item-msg", aiMessage));
+        } else if (isNext) {
+          item.appendChild(el("p", "roadmap-item-modules", "Essa é a próxima área a ser liberada pra você, na ordem de prioridade do seu diagnóstico."));
+        } else {
+          item.appendChild(el("p", "roadmap-item-modules", "Ainda não é a hora — vem depois das áreas anteriores da sua trilha."));
+        }
+
+        container.appendChild(item);
+      });
+    }
+
+    (async function () {
+      if (!BlindadoAuth.getToken()) {
+        window.location.href = "login.html?proximo=roadmap.html";
+        return;
+      }
+
+      var res = await fetch("/api/diagnostic/roadmap", {
+        headers: { Authorization: "Bearer " + BlindadoAuth.getToken() },
+      });
+
+      if (res.status === 401) {
+        BlindadoAuth.logout();
+        window.location.href = "login.html?proximo=roadmap.html";
+        return;
+      }
+      if (res.status === 403) {
+        document.getElementById("msgCarregando").textContent = "O Roadmap Blindado é exclusivo de quem tem a Mentoria Blindada Pró.";
+        return;
+      }
+
+      var data = await res.json();
+      document.getElementById("msgCarregando").hidden = true;
+
+      if (!res.ok) {
+        document.getElementById("msgVazio").hidden = false;
+        document.getElementById("msgVazio").textContent = data.error || "Não foi possível carregar seu roadmap agora.";
+        return;
+      }
+
+      renderRoadmap(data);
+    })();
+  </script>
+</body>
+</html>
