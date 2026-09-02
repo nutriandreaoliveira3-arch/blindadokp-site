@@ -114,6 +114,13 @@
       modulos.forEach(function (mod) {
         html += '<div class="prompt-group"><h3 class="prompt-group-title">' + mod.title + "</h3>";
         if (mod.description) html += '<p style="color:var(--muted);font-size:14px;margin:-10px 0 16px;">' + mod.description + "</p>";
+        if (mod.unlockMessage) {
+          html +=
+            '<div style="margin:0 0 18px;padding:14px 16px;background:rgba(201,163,74,.08);border:1px solid rgba(202,163,74,.3);color:#e8e4dd;font-size:13.5px;line-height:1.6;">' +
+            '<span style="display:block;color:var(--gold-light);font-size:11px;letter-spacing:.05em;text-transform:uppercase;margin-bottom:6px;">Liberado pelo seu Diagnóstico 360</span>' +
+            escapeHtml(mod.unlockMessage) +
+            "</div>";
+        }
         (mod.lessons || []).forEach(function (lesson) {
           html += '<div class="feature-card" style="margin-bottom:14px;"><h4>' + lesson.title + "</h4>";
           if (lesson.video_url) {

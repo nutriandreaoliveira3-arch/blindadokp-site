@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const db = require('../db');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { sendActivationEmail } = require('../lib/email');
+const { getClientUnlockStatus, manualUnlockNextArea } = require('../diagnostic/unlocking/unlockEngine');
 
 const router = express.Router();
 
@@ -133,6 +134,51 @@ router.post('/:userId/reactivate', (req, res) => {
   const status = user.password_hash ? 'active' : 'pending';
   db.prepare(`UPDATE users SET status = ?, updated_at = datetime('now') WHERE id = ?`).run(status, user.id);
   res.json({ ok: true });
+});
+
+// Liberação gradual por Diagnóstico 360 — status: pra cada área, na ordem
+// de prioridade dessa cliente, mostra o(s) módulo(s) principal(is) e de
+// apoio, e se já foram liberados. Precisa do diagnóstico dela já ter
+// prioridades calculadas (não precisa do relatório final com IA ainda —
+// nesse caso a ordem fica só pelo motor determinístico, sem o Top 3
+// ajustado por dependência).
+router.get('/:userId/unlock-status', (req, res) => {
+  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  if (!diagnostic) {
+    return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
+  }
+  try {
+    res.json(getClientUnlockStatus(req.params.userId, diagnostic.id));
+  } catch (err) {
+    if (err.code === 'PRIORITIES_NOT_GENERATED') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao buscar status de liberação da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível carregar o status de liberação agora.' });
+  }
+});
+
+// Liberação manual — avança pra próxima área da ordem de prioridade dessa
+// cliente (mesma lógica do gatilho automático que roda depois do
+// relatório final, só que disparado por você, na hora que achar certo).
+router.post('/:userId/unlock-next', async (req, res) => {
+  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  if (!diagnostic) {
+    return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
+  }
+  try {
+    const result = await manualUnlockNextArea(req.params.userId, diagnostic.id);
+    if (!result.area) {
+      return res.json({ ok: true, unlocked: [], message: 'Não há próxima área com módulo pra liberar agora.' });
+    }
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    if (err.code === 'PRIORITIES_NOT_GENERATED') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao liberar próximo módulo da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível liberar o próximo módulo agora.' });
+  }
 });
 
 module.exports = router;
