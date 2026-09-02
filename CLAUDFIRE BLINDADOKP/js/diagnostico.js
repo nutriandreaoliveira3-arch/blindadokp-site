@@ -900,6 +900,19 @@
     buildCopyTextarea(container, content.mini_proposta, 160);
   }
 
+  function renderCampanhaAquisicaoContent(container, content) {
+    container.appendChild(buildLabeledLine("Público-alvo", content.publico_alvo));
+    container.appendChild(buildLabeledLine("Orçamento", content.orcamento_texto));
+
+    if (content.variacoes_anuncio && content.variacoes_anuncio.length) {
+      content.variacoes_anuncio.forEach(function (v, i) {
+        container.appendChild(el("h4", "diag-report-card-title", "Variação " + (i + 1)));
+        var text = "Gancho: " + v.gancho + "\n\n" + v.corpo + "\n\nCTA: " + v.cta + "\n\nBriefing de criativo: " + v.briefing_criativo;
+        buildCopyTextarea(container, text, 140);
+      });
+    }
+  }
+
   function renderHtmlDocumentPreview(container, html, previewHeight) {
     var previewWrap = el("div", null);
     previewWrap.style.cssText = "margin-top:10px;border:1px solid rgba(255,255,255,.16);border-radius:6px;overflow:hidden;";
@@ -964,6 +977,7 @@
     assistente_ia: { title: "Assistente IA Particular — skill personalizada pra você", render: renderAssistenteIaContent },
     landing_page: { title: "Landing Page Premium — pronta pra publicar", render: renderLandingPageContent },
     kit_comercial: { title: "Kit Comercial Blindado — scripts e cardápio pra fechar venda", render: renderKitComercialContent },
+    campanha_aquisicao: { title: "Campanha de Aquisição Pronta — anúncios pra rodar no Meta Ads", render: renderCampanhaAquisicaoContent },
   };
 
   function renderDeliverablesSection(deliverables) {
