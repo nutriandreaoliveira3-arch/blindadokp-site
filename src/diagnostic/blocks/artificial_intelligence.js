@@ -132,9 +132,9 @@ const QUESTIONS = [
   {
     id: 'q3_onde_precisa',
     title: 'Onde mais precisa de ajuda',
-    content: 'Em quais áreas você mais gostaria de ter ajuda inteligente no negócio? Selecione até 3.',
+    content: 'Em quais áreas você mais gostaria de ter ajuda inteligente no negócio?',
     fields: [
-      { id: 'desired_ai_support_areas', label: 'Áreas', type: 'multiselect', options: DESIRED_AI_SUPPORT_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'desired_ai_support_areas', label: 'Áreas', type: 'multiselect', options: DESIRED_AI_SUPPORT_OPTIONS, required: true },
       {
         id: 'desired_ai_support_areas_other',
         label: 'Qual?',
@@ -155,9 +155,9 @@ const QUESTIONS = [
   {
     id: 'q5_inseguranca',
     title: 'Onde existe insegurança',
-    content: 'Em quais situações você evita ou limita o uso de IA porque não confia totalmente no resultado? Selecione até 3.',
+    content: 'Em quais situações você evita ou limita o uso de IA porque não confia totalmente no resultado?',
     fields: [
-      { id: 'ai_insecurity_areas', label: 'Áreas de insegurança', type: 'multiselect', options: AI_INSECURITY_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'ai_insecurity_areas', label: 'Áreas de insegurança', type: 'multiselect', options: AI_INSECURITY_OPTIONS, required: true },
       {
         id: 'ai_insecurity_areas_other',
         label: 'Qual?',

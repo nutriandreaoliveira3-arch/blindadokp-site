@@ -97,9 +97,9 @@ const BASE_QUESTIONS = [
   {
     id: 'q2_criterio',
     title: 'Como o preço foi definido',
-    content: 'Qual foi o principal critério usado para chegar a esse preço? (até 2)',
+    content: 'Qual foi o principal critério usado para chegar a esse preço?',
     fields: [
-      { id: 'pricing_method', label: 'Critério', type: 'multiselect', options: PRICING_METHOD_OPTIONS, required: true, maxSelect: 2 },
+      { id: 'pricing_method', label: 'Critério', type: 'multiselect', options: PRICING_METHOD_OPTIONS, required: true },
       {
         id: 'pricing_method_other',
         label: 'Qual?',

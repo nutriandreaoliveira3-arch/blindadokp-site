@@ -147,9 +147,9 @@ const QUESTIONS = [
   {
     id: 'q6_tempo',
     title: 'Uso do tempo',
-    content: 'Quais atividades mais consomem seu tempo atualmente? Selecione até 3.',
+    content: 'Quais atividades mais consomem seu tempo atualmente?',
     fields: [
-      { id: 'time_consuming_tasks', label: 'Atividades', type: 'multiselect', options: TIME_TASKS_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'time_consuming_tasks', label: 'Atividades', type: 'multiselect', options: TIME_TASKS_OPTIONS, required: true },
     ],
   },
   {

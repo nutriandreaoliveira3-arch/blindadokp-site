@@ -97,9 +97,9 @@ const QUESTIONS = [
   {
     id: 'q2_inseguranca',
     title: 'Situações de insegurança',
-    content: 'Em quais situações de divulgação profissional você sente mais dúvida ou insegurança? Selecione até 5.',
+    content: 'Em quais situações de divulgação profissional você sente mais dúvida ou insegurança?',
     fields: [
-      { id: 'ethical_uncertainty_areas', label: 'Situações', type: 'multiselect', options: UNCERTAINTY_AREAS_OPTIONS, required: true, maxSelect: 5 },
+      { id: 'ethical_uncertainty_areas', label: 'Situações', type: 'multiselect', options: UNCERTAINTY_AREAS_OPTIONS, required: true },
       {
         id: 'ethical_uncertainty_areas_other',
         label: 'Qual?',
@@ -112,9 +112,9 @@ const QUESTIONS = [
   {
     id: 'q3_revisao',
     title: 'Processo de revisão atual',
-    content: 'Antes de publicar conteúdos, anúncios ou materiais profissionais mais sensíveis, como você verifica se a comunicação está adequada? Até 3 opções.',
+    content: 'Antes de publicar conteúdos, anúncios ou materiais profissionais mais sensíveis, como você verifica se a comunicação está adequada?',
     fields: [
-      { id: 'current_ethics_review_methods', label: 'Como você revisa', type: 'multiselect', options: REVIEW_METHODS_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'current_ethics_review_methods', label: 'Como você revisa', type: 'multiselect', options: REVIEW_METHODS_OPTIONS, required: true },
     ],
   },
   {

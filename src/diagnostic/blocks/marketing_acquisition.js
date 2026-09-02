@@ -137,9 +137,9 @@ const QUESTIONS = [
   {
     id: 'q1_origem',
     title: 'Origem dos clientes',
-    content: 'De onde vêm a maior parte dos seus clientes atualmente? (até 3)',
+    content: 'De onde vêm a maior parte dos seus clientes atualmente?',
     fields: [
-      { id: 'customer_sources', label: 'Origens', type: 'multiselect', options: SOURCE_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'customer_sources', label: 'Origens', type: 'multiselect', options: SOURCE_OPTIONS, required: true },
       {
         id: 'customer_sources_other',
         label: 'Qual?',

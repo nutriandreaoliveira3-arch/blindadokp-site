@@ -93,9 +93,9 @@ const QUESTIONS = [
   {
     id: 'q1_percepcao_valor',
     title: 'Percepção de valor e satisfação',
-    content: 'Como você verifica se o cliente está satisfeito e percebendo valor durante ou depois da entrega? Até 3 opções.',
+    content: 'Como você verifica se o cliente está satisfeito e percebendo valor durante ou depois da entrega?',
     fields: [
-      { id: 'customer_value_tracking_methods', label: 'Como você verifica', type: 'multiselect', options: VALUE_TRACKING_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'customer_value_tracking_methods', label: 'Como você verifica', type: 'multiselect', options: VALUE_TRACKING_OPTIONS, required: true },
       {
         id: 'customer_value_tracking_methods_other',
         label: 'Qual?',
@@ -143,11 +143,10 @@ const QUESTIONS = [
       { id: 'retention_reason_awareness', label: 'Você acompanha os motivos?', type: 'select', options: RETENTION_AWARENESS_OPTIONS, required: true },
       {
         id: 'retention_and_churn_reasons',
-        label: 'Quais motivos aparecem com mais frequência? Até 3 opções.',
+        label: 'Quais motivos aparecem com mais frequência?',
         type: 'multiselect',
         options: RETENTION_CHURN_REASONS_OPTIONS,
         required: false,
-        maxSelect: 3,
         conditional: { field: 'retention_reason_awareness', oneOf: SHOW_CHURN_REASONS },
       },
       {

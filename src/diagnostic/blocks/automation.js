@@ -110,9 +110,9 @@ const QUESTIONS = [
   {
     id: 'q1_tarefas',
     title: 'Tarefas repetitivas',
-    content: 'Quais tarefas você ou sua equipe repetem com frequência no dia a dia? Selecione até 5.',
+    content: 'Quais tarefas você ou sua equipe repetem com frequência no dia a dia?',
     fields: [
-      { id: 'repetitive_tasks', label: 'Tarefas', type: 'multiselect', options: REPETITIVE_TASKS_OPTIONS, required: true, maxSelect: 5 },
+      { id: 'repetitive_tasks', label: 'Tarefas', type: 'multiselect', options: REPETITIVE_TASKS_OPTIONS, required: true },
       {
         id: 'repetitive_tasks_other',
         label: 'Qual?',

@@ -145,9 +145,9 @@ const QUESTIONS = [
   {
     id: 'q6_dashboard',
     title: 'Dashboard essencial',
-    content: 'Se você pudesse acompanhar apenas 5 números toda semana para entender seu negócio, quais gostaria de ver? Até 5 opções.',
+    content: 'Se você pudesse acompanhar apenas 5 números toda semana para entender seu negócio, quais gostaria de ver?',
     fields: [
-      { id: 'desired_dashboard_metrics', label: 'Métricas desejadas', type: 'multiselect', options: DASHBOARD_METRICS_OPTIONS, required: true, maxSelect: 5 },
+      { id: 'desired_dashboard_metrics', label: 'Métricas desejadas', type: 'multiselect', options: DASHBOARD_METRICS_OPTIONS, required: true },
       {
         id: 'desired_dashboard_metrics_other',
         label: 'Qual?',

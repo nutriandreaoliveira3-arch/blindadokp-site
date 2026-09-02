@@ -85,7 +85,7 @@ const QUESTIONS = [
     title: 'O que o público já tentou',
     content: 'Antes de procurar um profissional como você, o que essas pessoas normalmente já tentaram?',
     fields: [
-      { id: 'previous_attempts', label: 'Já tentaram', type: 'multiselect', options: PREVIOUS_ATTEMPTS_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'previous_attempts', label: 'Já tentaram', type: 'multiselect', options: PREVIOUS_ATTEMPTS_OPTIONS, required: true },
       {
         id: 'previous_attempts_other',
         label: 'Qual?',
@@ -110,11 +110,10 @@ const QUESTIONS = [
       { id: 'priority_profile', label: 'Perfil escolhido', type: 'text', required: true },
       {
         id: 'priority_profile_reasons',
-        label: 'Por que esse perfil faria mais sentido? (até 3)',
+        label: 'Por que esse perfil faria mais sentido?',
         type: 'multiselect',
         options: PRIORITY_REASON_OPTIONS,
         required: true,
-        maxSelect: 3,
       },
       {
         id: 'priority_profile_reasons_other',
