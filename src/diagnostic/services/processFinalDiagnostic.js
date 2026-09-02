@@ -15,6 +15,7 @@ const { CONTRACT_VERSION } = require('../ai/finalDiagnosticContract');
 const { buildAiContext, DIAGNOSTIC_VERSION } = require('../ai/buildAiContext');
 const { generateFinalDiagnostic } = require('../ai/generateFinalDiagnostic');
 const { validateFinalDiagnostic } = require('../ai/finalDiagnosticSchema');
+const { autoUnlockNextArea } = require('../unlocking/unlockEngine');
 
 const MAX_AI_VALIDATION_RETRIES = 2;
 
@@ -94,6 +95,17 @@ async function processFinalDiagnostic(diagnosticId) {
          SET final_report = ?, report_status = 'COMPLETED', report_generated_at = datetime('now'), updated_at = datetime('now')
          WHERE id = ?`
       ).run(JSON.stringify(finalReport), diagnosticId);
+
+      // Liberação gradual (autoUnlockNextArea): libera a área de maior
+      // prioridade pra essa cliente. Roda depois do relatório já estar
+      // salvo — se falhar (ex.: nenhum módulo marcado com área ainda),
+      // não invalida o relatório, só fica sem liberar nada dessa vez.
+      try {
+        await autoUnlockNextArea(diagnostic.user_id, diagnosticId);
+      } catch (err) {
+        console.error(`Não foi possível liberar módulo automático pro diagnóstico ${diagnosticId}:`, err.message);
+      }
+
       return { report: finalReport, attempts: attemptNumber + 1 };
     }
 

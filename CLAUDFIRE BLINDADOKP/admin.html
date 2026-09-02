@@ -19,6 +19,18 @@
     .btn-delete:hover { background: rgba(224,138,114,.12); }
     select { background: #0c0b0a; border: 1px solid rgba(255,255,255,.16); color: var(--cream); padding: 13px 14px; font-size: 14.5px; border-radius: 6px; font-family: inherit; width: 100%; }
     .admin-sub { margin: 12px 0 0 20px; padding-left: 16px; border-left: 2px solid rgba(255,255,255,.1); }
+    .area-editor { margin-top: 14px; padding: 14px; background: rgba(255,255,255,.03); border-radius: 6px; }
+    .area-editor summary { color: var(--gold-light); cursor: pointer; font-size: 13px; }
+    .area-editor-grid { display: grid; grid-template-columns: 1fr 140px; gap: 8px 12px; align-items: center; margin-top: 12px; }
+    .area-editor-grid label { color: var(--muted); font-size: 13px; }
+    .area-editor-grid select { padding: 6px 8px; font-size: 13px; }
+    .unlock-status { margin-top: 14px; padding: 14px; background: rgba(255,255,255,.03); border-radius: 6px; }
+    .unlock-area-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-top: 1px solid rgba(255,255,255,.08); font-size: 13px; }
+    .unlock-area-row:first-child { border-top: none; }
+    .unlock-badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; margin-left: 8px; }
+    .unlock-badge-yes { background: rgba(120,200,150,.18); color: #78c896; }
+    .unlock-badge-no { background: rgba(255,255,255,.08); color: var(--muted); }
+    .btn-small { background: transparent; border: 1px solid rgba(202,163,74,.5); color: var(--gold-light); border-radius: 6px; padding: 5px 10px; font-size: 12px; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -143,6 +155,13 @@
     });
 
     var produtosPorId = {};
+    var areasDoDiagnostico = [];
+
+    async function carregarAreasDoDiagnostico() {
+      var res = await fetch("/api/modules/diagnostic-areas", { headers: authHeaders() });
+      var data = await res.json();
+      areasDoDiagnostico = data.areas || [];
+    }
 
     async function carregarProdutos() {
       var res = await fetch("/api/admin/users/products", { headers: authHeaders() });
@@ -171,6 +190,22 @@
           '</span></div><button class="btn-delete" onclick="excluirModulo(\'' +
           mod.id +
           "')\">Excluir módulo</button></div>";
+
+        var areasDoModulo = {};
+        (mod.diagnosticAreas || []).forEach(function (a) { areasDoModulo[a.area] = a.role; });
+        html += '<details class="area-editor"><summary>Áreas do Diagnóstico 360 (' + (mod.diagnosticAreas || []).length + ' marcada' + ((mod.diagnosticAreas || []).length === 1 ? '' : 's') + ')</summary>';
+        html += '<p style="color:var(--muted);font-size:12px;margin:10px 0 0;">Marque em quais áreas esse módulo é o recurso PRINCIPAL (libera sozinho quando a área virar prioridade) ou APOIO (só aparece como recomendação, não libera sozinho).</p>';
+        html += '<form onsubmit="return salvarAreasModulo(event, \'' + mod.id + '\')"><div class="area-editor-grid">';
+        areasDoDiagnostico.forEach(function (a) {
+          html += '<label>' + a.label + '</label><select class="area-modulo-select" data-area="' + a.value + '">';
+          ["", "principal", "apoio"].forEach(function (opt) {
+            var selected = (areasDoModulo[a.value] || "") === opt ? " selected" : "";
+            var texto = opt === "" ? "Nenhum" : opt === "principal" ? "Principal" : "Apoio";
+            html += '<option value="' + opt + '"' + selected + '>' + texto + '</option>';
+          });
+          html += '</select>';
+        });
+        html += '</div><button type="submit" class="button button-outline" style="margin-top:14px;width:fit-content;">SALVAR ÁREAS</button></form></details>';
 
         html += '<div class="admin-sub">';
         (mod.lessons || []).forEach(function (lesson) {
@@ -206,6 +241,21 @@
       if (!confirm("Excluir essa aula?")) return;
       await fetch("/api/modules/lessons/" + id, { method: "DELETE", headers: authHeaders() });
       carregarModulos();
+    };
+
+    window.salvarAreasModulo = function (event, moduleId) {
+      event.preventDefault();
+      var form = event.target;
+      var diagnosticAreas = [];
+      form.querySelectorAll(".area-modulo-select").forEach(function (select) {
+        if (select.value) diagnosticAreas.push({ area: select.dataset.area, role: select.value });
+      });
+      fetch("/api/modules/" + moduleId, {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({ diagnostic_areas: diagnosticAreas }),
+      }).then(carregarModulos);
+      return false;
     };
 
     window.adicionarAula = function (event, moduleId) {
@@ -273,10 +323,67 @@
           (u.status === "inactive"
             ? '<button class="btn-delete" style="border-color:rgba(120,200,150,.5);color:#78c896;" onclick="reativarCliente(\'' + u.id + '\')">Reativar</button>'
             : '<button class="btn-delete" onclick="revogarCliente(\'' + u.id + '\')">Revogar acesso</button>') +
-          "</div></div>";
+          "</div>" +
+          '<details class="unlock-status" ontoggle="carregarLiberacaoCliente(event, \'' + u.id + '\')">' +
+          '<summary style="color:var(--gold-light);cursor:pointer;font-size:13px;">Liberação por Diagnóstico 360</summary>' +
+          '<div class="unlock-status-body" id="unlock-status-' + u.id + '" style="margin-top:10px;color:var(--muted);font-size:13px;">Carregando...</div>' +
+          "</details></div>";
       });
       document.getElementById("clientesLista").innerHTML = html || '<p style="color:var(--muted);">Nenhuma cliente cadastrada ainda.</p>';
     }
+
+    window.carregarLiberacaoCliente = async function (event, userId) {
+      var details = event.target;
+      if (!details.open) return; // só busca quando abre, não quando fecha
+      var body = document.getElementById("unlock-status-" + userId);
+      body.textContent = "Carregando...";
+      var res = await fetch("/api/admin/users/" + userId + "/unlock-status", { headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        body.textContent = data.error || "Não foi possível carregar.";
+        return;
+      }
+      var html = "";
+      (data.areas || []).forEach(function (a) {
+        var principaisNomes = a.principal.map(function (m) { return m.title; }).join(", ") || "nenhum módulo marcado ainda";
+        var badge = a.hasPrincipalModules
+          ? (a.allPrincipalUnlocked
+              ? '<span class="unlock-badge unlock-badge-yes">liberado</span>'
+              : '<span class="unlock-badge unlock-badge-no">travado</span>')
+          : '<span class="unlock-badge unlock-badge-no">sem módulo</span>';
+        html +=
+          '<div class="unlock-area-row"><span>' +
+          (a.isTopPriority ? "★ " : "") +
+          a.label +
+          ' <span style="color:var(--muted);">— ' + principaisNomes + "</span></span>" +
+          badge +
+          "</div>";
+      });
+      html +=
+        '<button type="button" class="btn-small" style="margin-top:12px;" onclick="liberarProximaAreaCliente(\'' +
+        userId +
+        '\')">Liberar próxima área</button>' +
+        '<span id="unlock-msg-' + userId + '" style="margin-left:10px;color:var(--muted);font-size:12px;"></span>';
+      body.innerHTML = html || "Essa cliente ainda não tem prioridades calculadas no Diagnóstico 360.";
+    };
+
+    window.liberarProximaAreaCliente = async function (userId) {
+      var msg = document.getElementById("unlock-msg-" + userId);
+      msg.textContent = "Liberando...";
+      var res = await fetch("/api/admin/users/" + userId + "/unlock-next", { method: "POST", headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || "Erro ao liberar.";
+        return;
+      }
+      if (!data.area) {
+        msg.textContent = data.message || "Nada pra liberar agora.";
+        return;
+      }
+      msg.textContent = "Liberado: " + data.unlocked.map(function (u) { return u.moduleTitle; }).join(", ");
+      var details = document.getElementById("unlock-status-" + userId).closest("details");
+      details.dispatchEvent(new Event("toggle"));
+    };
 
     window.revogarCliente = async function (id) {
       if (!confirm("Revogar o acesso dessa cliente?")) return;
@@ -329,7 +436,9 @@
       document.getElementById("msgAcesso").hidden = true;
       document.getElementById("painel").hidden = false;
       carregarPrompts();
-      carregarProdutos().then(carregarModulos);
+      carregarAreasDoDiagnostico().then(function () {
+        carregarProdutos().then(carregarModulos);
+      });
       carregarProdutosCliente().then(carregarClientes);
     })();
   </script>

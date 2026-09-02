@@ -151,4 +151,41 @@ if (!lessonsColumns.includes('copy_content')) {
   db.exec('ALTER TABLE lessons ADD COLUMN copy_content TEXT');
 }
 
+// Liberação gradual por Diagnóstico 360.
+//
+// module_diagnostic_areas: um módulo pode ser o recurso PRINCIPAL de várias
+// áreas do diagnóstico, e/ou APOIO de outras (ex.: Skill Blindada Pro é
+// principal pra posicionamento/oferta/preço/vendas/operação, e apoio pra
+// aquisição/comunicação) — por isso é tabela separada (N-pra-N), não uma
+// coluna única em modules. Módulo sem nenhuma linha aqui continua se
+// comportando exatamente como antes (só trava por produto, disponível pra
+// qualquer cliente que tenha o produto vinculado).
+//
+// module_unlocks guarda, por cliente, quais módulos já foram liberados —
+// automaticamente (logo depois do relatório final do Diagnóstico 360, pra
+// área de maior prioridade) ou manualmente (Admin → Clientes, quando a
+// Andréa quiser avançar pra próxima área). ai_message guarda o textinho
+// gerado pela IA explicando por que aquele módulo foi liberado agora, pra
+// mostrar na Área de Membros — fica nulo se a geração falhar, nunca
+// bloqueia o acesso (o módulo já libera mesmo sem a mensagem).
+db.exec(`
+CREATE TABLE IF NOT EXISTS module_diagnostic_areas (
+  module_id TEXT NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  area TEXT NOT NULL,
+  role TEXT NOT NULL DEFAULT 'principal',
+  PRIMARY KEY (module_id, area)
+);
+
+CREATE TABLE IF NOT EXISTS module_unlocks (
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  module_id TEXT NOT NULL REFERENCES modules(id) ON DELETE CASCADE,
+  diagnostic_id TEXT REFERENCES diagnostics(id) ON DELETE SET NULL,
+  reason_area TEXT,
+  source TEXT NOT NULL DEFAULT 'manual',
+  ai_message TEXT,
+  unlocked_at TEXT NOT NULL DEFAULT (datetime('now')),
+  PRIMARY KEY (user_id, module_id)
+);
+`);
+
 module.exports = db;
