@@ -255,4 +255,16 @@ if (!usersColumns.includes('retake_diagnostic_unlocked_at')) {
   db.exec('ALTER TABLE users ADD COLUMN retake_diagnostic_unlocked_at TEXT');
 }
 
+// "Esqueceu sua senha": token separado do activation_token (mesmo padrão,
+// mas com validade de 1h — diferente da ativação, aqui a conta já existe e
+// pode ter dado real vazado por e-mail, então o link expira). Reaproveita
+// a mesma tela (definir-senha.html) e o mesmo endpoint (POST
+// /api/auth/set-password), que passa a aceitar os dois tipos de token.
+if (!usersColumns.includes('password_reset_token')) {
+  db.exec('ALTER TABLE users ADD COLUMN password_reset_token TEXT');
+}
+if (!usersColumns.includes('password_reset_expires_at')) {
+  db.exec('ALTER TABLE users ADD COLUMN password_reset_expires_at TEXT');
+}
+
 module.exports = db;
