@@ -34,6 +34,47 @@ const UNCERTAINTY_AREAS_OPTIONS = [
   { value: 'outro', label: 'Outro' },
 ];
 
+// Situações específicas do código de ética do nutricionista (CFN), levantadas
+// por pesquisa (Resolução CFN nº 599/18, atualizada pela Resolução CFN nº
+// 856/2026 — art. 57 sobre preço/promoção/sorteio, art. 58 sobre imagem
+// corporal/antes-depois mesmo com autorização, e a vedação de 2026 a
+// montagens/simulações por IA e gráficos de evolução usados como prova de
+// resultado). Sempre recomendar à cliente confirmar a redação vigente no
+// site do CFN, já que resoluções de conselho profissional mudam com
+// frequência. Inseridas antes de "sem_duvidas_relevantes"/"outro", que ficam
+// sempre por último em qualquer lista de opções deste bloco.
+const NUTRITION_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'peso_medidas_corporais', label: 'Divulgar peso ou medidas corporais (próprias ou de pacientes)' },
+  { value: 'fotos_antes_depois_ou_ia', label: 'Fotos de "antes e depois", inclusive montagens ou imagens geradas por IA' },
+  { value: 'graficos_evolucao_peso', label: 'Gráficos ou números de evolução (peso, medidas) como prova de resultado' },
+  { value: 'indicacao_marca_produto_suplemento', label: 'Indicação de marca, produto ou suplemento específico' },
+];
+
+function insertBeforeCatchAll(baseOptions, extraOptions) {
+  const catchAllValues = new Set(['sem_duvidas_relevantes', 'outro']);
+  const withoutCatchAll = baseOptions.filter((o) => !catchAllValues.has(o.value));
+  const catchAll = baseOptions.filter((o) => catchAllValues.has(o.value));
+  return [...withoutCatchAll, ...extraOptions, ...catchAll];
+}
+
+const NUTRITION_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, NUTRITION_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Registro por profissão (ver profession_category no Bloco 1 —
+// business_current.js). Só 'nutricionista' tem conteúdo levantado por
+// enquanto — é o piloto. Pra adicionar outra profissão (médico, dentista,
+// fisioterapeuta, psicólogo...): pesquisar o código de ética do conselho
+// dela, montar as opções extras específicas com insertBeforeCatchAll (como
+// acima) e adicionar uma entrada aqui com a mesma chave usada em
+// PROFESSION_CATEGORY_OPTIONS. Profissão sem entrada aqui (ou 'outro') usa
+// o UNCERTAINTY_AREAS_OPTIONS genérico, sem perda de funcionalidade.
+const PROFESSION_ETHICS_CONTENT = {
+  nutricionista: {
+    uncertaintyAreasOptions: NUTRITION_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra nutricionistas, considerando o Código de Ética do CFN (Resolução nº 599/18, atualizada pela Resolução nº 856/2026) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+};
+
 const REVIEW_METHODS_OPTIONS = [
   { value: 'sigo_checklist_proprio', label: 'Sigo checklist ou protocolo próprio' },
   { value: 'consulto_normas_oficiais', label: 'Consulto normas/orientações oficiais' },
@@ -85,31 +126,41 @@ const OFFICIAL_VALIDATION_METHODS = ['consulto_normas_oficiais', 'peco_revisao_o
 // Seção 7 — "ethical_fear_marketing_impact >= high" da REGRA 06.
 const HIGH_FEAR_LEVELS = ['limita_bastante', 'evito_varias_acoes_por_medo', 'quase_nao_divulgo'];
 
-const QUESTIONS = [
-  {
-    id: 'q1_conhecimento',
-    title: 'Conhecimento das regras',
-    content: 'Como você avalia seu conhecimento sobre as regras e orientações de publicidade e comunicação da sua profissão?',
-    fields: [
-      { id: 'professional_rules_knowledge_level', label: 'Conhecimento das regras', type: 'select', options: RULES_KNOWLEDGE_OPTIONS, required: true },
-    ],
-  },
-  {
-    id: 'q2_inseguranca',
-    title: 'Situações de insegurança',
-    content: 'Em quais situações de divulgação profissional você sente mais dúvida ou insegurança?',
-    fields: [
-      { id: 'ethical_uncertainty_areas', label: 'Situações', type: 'multiselect', options: UNCERTAINTY_AREAS_OPTIONS, required: true },
-      {
-        id: 'ethical_uncertainty_areas_other',
-        label: 'Qual?',
-        type: 'text',
-        required: false,
-        conditional: { field: 'ethical_uncertainty_areas', includes: 'outro' },
-      },
-    ],
-  },
-  {
+// Monta a lista de perguntas do bloco. professionKey vem de
+// context.business_current.profession_category (ver Bloco 1). Só a
+// Pergunta 2 muda de conteúdo por enquanto — é onde entram as situações
+// específicas do código de ética da profissão (ver PROFESSION_ETHICS_CONTENT
+// acima).
+function buildQuestionsList(professionKey) {
+  const professionContent = PROFESSION_ETHICS_CONTENT[professionKey];
+  const uncertaintyOptions = professionContent ? professionContent.uncertaintyAreasOptions : UNCERTAINTY_AREAS_OPTIONS;
+  const referenceHint = professionContent ? professionContent.referenceHint : '';
+
+  return [
+    {
+      id: 'q1_conhecimento',
+      title: 'Conhecimento das regras',
+      content: 'Como você avalia seu conhecimento sobre as regras e orientações de publicidade e comunicação da sua profissão?',
+      fields: [
+        { id: 'professional_rules_knowledge_level', label: 'Conhecimento das regras', type: 'select', options: RULES_KNOWLEDGE_OPTIONS, required: true },
+      ],
+    },
+    {
+      id: 'q2_inseguranca',
+      title: 'Situações de insegurança',
+      content: 'Em quais situações de divulgação profissional você sente mais dúvida ou insegurança?' + referenceHint,
+      fields: [
+        { id: 'ethical_uncertainty_areas', label: 'Situações', type: 'multiselect', options: uncertaintyOptions, required: true },
+        {
+          id: 'ethical_uncertainty_areas_other',
+          label: 'Qual?',
+          type: 'text',
+          required: false,
+          conditional: { field: 'ethical_uncertainty_areas', includes: 'outro' },
+        },
+      ],
+    },
+    {
     id: 'q3_revisao',
     title: 'Processo de revisão atual',
     content: 'Antes de publicar conteúdos, anúncios ou materiais profissionais mais sensíveis, como você verifica se a comunicação está adequada?',
@@ -155,7 +206,20 @@ const QUESTIONS = [
       },
     ],
   },
-];
+  ];
+}
+
+// Lista genérica (sem profissão), usada como valor padrão de exportação e
+// por qualquer chamador que ainda espere um array estático em vez de
+// chamar buildQuestions(context).
+const QUESTIONS = buildQuestionsList(null);
+
+// context vem de getDiagnosticContext (routes/diagnostic.js): respostas
+// brutas dos blocos já respondidos. Lê a profissão do Bloco 1.
+function buildQuestions(context) {
+  const professionKey = context && context.business_current && context.business_current.profession_category;
+  return buildQuestionsList(professionKey);
+}
 
 // Dados derivados e red flags determinísticas do Bloco 13 (seções 5, 9, 17 e
 // 18). As 6 dimensões de score (seção 12), a REGRA 01 (linguagem absoluta de
@@ -170,12 +234,14 @@ const QUESTIONS = [
 // (professional_rules_knowledge_score é deste próprio bloco e também
 // qualitativo; automated_external_communication não existe no Bloco 12).
 // Nada disso é inventado — fica para o Motor de IA.
-function analyze(answers) {
+function analyze(answers, context) {
   const uncertaintyAreas = Array.isArray(answers.ethical_uncertainty_areas) ? answers.ethical_uncertainty_areas : [];
   const reviewMethods = Array.isArray(answers.current_ethics_review_methods) ? answers.current_ethics_review_methods : [];
   const desiredSupport = Array.isArray(answers.desired_ethics_support) ? answers.desired_ethics_support : [];
+  const professionCategory = (context && context.business_current && context.business_current.profession_category) || null;
 
   const derived = {
+    profession_category: professionCategory,
     professional_rules_knowledge_level: answers.professional_rules_knowledge_level || null,
     ethical_uncertainty_areas: uncertaintyAreas,
     ethical_uncertainty_areas_count: uncertaintyAreas.length,
@@ -226,4 +292,4 @@ function analyze(answers) {
   return { derived, redFlags };
 }
 
-module.exports = { id: 'ethics', questions: QUESTIONS, analyze };
+module.exports = { id: 'ethics', questions: QUESTIONS, buildQuestions, analyze };
