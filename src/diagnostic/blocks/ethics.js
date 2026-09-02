@@ -59,19 +59,131 @@ function insertBeforeCatchAll(baseOptions, extraOptions) {
 
 const NUTRITION_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, NUTRITION_EXTRA_UNCERTAINTY_OPTIONS);
 
+// Situações específicas de médico(a) — Resolução CFM nº 2.336/2023 (em vigor
+// desde 11/03/2024), que modernizou a publicidade médica: diferente da
+// nutrição, aqui "antes e depois" É permitido, mas só dentro de critérios
+// (texto educativo, indicações terapêuticas, fatores que podem influenciar
+// negativamente o resultado, imagem sem edição/melhoria, relacionada à
+// especialidade registrada). Também veda sensacionalismo, atribuir
+// capacidade privilegiada a aparelhagem, e divulgar atuação fora da
+// especialidade registrada no CFM.
+const MEDICO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'fotos_antes_depois_criterios_educativos', label: 'Fotos de "antes e depois" dentro dos critérios exigidos (texto educativo, indicações, sem edição de imagem)' },
+  { value: 'capacidade_privilegiada_equipamento', label: 'Atribuir capacidade privilegiada a um aparelho ou equipamento específico' },
+  { value: 'divulgacao_fora_especialidade_registrada', label: 'Divulgar atuação em área ou especialidade não registrada no CFM' },
+  { value: 'participacao_publicidade_produto_medicamento', label: 'Participar de publicidade de medicamento, insumo ou produto induzindo garantia de resultado' },
+];
+const MEDICO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, MEDICO_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de dentista — Código de Ética Odontológica (Resolução
+// CFO nº 196/2019) e a atualização de concorrência (Resolução CFO nº
+// 271/2025, por decisão do CADE): preço, antes-depois, superlativos,
+// garantia de resultado, depoimentos e influenciadores não-dentistas
+// continuam proibidos na divulgação pública; sorteio/vale-presente/cartão de
+// desconto passaram a ser permitidos como prática interna, mas sem anunciar
+// o percentual/condição publicamente. "Antes e depois" só pode ser
+// publicado pelo próprio dentista que atendeu, nunca pela clínica/pessoa
+// jurídica.
+const DENTISTA_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'superlativos_linguagem_comparativa', label: 'Uso de superlativos ("o melhor", "mais avançado") na divulgação' },
+  { value: 'antes_depois_quem_pode_publicar', label: 'Fotos de "antes e depois" — quem pode publicar (só o dentista que atendeu, nunca a clínica) e com quais critérios' },
+  { value: 'participacao_sorteios_vale_presente_cartao_desconto', label: 'Participar de sorteio, vale-presente ou cartão de desconto sem anunciar o percentual' },
+  { value: 'divulgacao_por_influenciadores_nao_dentistas', label: 'Divulgação feita por terceiros/influenciadores que não são dentistas' },
+];
+const DENTISTA_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, DENTISTA_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de fisioterapeuta — Código de Ética (Resolução
+// COFFITO nº 424/2013), art. 15, V: veda fotografia "antes e depois" ou
+// qualquer referência que permita identificar o paciente em anúncio ou
+// divulgação profissional; veda divulgar honorários fora do local de
+// atendimento; atestados/laudos/cartas de agradecimento de pacientes não
+// podem ser usados pra autopromoção.
+const FISIOTERAPEUTA_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'atestados_cartas_agradecimento_pacientes', label: 'Uso de atestados, laudos ou cartas de agradecimento de pacientes pra autopromoção' },
+  { value: 'identificacao_indireta_paciente', label: 'Referência que permita identificar o paciente, mesmo sem mostrar o rosto' },
+  { value: 'honorarios_fora_local_atendimento', label: 'Divulgar valor de honorários fora do local de atendimento' },
+];
+const FISIOTERAPEUTA_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, FISIOTERAPEUTA_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de psicólogo(a) — Código de Ética Profissional do
+// Psicólogo (art. 20, veda usar o preço do serviço como forma de
+// propaganda) e a Nota Técnica CFP nº 1/2022 sobre uso profissional das
+// redes sociais (cuidado com a fronteira entre perfil pessoal e
+// profissional, e com sigilo mesmo ao compartilhar casos sem nome).
+const PSICOLOGO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'preco_como_forma_propaganda', label: 'Usar o preço do serviço como forma de propaganda' },
+  { value: 'confusao_perfil_pessoal_profissional', label: 'Confusão entre perfil pessoal e perfil profissional nas redes sociais' },
+  { value: 'sigilo_indireto_casos_atendidos', label: 'Compartilhar situações/casos atendidos (mesmo sem nome) de um jeito que possa identificar a pessoa' },
+];
+const PSICOLOGO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, PSICOLOGO_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de fonoaudiólogo(a) — Código de Ética do CFFa: exige
+// consentimento por escrito antes de usar dado, imagem ou áudio que
+// identifique o paciente; veda anunciar preço/desconto/sorteio (exceto
+// cursos e palestras); veda diagnosticar ou prescrever tratamento à
+// distância por qualquer meio de comunicação de massa; veda dar a entender
+// que só aquele profissional/método resolve determinado caso.
+const FONOAUDIOLOGO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'consentimento_por_escrito_imagem_audio', label: 'Consentimento por escrito antes de usar imagem, áudio ou dado que identifique o paciente' },
+  { value: 'diagnostico_prescricao_por_midia', label: 'Fazer diagnóstico ou prescrever tratamento à distância por rede social/mídia' },
+  { value: 'reserva_clinica_procedimento', label: 'Dar a entender que só você (ou seu método) resolve determinado caso' },
+];
+const FONOAUDIOLOGO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, FONOAUDIOLOGO_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de enfermeiro(a) — Resolução COFEN nº 554/2017:
+// veda expor imagem de pacientes em redes sociais/WhatsApp, imagens
+// sensacionalistas, "antes e depois" comparativo de procedimentos, e
+// oferecer orientação clínica por mídia social substituindo o atendimento
+// presencial. Anúncio deve conter nome completo, categoria e número de
+// inscrição no COREN.
+const ENFERMEIRO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'identificacao_registro_coren_anuncio', label: 'Anúncio sem nome completo, categoria e número de inscrição no COREN' },
+  { value: 'consultoria_substituindo_consulta_presencial', label: 'Orientação clínica pelo WhatsApp/rede social substituindo o atendimento presencial' },
+];
+const ENFERMEIRO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, ENFERMEIRO_EXTRA_UNCERTAINTY_OPTIONS);
+
 // Registro por profissão (ver profession_category no Bloco 1 —
-// business_current.js). Só 'nutricionista' tem conteúdo levantado por
-// enquanto — é o piloto. Pra adicionar outra profissão (médico, dentista,
-// fisioterapeuta, psicólogo...): pesquisar o código de ética do conselho
-// dela, montar as opções extras específicas com insertBeforeCatchAll (como
-// acima) e adicionar uma entrada aqui com a mesma chave usada em
-// PROFESSION_CATEGORY_OPTIONS. Profissão sem entrada aqui (ou 'outro') usa
-// o UNCERTAINTY_AREAS_OPTIONS genérico, sem perda de funcionalidade.
+// business_current.js). Pra adicionar outra profissão no futuro: pesquisar
+// o código de ética do conselho dela, montar as opções extras específicas
+// com insertBeforeCatchAll (como acima) e adicionar uma entrada aqui com a
+// mesma chave usada em PROFESSION_CATEGORY_OPTIONS. Profissão sem entrada
+// aqui (ou 'outro') usa o UNCERTAINTY_AREAS_OPTIONS genérico, sem perda de
+// funcionalidade.
 const PROFESSION_ETHICS_CONTENT = {
   nutricionista: {
     uncertaintyAreasOptions: NUTRITION_UNCERTAINTY_AREAS_OPTIONS,
     referenceHint:
       ' Algumas situações comuns pra nutricionistas, considerando o Código de Ética do CFN (Resolução nº 599/18, atualizada pela Resolução nº 856/2026) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  medico: {
+    uncertaintyAreasOptions: MEDICO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra médicos(as), considerando a Resolução CFM nº 2.336/2023 (Manual da Publicidade Médica) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  dentista: {
+    uncertaintyAreasOptions: DENTISTA_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra dentistas, considerando o Código de Ética Odontológica (Resolução CFO nº 196/2019, com ajustes da Resolução CFO nº 271/2025) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  fisioterapeuta: {
+    uncertaintyAreasOptions: FISIOTERAPEUTA_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra fisioterapeutas, considerando o Código de Ética (Resolução COFFITO nº 424/2013) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  psicologo: {
+    uncertaintyAreasOptions: PSICOLOGO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra psicólogos(as), considerando o Código de Ética Profissional do Psicólogo e a Nota Técnica CFP nº 1/2022 sobre redes sociais — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  fonoaudiologo: {
+    uncertaintyAreasOptions: FONOAUDIOLOGO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra fonoaudiólogos(as), considerando o Código de Ética do CFFa — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  enfermeiro: {
+    uncertaintyAreasOptions: ENFERMEIRO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra enfermeiros(as), considerando a Resolução COFEN nº 554/2017 — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
   },
 };
 
