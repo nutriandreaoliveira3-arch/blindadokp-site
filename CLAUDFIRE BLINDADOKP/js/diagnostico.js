@@ -1023,10 +1023,37 @@
     }
   }
 
+  // Foto da Andréa em 2 momentos de calor humano — nada de "cara de
+  // formulário sério": foto pequena e redonda ao lado de uma mensagem
+  // curta e comemorativa, sem virar painel grande/solene.
+  function buildPhotoMoment(message, ctaText, ctaHref) {
+    var wrap = el("div", null);
+    wrap.style.cssText = "margin:20px 0;padding:16px 20px;display:flex;align-items:center;gap:16px;background:rgba(201,163,74,.08);border:1px solid rgba(202,163,74,.25);border-radius:8px;flex-wrap:wrap;";
+
+    var img = document.createElement("img");
+    img.src = "images/F68480E0-5255-4BFE-A7FB-F7ECE453B7D2.PNG";
+    img.alt = "Andréa Oliveira";
+    img.style.cssText = "width:56px;height:56px;border-radius:50%;object-fit:cover;object-position:center 20%;border:2px solid var(--gold);flex-shrink:0;";
+    wrap.appendChild(img);
+
+    var textWrap = el("div", null);
+    textWrap.style.cssText = "flex:1;min-width:200px;";
+    textWrap.appendChild(el("p", null, message)).style.cssText = "margin:0;color:#e8e4dd;font-family:Georgia,serif;font-size:15.5px;line-height:1.5;";
+    if (ctaText && ctaHref) {
+      var link = el("a", "button button-outline", ctaText);
+      link.href = ctaHref;
+      link.style.cssText = "margin-top:10px;display:inline-flex;min-height:40px;padding:0 18px;font-size:11px;";
+      textWrap.appendChild(link);
+    }
+    wrap.appendChild(textWrap);
+    return wrap;
+  }
+
   function renderReport(report) {
     reportBodyEl.innerHTML = "";
     var header = buildStageHeader(report);
     reportBodyEl.appendChild(header);
+    reportBodyEl.appendChild(buildPhotoMoment("Parabéns, você concluiu o Diagnóstico Blindado 360! Bora ver o que descobrimos sobre o seu negócio."));
 
     // Índice histórico: busca em segundo plano (não atrasa o resto do
     // relatório) — só aparece uma seção "Sua Evolução" se ela já tiver
@@ -1050,6 +1077,7 @@
     if (report.ethical_alerts && report.ethical_alerts.length) reportBodyEl.appendChild(buildEthicsSection(report.ethical_alerts));
     reportBodyEl.appendChild(buildPlanSection(report));
     reportBodyEl.appendChild(buildNextStepSection(report.next_step, report.diagnostic_confidence));
+    reportBodyEl.appendChild(buildPhotoMoment("Agora é com você — bora colocar a prioridade em prática. Preparei sua trilha certinha, na ordem que faz mais sentido pro seu momento.", "Ver meu Roadmap Blindado", "roadmap.html"));
 
     var regenWrap = el("div", "diag-report-regenerate-wrap");
     var regenBtn = el("button", "button button-outline", "Gerar diagnóstico novamente");
