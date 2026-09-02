@@ -12,6 +12,11 @@ const db = require('../src/db');
 
 const CONTENT_DIR = path.join(__dirname, 'skill-content');
 const read = (file) => fs.readFileSync(path.join(CONTENT_DIR, file), 'utf8');
+// Pra arquivos que são HTML de verdade (viram markup na tela, não texto
+// puro) — a Área de Membros faz `content.replace(/\n/g,"<br>")`, então sem
+// isso cada quebra de linha do arquivo (só formatação, pra ficar legível no
+// editor) viraria um <br> indesejado entre as divs.
+const readHtml = (file) => read(file).replace(/\r?\n\s*/g, ' ');
 
 function getProductId(key) {
   const product = db.prepare('SELECT id FROM products WHERE key = ?').get(key);
@@ -114,6 +119,16 @@ replaceLessons(topClaudiaModuleId, [
     title: 'Instalação e uso',
     content: INSTALL_INSTRUCTIONS_GERAL + '\n\nEssa é a segunda skill do pacote Premium — instale além da Skill Blindada Pro, não no lugar dela. Antes de usar, separe 9 a 12 fotos suas pra anexar direto na conversa quando for gerar cada carrossel.',
     copy_content: read('skil-topclaudia-generic.md'),
+  },
+  {
+    title: 'Passo a passo visual',
+    content: readHtml('topclaudia-passo-a-passo.html'),
+  },
+  {
+    title: 'Exemplo de carrossel pronto',
+    content:
+      'Copie o código abaixo (botão "Copiar"), cole num editor de texto simples, salve como "exemplo-carrossel.html" e abra no navegador. Você vai ver os 9 slides prontos, um embaixo do outro, no Tema 1 (Dourado Premium) — use como referência de como cada peça fica montada antes de gerar a sua.',
+    copy_content: read('topclaudia-exemplo-carrossel.html'),
   },
   {
     title: 'Manual completo',

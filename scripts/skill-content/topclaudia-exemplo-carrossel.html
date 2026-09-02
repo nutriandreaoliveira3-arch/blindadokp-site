@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Exemplo de carrossel — Skill TopClaudia</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0a0a0a; font-family:Arial, sans-serif; padding:40px 0; }
+  .aviso { max-width:1080px; margin:0 auto 40px; padding:20px 26px; background:#171512; border:1px solid rgba(201,162,39,.4); color:#e8e4dd; font-size:14px; line-height:1.6; }
+  .aviso b { color:#C9A227; }
+  .galeria { display:flex; flex-direction:column; align-items:center; gap:24px; }
+  .rotulo { max-width:1080px; width:100%; color:rgba(255,255,255,.5); font-size:12px; letter-spacing:.05em; text-transform:uppercase; padding:0 4px; }
+  .slide { width:1080px; height:1350px; display:flex; overflow:hidden; background:#1C1C1C; flex-shrink:0; }
+  .dir { flex:1; min-width:0; overflow:hidden; display:flex; flex-direction:column; justify-content:center; }
+  .dir * { word-wrap:break-word; overflow-wrap:break-word; max-width:100%; }
+  .foto-placeholder {
+    background:linear-gradient(135deg,#3a3630,#1c1c1c);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px;
+    color:rgba(255,255,255,.35); font-size:20px; text-align:center; padding:20px;
+  }
+  .foto-placeholder .icone { font-size:52px; opacity:.5; }
+</style>
+</head>
+<body>
+
+<div class="aviso">
+  <b>Isso é um exemplo pronto</b> — mostra como fica o carrossel completo com o Tema 1 (Dourado Premium) e o Layout 2/6 dominante, sobre um tema genérico ("por que o conteúdo não vende"). As fotos aqui são só um espaço reservado — no carrossel de verdade, entram as fotos que você anexar na conversa. Troque o texto, a marca e o tema pelos seus.
+</div>
+
+<div class="galeria">
+
+<div class="rotulo">Slide 1 — Capa (Template C, Layout base)</div>
+<div class="slide">
+  <div class="foto" style="width:420px;min-width:420px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:60px 50px;">
+    <div style="font:700 32px/1 Arial,sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#C9A227;margin-bottom:32px;">SUA MARCA • SUA ÁREA</div>
+    <h1 style="font:700 84px/1.0 Georgia,serif;color:#FFF;margin-bottom:28px;"><span style="color:#C9A227;">5 ERROS</span> que fazem seu conteúdo não vender</h1>
+    <div style="font:400 italic 42px/1.35 Arial,sans-serif;color:rgba(255,255,255,.88);margin-bottom:44px;">(mesmo entregando um trabalho incrível)</div>
+    <div style="width:56px;height:4px;background:#C9A227;margin-bottom:24px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.12em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b></div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 2 — Texto + Cards (Template B)</div>
+<div class="slide">
+  <div class="foto" style="width:300px;min-width:300px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:42px 44px;">
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:16px;">Isso não é <span style="color:#C9A227;">falta de conteúdo.</span></h2>
+    <div style="font:400 42px/1.35 Arial,sans-serif;color:rgba(255,255,255,.88);margin-bottom:22px;">É falta de sistema. 3 erros aparecem o tempo todo:</div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">1. Postar sem estratégia</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">2. Nunca falar de preço</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">3. Sem CTA claro</div></div>
+    <div style="width:52px;height:3px;background:#C9A227;margin:18px 0 12px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b> • @seu_instagram</div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 3 — Foto + Itens (Template A)</div>
+<div class="slide">
+  <div class="foto" style="width:340px;min-width:340px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:40px 38px;">
+    <div style="display:inline-block;background:#C9A227;color:#1C1C1C;font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;margin-bottom:22px;width:fit-content;">Erro 1 de 3</div>
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:20px;">Postar sem <span style="color:#C9A227;">estratégia</span></h2>
+    <ul style="list-style:none;margin-bottom:18px;">
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Conteúdo aleatório, sem sequência</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Sem atrair o cliente certo</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;">Sem medir o que funciona</li>
+    </ul>
+    <div style="background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.5);padding:18px 22px;margin-top:6px;">
+      <div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.15em;color:#C9A227;text-transform:uppercase;margin-bottom:8px;">✓ Solução</div>
+      <div style="font:400 34px/1.35 Arial,sans-serif;color:rgba(255,255,255,.95);"><span style="color:#C9A227;">Calendário com propósito</span> em cada post — problema, solução ou prova.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 4 — Texto + Cards (Template B)</div>
+<div class="slide">
+  <div class="foto" style="width:300px;min-width:300px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:42px 44px;">
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:16px;">Falar de <span style="color:#C9A227;">preço</span> não afasta.</h2>
+    <div style="font:400 42px/1.35 Arial,sans-serif;color:rgba(255,255,255,.88);margin-bottom:22px;">O que afasta é a falta de clareza:</div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Mostre o processo</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Justifique o valor</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Tire a dúvida antes dela existir</div></div>
+    <div style="width:52px;height:3px;background:#C9A227;margin:18px 0 12px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b> • @seu_instagram</div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 5 — Foto + Itens (Template A)</div>
+<div class="slide">
+  <div class="foto" style="width:340px;min-width:340px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:40px 38px;">
+    <div style="display:inline-block;background:#C9A227;color:#1C1C1C;font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;margin-bottom:22px;width:fit-content;">Erro 2 de 3</div>
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:20px;">Nunca falar de <span style="color:#C9A227;">preço</span></h2>
+    <ul style="list-style:none;margin-bottom:18px;">
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Cliente pesquisa e desiste antes de perguntar</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Silêncio parece "caro demais pra dizer"</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;">Perde quem já tava pronto pra comprar</li>
+    </ul>
+    <div style="background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.5);padding:18px 22px;margin-top:6px;">
+      <div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.15em;color:#C9A227;text-transform:uppercase;margin-bottom:8px;">✓ Solução</div>
+      <div style="font:400 34px/1.35 Arial,sans-serif;color:rgba(255,255,255,.95);"><span style="color:#C9A227;">Ancore o valor</span> antes do número — processo, cuidado, resultado do método.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 6 — Texto + Cards (Template B)</div>
+<div class="slide">
+  <div class="foto" style="width:300px;min-width:300px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:42px 44px;">
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:16px;">CTA não é <span style="color:#C9A227;">pressão.</span></h2>
+    <div style="font:400 42px/1.35 Arial,sans-serif;color:rgba(255,255,255,.88);margin-bottom:22px;">É dar o próximo passo claro:</div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Um pedido só, por post</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Palavra fácil de digitar</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:16px 20px;margin-bottom:14px;"><div style="font:700 30px/1 Arial,sans-serif;letter-spacing:.12em;color:#C9A227;text-transform:uppercase;margin-bottom:6px;">Sempre no último slide</div></div>
+    <div style="width:52px;height:3px;background:#C9A227;margin:18px 0 12px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b> • @seu_instagram</div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 7 — Foto + Itens (Template A)</div>
+<div class="slide">
+  <div class="foto" style="width:340px;min-width:340px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:40px 38px;">
+    <div style="display:inline-block;background:#C9A227;color:#1C1C1C;font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;text-transform:uppercase;padding:10px 20px;margin-bottom:22px;width:fit-content;">Erro 3 de 3</div>
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:20px;">Sem <span style="color:#C9A227;">CTA</span> claro</h2>
+    <ul style="list-style:none;margin-bottom:18px;">
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Quem gostou não sabe o que fazer depois</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;border-bottom:1px solid rgba(255,255,255,.1);">Engajamento sem conversão</li>
+      <li style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.92);padding:10px 0;">Post bonito que não vira cliente</li>
+    </ul>
+    <div style="background:rgba(201,162,39,.1);border:1px solid rgba(201,162,39,.5);padding:18px 22px;margin-top:6px;">
+      <div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.15em;color:#C9A227;text-transform:uppercase;margin-bottom:8px;">✓ Solução</div>
+      <div style="font:400 34px/1.35 Arial,sans-serif;color:rgba(255,255,255,.95);"><span style="color:#C9A227;">Um CTA por post,</span> sempre no slide 9, sempre a mesma palavra.</div>
+    </div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 8 — Texto + Cards, 4 cards (Template B)</div>
+<div class="slide">
+  <div class="foto" style="width:300px;min-width:300px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:42px 44px;">
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:16px;">O que <span style="color:#C9A227;">funciona</span> de verdade</h2>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:14px 18px;margin-bottom:10px;"><div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;color:#C9A227;text-transform:uppercase;">Calendário com propósito</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:14px 18px;margin-bottom:10px;"><div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;color:#C9A227;text-transform:uppercase;">Preço explicado com processo</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:14px 18px;margin-bottom:10px;"><div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;color:#C9A227;text-transform:uppercase;">Um CTA claro, sempre</div></div>
+    <div style="background:rgba(201,162,39,.08);border-left:6px solid #C9A227;padding:14px 18px;margin-bottom:10px;"><div style="font:700 28px/1 Arial,sans-serif;letter-spacing:.1em;color:#C9A227;text-transform:uppercase;">Consistência, não volume</div></div>
+    <div style="width:52px;height:3px;background:#C9A227;margin:18px 0 12px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b> • @seu_instagram</div>
+  </div>
+</div>
+
+<div class="rotulo">Slide 9 — CTA (Template D)</div>
+<div class="slide">
+  <div class="foto" style="width:390px;min-width:390px;height:1350px;overflow:hidden;border-right:5px solid #C9A227;">
+    <div class="foto-placeholder" style="width:100%;height:100%;"><span class="icone">📷</span>SUA FOTO AQUI</div>
+  </div>
+  <div class="dir" style="padding:58px 46px;">
+    <div style="font:700 32px/1 Arial,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#C9A227;margin-bottom:24px;">SUA MARCA • SUA ÁREA</div>
+    <h2 style="font:700 76px/1.0 Georgia,serif;color:#FFF;margin-bottom:18px;">Não é sobre <span style="color:#C9A227;">postar mais.</span></h2>
+    <div style="font:400 38px/1.4 Arial,sans-serif;color:rgba(255,255,255,.88);margin-bottom:28px;">É sobre postar com sistema — do jeito certo, na hora certa.</div>
+    <div style="background:rgba(201,162,39,.12);border:3px solid #C9A227;padding:28px 26px;text-align:center;margin-bottom:24px;">
+      <span style="font:700 96px/1 Georgia,serif;color:#C9A227;display:block;margin-bottom:12px;">SISTEMA</span>
+      <div style="font:400 34px/1.4 Arial,sans-serif;color:rgba(255,255,255,.88);">Comenta aqui embaixo e eu te mando o passo a passo</div>
+    </div>
+    <div style="width:56px;height:3px;background:#C9A227;margin-bottom:16px;"></div>
+    <div style="font:400 24px/1 Arial,sans-serif;letter-spacing:.1em;color:rgba(255,255,255,.55);text-transform:uppercase;"><b style="color:rgba(201,162,39,.8);">Sua Marca</b> • Sua Área</div>
+  </div>
+</div>
+
+</div>
+</body>
+</html>
