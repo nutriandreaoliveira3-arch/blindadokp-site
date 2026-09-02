@@ -121,6 +121,24 @@ if (!diagnosticsColumns.includes('candidate_priorities')) {
 if (!diagnosticsColumns.includes('priorities_generated_at')) {
   db.exec('ALTER TABLE diagnostics ADD COLUMN priorities_generated_at TEXT');
 }
+// Fases 13-17 — Contexto pra IA, Prompt Mestre, Validação, Processamento e
+// Resultado. diagnostic_input_snapshot guarda o contexto exato mandado pra
+// IA (Etapa 22, seção 46 — auditoria de "por que recomendamos isso");
+// final_report guarda a resposta já validada contra o Contrato JSON (Etapa
+// 20) — é o que a tela de resultado lê; report_status acompanha
+// PROCESSING/COMPLETED/PROCESSING_ERROR.
+if (!diagnosticsColumns.includes('diagnostic_input_snapshot')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN diagnostic_input_snapshot TEXT');
+}
+if (!diagnosticsColumns.includes('final_report')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN final_report TEXT');
+}
+if (!diagnosticsColumns.includes('report_status')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN report_status TEXT');
+}
+if (!diagnosticsColumns.includes('report_generated_at')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN report_generated_at TEXT');
+}
 
 // Migração leve: adiciona copy_content à tabela lessons quando ainda não
 // existir. Usado pras skills vendidas como arquivo de texto (SKILL.md) que a
