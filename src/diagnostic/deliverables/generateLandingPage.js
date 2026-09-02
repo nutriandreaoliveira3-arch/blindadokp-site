@@ -126,4 +126,4 @@ async function generateLandingPage(context) {
   return parsed;
 }
 
-module.exports = { generateLandingPage };
+module.exports = { generateLandingPage, COLOR_THEMES };

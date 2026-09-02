@@ -8,6 +8,7 @@ const { getClientUnlockStatus, manualUnlockNextArea } = require('../diagnostic/u
 const { getFinalDiagnostic, updateFinalDiagnosticFields, releaseFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
 const { getCurrentDiagnostic } = require('../diagnostic/services/getCurrentDiagnostic');
 const { unlockRetake, isRetakeUnlocked } = require('../diagnostic/services/retakeDiagnostic');
+const { generateBusinessBookForClient, getAllClientDeliverables, releaseDeliverable } = require('../diagnostic/services/generateClientDeliverables');
 
 const router = express.Router();
 
@@ -262,6 +263,48 @@ router.post('/:userId/unlock-retake', (req, res) => {
       return res.status(404).json({ error: err.message });
     }
     console.error(`Erro ao liberar refazer diagnóstico da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível liberar agora.' });
+  }
+});
+
+// Admin → Clientes: status de todos os entregáveis dessa cliente,
+// liberado ou não — usado no painel do Business Book Blindado.
+router.get('/:userId/deliverables', (req, res) => {
+  try {
+    res.json({ deliverables: getAllClientDeliverables(req.params.userId) });
+  } catch (err) {
+    console.error(`Erro ao buscar entregáveis da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível carregar os entregáveis agora.' });
+  }
+});
+
+// Business Book Blindado — gerado só sob demanda (nunca automático).
+// Pode levar até 1 minuto (mesma ordem de grandeza dos outros
+// entregáveis com IA).
+router.post('/:userId/business-book/generate', async (req, res) => {
+  try {
+    const result = await generateBusinessBookForClient(req.params.userId);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    if (err.code === 'NO_DIAGNOSTIC') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao gerar o Business Book da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: err.message || 'Não foi possível gerar o Business Book agora.' });
+  }
+});
+
+// Business Book Blindado — libera pra cliente ver, na hora que a Andréa
+// achar necessário (separado da geração, de propósito).
+router.post('/:userId/business-book/release', (req, res) => {
+  try {
+    releaseDeliverable(req.params.userId, 'business_book');
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'NOT_READY') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao liberar o Business Book da cliente ${req.params.userId}:`, err.message);
     res.status(500).json({ error: 'Não foi possível liberar agora.' });
   }
 });
