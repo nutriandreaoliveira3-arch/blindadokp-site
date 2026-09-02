@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Entrar na sua conta BlindadoKP.">
-  <title>Entrar — BlindadoKP</title>
+  <meta name="description" content="Redefinir sua senha BlindadoKP.">
+  <title>Esqueci minha senha — BlindadoKP</title>
   <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
   <link rel="manifest" href="assets/site.webmanifest">
   <link rel="stylesheet" href="css/style.css">
@@ -26,26 +26,20 @@
     <section class="section products-section" style="padding-top:176px;">
       <div class="page-shell" style="max-width:480px;">
         <div class="section-heading reveal" style="display:block;margin-bottom:28px;">
-          <p class="eyebrow">ÁREA DE ACESSO</p>
-          <h2 style="font-size:clamp(30px,4vw,40px);">Entrar</h2>
+          <p class="eyebrow">ACESSO</p>
+          <h2 style="font-size:clamp(30px,4vw,40px);">Esqueci minha senha</h2>
+          <p style="margin-top:14px;color:var(--muted);">Digite o e-mail da sua conta — se ele estiver cadastrado, mandamos um link pra você criar uma senha nova.</p>
         </div>
 
-        <form id="loginForm" class="wizard-card reveal" style="display:grid;gap:20px;" novalidate>
+        <form id="forgotForm" class="wizard-card reveal" style="display:grid;gap:20px;" novalidate>
           <div class="field">
             <label for="email">E-mail</label>
             <input type="email" id="email" name="email" required>
           </div>
-          <div class="field">
-            <label for="password">Senha</label>
-            <input type="password" id="password" name="password" required>
-          </div>
-          <p id="loginError" style="display:none;color:#e08a72;font-size:13.5px;margin:0;"></p>
-          <button type="submit" class="button button-gold" style="width:100%;">ENTRAR</button>
-          <p style="margin:0;text-align:center;">
-            <a href="esqueci-senha.html" style="color:var(--gold-light);font-size:13.5px;">Esqueceu sua senha?</a>
-          </p>
+          <p id="formMsg" style="display:none;font-size:13.5px;margin:0;"></p>
+          <button type="submit" id="submitBtn" class="button button-gold" style="width:100%;">ENVIAR LINK</button>
           <p style="margin:0;color:var(--muted);font-size:13px;text-align:center;">
-            Comprou e ainda não criou sua senha? Confira o e-mail de ativação que enviamos após a compra.
+            Lembrou a senha? <a href="login.html" style="color:var(--gold-light);">Entrar</a>
           </p>
         </form>
       </div>
@@ -63,28 +57,35 @@
     </footer>
   </main>
 
-  <script src="js/auth-shared.js"></script>
   <script>
-    var form = document.getElementById('loginForm');
-    var errorEl = document.getElementById('loginError');
-    var params = new URLSearchParams(window.location.search);
-    var redirectTo = params.get('proximo') || 'identidade-visual.html';
+    var form = document.getElementById('forgotForm');
+    var msgEl = document.getElementById('formMsg');
+    var submitBtn = document.getElementById('submitBtn');
 
     form.addEventListener('submit', async function (event) {
       event.preventDefault();
-      errorEl.style.display = 'none';
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'ENVIANDO...';
+      msgEl.style.display = 'none';
+
       try {
-        var data = await BlindadoAuth.login(
-          document.getElementById('email').value,
-          document.getElementById('password').value
-        );
-        // Admin sempre cai no painel administrativo, direto — não faz
-        // sentido pra ela passar pela última página que visitou antes de
-        // precisar logar, como faz pro fluxo normal de cliente.
-        window.location.href = data.user && data.user.role === 'admin' ? 'admin.html' : redirectTo;
+        var res = await fetch('/api/auth/forgot-password', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: document.getElementById('email').value }),
+        });
+        var data = await res.json();
+        msgEl.textContent = data.message || 'Se esse e-mail estiver cadastrado, enviamos um link pra redefinir a senha.';
+        msgEl.style.color = '#78c896';
+        msgEl.style.display = 'block';
+        form.querySelector('input[type="email"]').disabled = true;
+        submitBtn.style.display = 'none';
       } catch (err) {
-        errorEl.textContent = err.message || 'Não foi possível entrar. Confira e-mail e senha.';
-        errorEl.style.display = 'block';
+        msgEl.textContent = 'Não foi possível enviar agora. Tente de novo em instantes.';
+        msgEl.style.color = '#e08a72';
+        msgEl.style.display = 'block';
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'ENVIAR LINK';
       }
     });
   </script>
