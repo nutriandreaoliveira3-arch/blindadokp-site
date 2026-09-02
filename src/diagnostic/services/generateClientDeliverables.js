@@ -13,6 +13,7 @@ const { generateManualEtica } = require('../deliverables/generateManualEtica');
 const { generateAssistenteIA } = require('../deliverables/generateAssistenteIA');
 const { generateLandingPage } = require('../deliverables/generateLandingPage');
 const { generateKitComercial } = require('../deliverables/generateKitComercial');
+const { generateCampanhaAquisicao } = require('../deliverables/generateCampanhaAquisicao');
 const { generateBusinessBook } = require('../deliverables/generateBusinessBook');
 const { getCurrentDiagnostic } = require('./getCurrentDiagnostic');
 const { getClientUnlockStatus } = require('../unlocking/unlockEngine');
@@ -28,6 +29,7 @@ const DELIVERABLE_TYPES = [
   { type: 'assistente_ia', generate: generateAssistenteIA },
   { type: 'landing_page', generate: generateLandingPage },
   { type: 'kit_comercial', generate: generateKitComercial },
+  { type: 'campanha_aquisicao', generate: generateCampanhaAquisicao },
 ];
 
 // releaseImmediately: true pros 4 entregáveis automáticos (sempre visíveis
