@@ -95,7 +95,7 @@ const mentoriaModuleId = upsertModule(
 );
 replaceLessons(mentoriaModuleId, [
   {
-    title: 'Bem-vinda',
+    title: 'Bem-vindo(a)',
     content: read(MENTORIA_DIR, 'boas-vindas.html'),
   },
 ]);
