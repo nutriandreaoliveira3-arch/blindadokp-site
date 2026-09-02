@@ -11,11 +11,13 @@ const { buildAiContext } = require('../ai/buildAiContext');
 const { generateDossiePosicionamento } = require('../deliverables/generateDossiePosicionamento');
 const { generateManualEtica } = require('../deliverables/generateManualEtica');
 const { generateAssistenteIA } = require('../deliverables/generateAssistenteIA');
+const { generateLandingPage } = require('../deliverables/generateLandingPage');
 
 const DELIVERABLE_TYPES = [
   { type: 'dossie_posicionamento', generate: generateDossiePosicionamento },
   { type: 'manual_etica', generate: generateManualEtica },
   { type: 'assistente_ia', generate: generateAssistenteIA },
+  { type: 'landing_page', generate: generateLandingPage },
 ];
 
 function upsertDeliverable({ userId, diagnosticId, type, status, content }) {
