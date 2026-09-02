@@ -142,6 +142,48 @@ const ENFERMEIRO_EXTRA_UNCERTAINTY_OPTIONS = [
 ];
 const ENFERMEIRO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, ENFERMEIRO_EXTRA_UNCERTAINTY_OPTIONS);
 
+// Terapeuta ocupacional é regulado pelo mesmo conselho e pelo mesmo código de
+// ética que fisioterapeuta (COFFITO — Resolução nº 424/2013 se aplica às
+// duas profissões), então reaproveita a mesma lista.
+const TERAPEUTA_OCUPACIONAL_UNCERTAINTY_AREAS_OPTIONS = FISIOTERAPEUTA_UNCERTAINTY_AREAS_OPTIONS;
+
+// Situações específicas de farmacêutico(a) — Código de Ética Farmacêutica
+// (Resolução CFF nº 596/2014) e Resolução CFF nº 658/2018 sobre propaganda
+// de serviços farmacêuticos: conteúdo divulgado precisa ter evidência
+// científica e foco em esclarecimento (não em venda); veda autopromoção e
+// prática enganosa/abusiva; veda oferecer desconto, sorteio ou vantagem
+// financeira em troca da obtenção de um serviço farmacêutico. Propaganda de
+// medicamento segue regra à parte (RDC nº 96/2008 da Anvisa), que veda
+// induzir uso indiscriminado.
+const FARMACEUTICO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'conteudo_sem_evidencia_cientifica', label: 'Conteúdo sobre medicamentos/produtos sem evidência científica, com foco maior em venda do que em esclarecimento' },
+  { value: 'vantagem_financeira_troca_servico', label: 'Oferecer desconto, sorteio ou vantagem financeira em troca da obtenção de um serviço farmacêutico' },
+  { value: 'propaganda_medicamento_uso_indiscriminado', label: 'Propaganda de medicamento que possa induzir ao uso indiscriminado' },
+];
+const FARMACEUTICO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, FARMACEUTICO_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de biomédico(a) — Código de Ética (Resolução CFBM nº
+// 330/2020): "antes e depois" é permitido, mas exige TCLE (termo de
+// consentimento) assinado e enviado ao conselho, legenda informando que a
+// divulgação foi autorizada pelo usuário, e um aviso obrigatório de que a
+// imagem não garante resultado (cada pessoa tem características únicas).
+const BIOMEDICO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'fotos_antes_depois_tcle_disclaimer', label: 'Fotos de "antes e depois" — TCLE assinado, legenda de autorização e aviso obrigatório de que a imagem não garante resultado' },
+  { value: 'tcle_enviado_ao_conselho', label: 'Enviar o TCLE ao conselho quando a imagem é divulgada' },
+];
+const BIOMEDICO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, BIOMEDICO_EXTRA_UNCERTAINTY_OPTIONS);
+
+// Situações específicas de profissional de Educação Física — Código de
+// Ética dos Profissionais de Educação Física (CONFEF) e a Lei nº
+// 9.696/1998: fotos/vídeos de alunos só com autorização expressa
+// (preferencialmente escrita ou digital); veda expor aluno sem autorização
+// ou criar expectativa enganosa sobre resultado potencial de treino.
+const EDUCADOR_FISICO_EXTRA_UNCERTAINTY_OPTIONS = [
+  { value: 'fotos_alunos_autorizacao_expressa', label: 'Fotos ou vídeos de alunos sem autorização expressa (escrita ou digital)' },
+  { value: 'expectativa_enganosa_resultado_potencial', label: 'Criar expectativa enganosa sobre o resultado potencial de um treino ou programa' },
+];
+const EDUCADOR_FISICO_UNCERTAINTY_AREAS_OPTIONS = insertBeforeCatchAll(UNCERTAINTY_AREAS_OPTIONS, EDUCADOR_FISICO_EXTRA_UNCERTAINTY_OPTIONS);
+
 // Registro por profissão (ver profession_category no Bloco 1 —
 // business_current.js). Pra adicionar outra profissão no futuro: pesquisar
 // o código de ética do conselho dela, montar as opções extras específicas
@@ -184,6 +226,26 @@ const PROFESSION_ETHICS_CONTENT = {
     uncertaintyAreasOptions: ENFERMEIRO_UNCERTAINTY_AREAS_OPTIONS,
     referenceHint:
       ' Algumas situações comuns pra enfermeiros(as), considerando a Resolução COFEN nº 554/2017 — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  terapeuta_ocupacional: {
+    uncertaintyAreasOptions: TERAPEUTA_OCUPACIONAL_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra terapeutas ocupacionais, considerando o Código de Ética (Resolução COFFITO nº 424/2013) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  farmaceutico: {
+    uncertaintyAreasOptions: FARMACEUTICO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra farmacêuticos(as), considerando o Código de Ética Farmacêutica (Resolução CFF nº 596/2014) e a Resolução CFF nº 658/2018 sobre propaganda de serviços — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  biomedico: {
+    uncertaintyAreasOptions: BIOMEDICO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra biomédicos(as), considerando o Código de Ética (Resolução CFBM nº 330/2020) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
+  },
+  educador_fisico: {
+    uncertaintyAreasOptions: EDUCADOR_FISICO_UNCERTAINTY_AREAS_OPTIONS,
+    referenceHint:
+      ' Algumas situações comuns pra profissionais de Educação Física, considerando o Código de Ética dos Profissionais de Educação Física (CONFEF) — sempre confirme a redação vigente no site do seu conselho, pois essas regras mudam com frequência.',
   },
 };
 
