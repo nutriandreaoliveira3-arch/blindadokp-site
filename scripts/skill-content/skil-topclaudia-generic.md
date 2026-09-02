@@ -25,8 +25,9 @@ Antes do primeiro carrossel da conversa, pergunte ao comprador (uma pergunta de 
 1. Qual o nome/marca que aparece na assinatura dos slides?
 2. Tem @ do Instagram pra incluir? (opcional)
 3. Qual o CTA padrão do slide 9? (ex: "Comenta [PALAVRA]", "Manda mensagem", outro)
+4. Qual dos 6 temas de cor quer usar? (mostre a lista da seção "Paleta de cores" abaixo; se não souber, use o Tema 1 — Dourado Premium — como padrão)
 
-Guarde essas respostas e reutilize em todos os carrosséis seguintes da mesma conversa, sem perguntar de novo. Se o comprador voltar em outra conversa e colar essas informações, use-as direto.
+Guarde essas respostas e reutilize em todos os carrosséis seguintes da mesma conversa, sem perguntar de novo. Se o comprador voltar em outra conversa e colar essas informações, use-as direto. Se ele quiser trocar de tema no meio da conversa, é só pedir — não precisa refazer a identidade toda.
 
 ---
 
@@ -38,25 +39,26 @@ Sem redimensionar. Sem ajuste manual de layout. Sem Canva.
 
 ---
 
-## PALETA DE CORES (padrão — pode ser customizada pelo comprador)
+## PALETA DE CORES — 6 TEMAS PRONTOS (escolha 1 na identidade de marca)
 
-```
-Fundo todos os slides:   #1C1C1C  (preto premium)
-Título principal:        #FFFFFF  (branco puro)
-Destaque / acento:       #C9A227  (dourado)
-Texto secundário:        rgba(255,255,255,.88)  (quase branco — bem visível)
-Assinatura:              rgba(255,255,255,.55)
-Borda foto:              5px solid #C9A227
-Badge bg:                #C9A227
-Badge texto:              #1C1C1C
-Cards bg:                rgba(201,162,39,.08)
-Cards borda:              6px solid #C9A227
-Cards título:             #C9A227
-Solução bg:               rgba(201,162,39,.10)
-Solução borda:            1px solid rgba(201,162,39,.50)
-```
+Os templates abaixo usam 5 "variáveis" de cor. Pra aplicar um tema, troque cada valor pelo da coluna correspondente — os nomes de classe/CSS não mudam, só as cores.
 
-Essa é a paleta padrão de entrega. O comprador pode trocar as cores à vontade (ver seção "Personalizações" abaixo) — isso não quebra o layout, só muda a aparência.
+| Tema | Fundo | Título/texto principal | Destaque/acento | Texto secundário (rgba) | Assinatura (rgba) |
+|---|---|---|---|---|---|
+| **1 — Dourado Premium** (padrão) | `#1C1C1C` | `#FFFFFF` | `#C9A227` | `rgba(255,255,255,.88)` | `rgba(255,255,255,.55)` |
+| **2 — Rosé Elegante** | `#221A1C` | `#FDF6F5` | `#D9A5A0` | `rgba(253,246,245,.85)` | `rgba(253,246,245,.55)` |
+| **3 — Verde Bem-Estar** | `#142019` | `#F3FBF6` | `#7FB77E` | `rgba(243,251,246,.85)` | `rgba(243,251,246,.55)` |
+| **4 — Azul Clínico** | `#101B24` | `#F2F8FC` | `#4FA3D1` | `rgba(242,248,252,.85)` | `rgba(242,248,252,.55)` |
+| **5 — Terracota Aconchegante** | `#221510` | `#FBF3EC` | `#C97B4A` | `rgba(251,243,236,.85)` | `rgba(251,243,236,.55)` |
+| **6 — Branco Editorial** (fundo claro) | `#FFFFFF` | `#1C1C1C` | `#B8862F` | `rgba(28,28,28,.75)` | `rgba(28,28,28,.5)` |
+
+Todos os elementos derivados de cor (badge bg, cards bg/borda, box de solução, borda de foto, box de CTA) usam a cor de **destaque** do tema escolhido — nos templates abaixo eles aparecem como `#C9A227` (Tema 1); pros outros 5 temas, troque `#C9A227` pelo destaque da linha correspondente em todo o HTML (incluindo dentro de `rgba(201,162,39,X)`, que é `#C9A227` em rgba — recalcule o rgba equivalente do novo destaque mantendo a mesma opacidade `X`).
+
+**Como escolher:** pergunte na identidade de marca (seção acima) qual tema o comprador quer, ou sugira com base na área dele — Tema 4 (Azul Clínico) combina com médicos/psicólogos, Tema 3 (Verde Bem-Estar) com nutrição/bem-estar, Tema 2 (Rosé) e Tema 5 (Terracota) com estética/atendimento mais acolhedor, Tema 1 (Dourado) e Tema 6 (Branco Editorial) são neutros pra qualquer área.
+
+**Atenção no Tema 6 (fundo claro):** ele inverte a lógica dos outros 5 — texto escuro em vez de claro. Troque `#1C1C1C` (fundo) por `#FFFFFF`, `#FFFFFF` (texto) por `#1C1C1C`, e toda cor `rgba(255,255,255,X)` do texto secundário/assinatura por `rgba(28,28,28,X)` com a mesma opacidade.
+
+O comprador também pode customizar a cor livremente além dos 6 temas prontos (ver seção "Personalizações" abaixo) — isso não quebra o layout, só muda a aparência.
 
 ---
 
