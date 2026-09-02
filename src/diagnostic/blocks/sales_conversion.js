@@ -177,9 +177,9 @@ const QUESTIONS = [
   {
     id: 'q5_objecoes',
     title: 'Principais objeções',
-    content: 'Quais objeções você mais escuta antes da decisão de compra? Selecione até 3.',
+    content: 'Quais objeções você mais escuta antes da decisão de compra?',
     fields: [
-      { id: 'sales_objections', label: 'Objeções', type: 'multiselect', options: OBJECTION_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'sales_objections', label: 'Objeções', type: 'multiselect', options: OBJECTION_OPTIONS, required: true },
       {
         id: 'sales_objections_other',
         label: 'Qual?',

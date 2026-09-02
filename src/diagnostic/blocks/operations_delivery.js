@@ -77,9 +77,9 @@ const QUESTIONS = [
   {
     id: 'q2_tempo',
     title: 'Maior consumo de tempo',
-    content: 'O que mais consome seu tempo durante a entrega? Selecione até 3.',
+    content: 'O que mais consome seu tempo durante a entrega?',
     fields: [
-      { id: 'delivery_time_consuming_tasks', label: 'Atividades', type: 'multiselect', options: TIME_CONSUMING_TASKS_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'delivery_time_consuming_tasks', label: 'Atividades', type: 'multiselect', options: TIME_CONSUMING_TASKS_OPTIONS, required: true },
       {
         id: 'delivery_time_consuming_tasks_other',
         label: 'Qual?',
@@ -101,9 +101,9 @@ const QUESTIONS = [
   {
     id: 'q4_retrabalho',
     title: 'Atraso, repetição e retrabalho',
-    content: 'Onde mais acontecem atrasos, repetição de tarefas ou retrabalho hoje? Selecione até 3.',
+    content: 'Onde mais acontecem atrasos, repetição de tarefas ou retrabalho hoje?',
     fields: [
-      { id: 'rework_bottlenecks', label: 'Gargalos', type: 'multiselect', options: REWORK_BOTTLENECKS_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'rework_bottlenecks', label: 'Gargalos', type: 'multiselect', options: REWORK_BOTTLENECKS_OPTIONS, required: true },
       {
         id: 'rework_bottlenecks_other',
         label: 'Qual?',

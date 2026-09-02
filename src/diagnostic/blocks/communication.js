@@ -155,9 +155,9 @@ const QUESTIONS = [
   {
     id: 'q4_tipo_conteudo',
     title: 'Tipo de conteúdo',
-    content: 'Que tipos de conteúdo você produz com mais frequência? Selecione até 4.',
+    content: 'Que tipos de conteúdo você produz com mais frequência?',
     fields: [
-      { id: 'content_types', label: 'Tipos de conteúdo', type: 'multiselect', options: CONTENT_TYPE_OPTIONS, required: true, maxSelect: 4 },
+      { id: 'content_types', label: 'Tipos de conteúdo', type: 'multiselect', options: CONTENT_TYPE_OPTIONS, required: true },
       {
         id: 'content_types_other',
         label: 'Qual?',
@@ -167,11 +167,10 @@ const QUESTIONS = [
       },
       {
         id: 'best_performing_content_types',
-        label: 'Qual desses tipos costuma gerar mais interesse, conversas ou oportunidades? (até 2)',
+        label: 'Qual desses tipos costuma gerar mais interesse, conversas ou oportunidades?',
         type: 'multiselect',
         options: CONTENT_TYPE_OPTIONS,
         required: true,
-        maxSelect: 2,
       },
     ],
   },
@@ -202,9 +201,9 @@ const QUESTIONS = [
   {
     id: 'q6_resultado',
     title: 'Resultado do conteúdo',
-    content: 'Hoje, o que sua comunicação costuma gerar com mais frequência? (até 3)',
+    content: 'Hoje, o que sua comunicação costuma gerar com mais frequência?',
     fields: [
-      { id: 'content_results', label: 'Resultados', type: 'multiselect', options: RESULT_OPTIONS, required: true, maxSelect: 3 },
+      { id: 'content_results', label: 'Resultados', type: 'multiselect', options: RESULT_OPTIONS, required: true },
     ],
   },
   {
