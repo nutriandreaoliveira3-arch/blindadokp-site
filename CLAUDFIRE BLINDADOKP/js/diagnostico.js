@@ -114,6 +114,10 @@
         reportBannerTitleEl.textContent = "Seu Diagnóstico Blindado 360 está pronto.";
         reportBannerTextEl.textContent = "Veja o gargalo principal, as prioridades e o plano dos próximos 90 dias.";
         reportBannerBtnEl.textContent = "Ver meu diagnóstico";
+      } else if (reportStatus && reportStatus.status === "AWAITING_REVIEW") {
+        reportBannerTitleEl.textContent = "Seu Diagnóstico Blindado 360 está pronto!";
+        reportBannerTextEl.textContent = "Estamos preparando sua devolutiva personalizada. Em breve entramos em contato pra agendar sua sessão.";
+        reportBannerBtnEl.textContent = "Ver mais";
       } else {
         reportBannerTitleEl.textContent = "Todas as 15 áreas foram respondidas.";
         reportBannerTextEl.textContent = "Já temos o que precisamos pra gerar seu Diagnóstico Blindado 360 completo.";
@@ -708,6 +712,20 @@
     reportBodyEl.appendChild(el("p", "diag-report-loading", msg));
   }
 
+  function renderAwaitingReview() {
+    reportBodyEl.innerHTML = "";
+    var wrap = el("div", "diag-report-section");
+    wrap.appendChild(el("h3", "diag-report-section-title", "Seu diagnóstico está pronto!"));
+    wrap.appendChild(
+      el(
+        "p",
+        "diag-report-loading",
+        "Estamos preparando sua devolutiva personalizada. Em breve entramos em contato pra agendar sua sessão 1:1 e te explicar o resultado com calma."
+      )
+    );
+    reportBodyEl.appendChild(wrap);
+  }
+
   function renderReportError(msg) {
     reportBodyEl.innerHTML = "";
     reportBodyEl.appendChild(el("p", "diag-error", msg || "Não conseguimos gerar seu diagnóstico agora. Tente novamente."));
@@ -929,7 +947,11 @@
       await api("/api/diagnostic/priorities", { method: "POST" });
       renderReportLoading("Gerando seu Diagnóstico Blindado 360 com IA — isso pode levar até 1 minuto...");
       var data = await api("/api/diagnostic/report", { method: "POST" });
-      renderReport(data.report);
+      if (data.status === "AWAITING_REVIEW") {
+        renderAwaitingReview();
+      } else {
+        renderReport(data.report);
+      }
     } catch (err) {
       renderReportError(err.message);
     }
@@ -947,6 +969,8 @@
     }
     if (data.status === "COMPLETED" && data.report) {
       renderReport(data.report);
+    } else if (data.status === "AWAITING_REVIEW") {
+      renderAwaitingReview();
     } else {
       await runReportGeneration();
     }

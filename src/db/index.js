@@ -139,6 +139,13 @@ if (!diagnosticsColumns.includes('report_status')) {
 if (!diagnosticsColumns.includes('report_generated_at')) {
   db.exec('ALTER TABLE diagnostics ADD COLUMN report_generated_at TEXT');
 }
+// Devolutiva 1:1: o relatório final fica pronto mas travado — a cliente só
+// vê depois que a Andréa revisa (e pode editar os pontos-chave) e libera na
+// mão, geralmente depois de uma reunião 1:1 explicando o resultado. NULL =
+// ainda travado (aguardando revisão); preenchido = liberado pra cliente ver.
+if (!diagnosticsColumns.includes('report_released_at')) {
+  db.exec('ALTER TABLE diagnostics ADD COLUMN report_released_at TEXT');
+}
 
 // Migração leve: adiciona copy_content à tabela lessons quando ainda não
 // existir. Usado pras skills vendidas como arquivo de texto (SKILL.md) que a

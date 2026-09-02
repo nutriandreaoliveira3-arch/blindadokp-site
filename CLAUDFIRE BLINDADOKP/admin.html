@@ -362,6 +362,10 @@
           '<details class="unlock-status" ontoggle="carregarLiberacaoCliente(event, \'' + u.id + '\')">' +
           '<summary style="color:var(--gold-light);cursor:pointer;font-size:13px;">Liberação por Diagnóstico 360</summary>' +
           '<div class="unlock-status-body" id="unlock-status-' + u.id + '" style="margin-top:10px;color:var(--muted);font-size:13px;">Carregando...</div>' +
+          "</details>" +
+          '<details class="unlock-status" ontoggle="carregarDevolutivaCliente(event, \'' + u.id + '\')">' +
+          '<summary style="color:var(--gold-light);cursor:pointer;font-size:13px;">Devolutiva do Diagnóstico 360 (revisar antes de liberar)</summary>' +
+          '<div class="unlock-status-body" id="devolutiva-' + u.id + '" style="margin-top:10px;color:var(--muted);font-size:13px;">Carregando...</div>' +
           "</details></div>";
       });
       document.getElementById("clientesLista").innerHTML = html || '<p style="color:var(--muted);">Nenhuma cliente cadastrada ainda.</p>';
@@ -417,6 +421,122 @@
       }
       msg.textContent = "Liberado: " + data.unlocked.map(function (u) { return u.moduleTitle; }).join(", ");
       var details = document.getElementById("unlock-status-" + userId).closest("details");
+      details.dispatchEvent(new Event("toggle"));
+    };
+
+    // Campos de input (title) ficam sem "value" no HTML de propósito — o
+    // texto pode ter aspas/caracteres que quebrariam o atributo, então o
+    // valor é setado depois via JS (.value = ...), logo após inserir o
+    // HTML no DOM. Campos de textarea (description) já entram com o
+    // conteúdo escapado dentro da tag, sem esse problema.
+    function campoTexto(label, id, valor, multiline) {
+      var label_ = '<label style="display:block;margin-top:10px;color:var(--muted);font-size:12px;">' + label + '</label>';
+      var estilo = 'width:100%;background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:8px 10px;border-radius:6px;font-size:13px;margin-top:4px;';
+      if (multiline) {
+        return label_ + '<textarea id="' + id + '" rows="3" style="' + estilo + '">' + escapeHtmlAdmin(valor || "") + '</textarea>';
+      }
+      return label_ + '<input type="text" id="' + id + '" style="' + estilo + '">';
+    }
+
+    function escapeHtmlAdmin(str) {
+      return String(str || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+    }
+
+    window.carregarDevolutivaCliente = async function (event, userId) {
+      var details = event.target;
+      if (!details.open) return;
+      var body = document.getElementById("devolutiva-" + userId);
+      body.textContent = "Carregando...";
+      var res = await fetch("/api/admin/users/" + userId + "/diagnostic-report", { headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        body.textContent = data.error || "Não foi possível carregar.";
+        return;
+      }
+      if (data.status !== "COMPLETED" || !data.report) {
+        body.textContent = "Essa cliente ainda não tem um relatório final gerado (status: " + (data.status || "nenhum") + ").";
+        return;
+      }
+      var r = data.report;
+      var pb = r.primary_bottleneck || {};
+      var mo = r.main_opportunity || {};
+      var ns = r.next_step || {};
+
+      var statusHtml = data.releasedAt
+        ? '<p style="color:#78c896;margin:0 0 10px;">✓ Liberado pra cliente em ' + new Date(data.releasedAt).toLocaleString("pt-BR") + '.</p>'
+        : '<p style="color:var(--gold-light);margin:0 0 10px;">Aguardando sua revisão — a cliente ainda não vê esse resultado.</p>';
+
+      var html = statusHtml;
+      html += '<form onsubmit="return salvarDevolutiva(event, \'' + userId + '\')">';
+      html += campoTexto("Resumo executivo", "dev-summary-" + userId, r.executive_summary, true);
+      html += campoTexto("Gargalo principal — título", "dev-bottleneck-title-" + userId, pb.title, false);
+      html += campoTexto("Gargalo principal — descrição", "dev-bottleneck-desc-" + userId, pb.description, true);
+      html += campoTexto("Maior oportunidade — título", "dev-opportunity-title-" + userId, mo.title, false);
+      html += campoTexto("Maior oportunidade — descrição", "dev-opportunity-desc-" + userId, mo.description, true);
+      html += campoTexto("Próximo passo — título", "dev-nextstep-title-" + userId, ns.title, false);
+      html += campoTexto("Próximo passo — descrição", "dev-nextstep-desc-" + userId, ns.description, true);
+      html += '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">';
+      html += '<button type="submit" class="button button-outline">SALVAR ALTERAÇÕES</button>';
+      if (!data.releasedAt) {
+        html += '<button type="button" class="button button-gold" onclick="liberarDevolutiva(\'' + userId + '\')">LIBERAR RESULTADO PRA CLIENTE</button>';
+      }
+      html += '<span id="dev-msg-' + userId + '" style="color:var(--muted);font-size:12px;"></span>';
+      html += '</div></form>';
+
+      // Preenche os campos de input (título) via value, já que campoTexto só
+      // resolve textarea com o valor inline (input precisa do atributo value
+      // separado pra não injetar o texto dentro da tag).
+      body.innerHTML = html;
+      document.getElementById("dev-bottleneck-title-" + userId).value = pb.title || "";
+      document.getElementById("dev-opportunity-title-" + userId).value = mo.title || "";
+      document.getElementById("dev-nextstep-title-" + userId).value = ns.title || "";
+    };
+
+    window.salvarDevolutiva = function (event, userId) {
+      event.preventDefault();
+      var msg = document.getElementById("dev-msg-" + userId);
+      msg.textContent = "Salvando...";
+      fetch("/api/admin/users/" + userId + "/diagnostic-report", {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          executive_summary: document.getElementById("dev-summary-" + userId).value,
+          primary_bottleneck: {
+            title: document.getElementById("dev-bottleneck-title-" + userId).value,
+            description: document.getElementById("dev-bottleneck-desc-" + userId).value,
+          },
+          main_opportunity: {
+            title: document.getElementById("dev-opportunity-title-" + userId).value,
+            description: document.getElementById("dev-opportunity-desc-" + userId).value,
+          },
+          next_step: {
+            title: document.getElementById("dev-nextstep-title-" + userId).value,
+            description: document.getElementById("dev-nextstep-desc-" + userId).value,
+          },
+        }),
+      })
+        .then(function (res) { return res.json().then(function (data) { return { res: res, data: data }; }); })
+        .then(function (r) {
+          msg.textContent = r.res.ok ? "Salvo." : (r.data.error || "Erro ao salvar.");
+        });
+      return false;
+    };
+
+    window.liberarDevolutiva = async function (userId) {
+      if (!confirm("Liberar o resultado do Diagnóstico 360 pra essa cliente? Ela vai poder ver o relatório completo a partir de agora.")) return;
+      var msg = document.getElementById("dev-msg-" + userId);
+      msg.textContent = "Liberando...";
+      var res = await fetch("/api/admin/users/" + userId + "/diagnostic-report/release", { method: "POST", headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || "Erro ao liberar.";
+        return;
+      }
+      var extra = data.area
+        ? " Próxima área liberada: " + data.unlocked.map(function (u) { return u.moduleTitle; }).join(", ") + "."
+        : (data.unlockError ? " " + data.unlockError : " Nenhuma próxima área pra liberar agora.");
+      msg.textContent = "Liberado pra cliente!" + extra;
+      var details = document.getElementById("devolutiva-" + userId).closest("details");
       details.dispatchEvent(new Event("toggle"));
     };
 

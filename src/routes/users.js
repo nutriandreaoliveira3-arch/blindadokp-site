@@ -5,6 +5,7 @@ const db = require('../db');
 const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { sendActivationEmail } = require('../lib/email');
 const { getClientUnlockStatus, manualUnlockNextArea } = require('../diagnostic/unlocking/unlockEngine');
+const { getFinalDiagnostic, updateFinalDiagnosticFields, releaseFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
 
 const router = express.Router();
 
@@ -178,6 +179,71 @@ router.post('/:userId/unlock-next', async (req, res) => {
     }
     console.error(`Erro ao liberar próximo módulo da cliente ${req.params.userId}:`, err.message);
     res.status(500).json({ error: 'Não foi possível liberar o próximo módulo agora.' });
+  }
+});
+
+// Devolutiva 1:1 — Admin → Clientes: ver o relatório final completo dessa
+// cliente (mesmo travado, sem liberar pra ela), pra Andréa revisar antes
+// da reunião 1:1.
+router.get('/:userId/diagnostic-report', (req, res) => {
+  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  if (!diagnostic) {
+    return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
+  }
+  try {
+    res.json(getFinalDiagnostic(diagnostic.id));
+  } catch (err) {
+    console.error(`Erro ao buscar o relatório final da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível carregar o relatório agora.' });
+  }
+});
+
+// Edita só os pontos-chave do relatório (resumo executivo, gargalo
+// principal, maior oportunidade, próximo passo) antes de liberar pra
+// cliente — pra Andréa poder ajustar o texto da IA com o que combinou na
+// reunião 1:1, sem mexer nos scores/evidências (que continuam batendo com
+// o motor determinístico).
+router.put('/:userId/diagnostic-report', (req, res) => {
+  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  if (!diagnostic) {
+    return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
+  }
+  try {
+    const report = updateFinalDiagnosticFields(diagnostic.id, req.body || {});
+    res.json({ ok: true, report });
+  } catch (err) {
+    if (err.code === 'REPORT_NOT_READY') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao editar o relatório final da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível salvar as alterações agora.' });
+  }
+});
+
+// Libera o relatório pra cliente ver e, junto, avança a liberação por
+// Diagnóstico 360 pra próxima área — o mesmo botão cobre os dois passos
+// do fluxo da Andréa ("explico o resultado na reunião 1:1 = libero o
+// próximo passo").
+router.post('/:userId/diagnostic-report/release', async (req, res) => {
+  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  if (!diagnostic) {
+    return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
+  }
+  try {
+    releaseFinalDiagnostic(diagnostic.id);
+  } catch (err) {
+    if (err.code === 'REPORT_NOT_READY') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error(`Erro ao liberar o relatório final da cliente ${req.params.userId}:`, err.message);
+    return res.status(500).json({ error: 'Não foi possível liberar o relatório agora.' });
+  }
+  try {
+    const result = await manualUnlockNextArea(req.params.userId, diagnostic.id);
+    res.json({ ok: true, released: true, ...result });
+  } catch (err) {
+    console.error(`Relatório liberado, mas erro ao liberar próxima área da cliente ${req.params.userId}:`, err.message);
+    res.json({ ok: true, released: true, unlocked: [], area: null, unlockError: 'Relatório liberado, mas não foi possível liberar a próxima área automaticamente — use "Liberar próxima área" abaixo.' });
   }
 });
 
