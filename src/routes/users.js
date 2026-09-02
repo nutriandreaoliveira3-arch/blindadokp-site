@@ -6,6 +6,8 @@ const { requireAuth, requireAdmin } = require('../middleware/auth');
 const { sendActivationEmail } = require('../lib/email');
 const { getClientUnlockStatus, manualUnlockNextArea } = require('../diagnostic/unlocking/unlockEngine');
 const { getFinalDiagnostic, updateFinalDiagnosticFields, releaseFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
+const { getCurrentDiagnostic } = require('../diagnostic/services/getCurrentDiagnostic');
+const { unlockRetake, isRetakeUnlocked } = require('../diagnostic/services/retakeDiagnostic');
 
 const router = express.Router();
 
@@ -144,12 +146,12 @@ router.post('/:userId/reactivate', (req, res) => {
 // nesse caso a ordem fica só pelo motor determinístico, sem o Top 3
 // ajustado por dependência).
 router.get('/:userId/unlock-status', (req, res) => {
-  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  const diagnostic = getCurrentDiagnostic(req.params.userId);
   if (!diagnostic) {
     return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
   }
   try {
-    res.json(getClientUnlockStatus(req.params.userId, diagnostic.id));
+    res.json({ ...getClientUnlockStatus(req.params.userId, diagnostic.id), retakeUnlocked: isRetakeUnlocked(req.params.userId) });
   } catch (err) {
     if (err.code === 'PRIORITIES_NOT_GENERATED') {
       return res.status(400).json({ error: err.message });
@@ -163,7 +165,7 @@ router.get('/:userId/unlock-status', (req, res) => {
 // cliente (mesma lógica do gatilho automático que roda depois do
 // relatório final, só que disparado por você, na hora que achar certo).
 router.post('/:userId/unlock-next', async (req, res) => {
-  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  const diagnostic = getCurrentDiagnostic(req.params.userId);
   if (!diagnostic) {
     return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
   }
@@ -186,7 +188,7 @@ router.post('/:userId/unlock-next', async (req, res) => {
 // cliente (mesmo travado, sem liberar pra ela), pra Andréa revisar antes
 // da reunião 1:1.
 router.get('/:userId/diagnostic-report', (req, res) => {
-  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  const diagnostic = getCurrentDiagnostic(req.params.userId);
   if (!diagnostic) {
     return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
   }
@@ -204,7 +206,7 @@ router.get('/:userId/diagnostic-report', (req, res) => {
 // reunião 1:1, sem mexer nos scores/evidências (que continuam batendo com
 // o motor determinístico).
 router.put('/:userId/diagnostic-report', (req, res) => {
-  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  const diagnostic = getCurrentDiagnostic(req.params.userId);
   if (!diagnostic) {
     return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
   }
@@ -225,7 +227,7 @@ router.put('/:userId/diagnostic-report', (req, res) => {
 // do fluxo da Andréa ("explico o resultado na reunião 1:1 = libero o
 // próximo passo").
 router.post('/:userId/diagnostic-report/release', async (req, res) => {
-  const diagnostic = db.prepare('SELECT id FROM diagnostics WHERE user_id = ?').get(req.params.userId);
+  const diagnostic = getCurrentDiagnostic(req.params.userId);
   if (!diagnostic) {
     return res.status(400).json({ error: 'Essa cliente ainda não iniciou o Diagnóstico 360.' });
   }
@@ -244,6 +246,23 @@ router.post('/:userId/diagnostic-report/release', async (req, res) => {
   } catch (err) {
     console.error(`Relatório liberado, mas erro ao liberar próxima área da cliente ${req.params.userId}:`, err.message);
     res.json({ ok: true, released: true, unlocked: [], area: null, unlockError: 'Relatório liberado, mas não foi possível liberar a próxima área automaticamente — use "Liberar próxima área" abaixo.' });
+  }
+});
+
+// Índice histórico — libera a cliente pra refazer o Diagnóstico 360 na
+// próxima vez que ela entrar (fica pendente até ela usar). Só a Andréa
+// pode liberar, pra evitar custo de IA sem ela saber (cada rodada nova são
+// 5 chamadas de IA: relatório + 4 entregáveis).
+router.post('/:userId/unlock-retake', (req, res) => {
+  try {
+    unlockRetake(req.params.userId);
+    res.json({ ok: true });
+  } catch (err) {
+    if (err.code === 'NOT_FOUND') {
+      return res.status(404).json({ error: err.message });
+    }
+    console.error(`Erro ao liberar refazer diagnóstico da cliente ${req.params.userId}:`, err.message);
+    res.status(500).json({ error: 'Não foi possível liberar agora.' });
   }
 });
 

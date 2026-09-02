@@ -22,6 +22,9 @@
   var reportBannerTitleEl = document.getElementById("diagReportBannerTitle");
   var reportBannerTextEl = document.getElementById("diagReportBannerText");
   var reportBannerBtnEl = document.getElementById("diagReportBannerBtn");
+  var retakeBannerEl = document.getElementById("diagRetakeBanner");
+  var retakeBtnEl = document.getElementById("diagRetakeBtn");
+  var retakeMsgEl = document.getElementById("diagRetakeMsg");
 
   var currentAnswers = {};
   var currentQuestions = [];
@@ -123,8 +126,10 @@
         reportBannerTextEl.textContent = "Já temos o que precisamos pra gerar seu Diagnóstico Blindado 360 completo.";
         reportBannerBtnEl.textContent = "Gerar meu diagnóstico";
       }
+      retakeBannerEl.hidden = !data.retakeUnlocked;
     } else {
       reportBannerEl.hidden = true;
+      retakeBannerEl.hidden = true;
     }
   }
 
@@ -487,6 +492,54 @@
       grid.appendChild(row);
     });
     section.appendChild(grid);
+    return section;
+  }
+
+  // Índice histórico: compara o diagnóstico mais antigo já liberado com o
+  // mais recente — só aparece quando a cliente já refez o diagnóstico pelo
+  // menos uma vez (2+ rodadas liberadas).
+  function evolutionLine(label, oldVal, newVal) {
+    var p = el("p", "diag-report-card-line");
+    p.appendChild(el("strong", null, label + ": "));
+    if (oldVal == null || newVal == null) {
+      p.appendChild(document.createTextNode("—"));
+      return p;
+    }
+    var delta = Number(newVal) - Number(oldVal);
+    p.appendChild(document.createTextNode(Number(oldVal).toFixed(1) + " → " + Number(newVal).toFixed(1) + "  "));
+    var deltaEl = el("span", null, (delta > 0 ? "▲ +" : delta < 0 ? "▼ " : "▬ ") + Math.abs(delta).toFixed(1));
+    deltaEl.style.color = delta > 0 ? "#78c896" : delta < 0 ? "#e08a72" : "var(--muted)";
+    deltaEl.style.fontWeight = "700";
+    p.appendChild(deltaEl);
+    return p;
+  }
+
+  function formatShortDate(iso) {
+    if (!iso) return "";
+    try { return new Date(iso.replace(" ", "T") + "Z").toLocaleDateString("pt-BR"); } catch (e) { return iso; }
+  }
+
+  function buildEvolutionSection(history) {
+    if (!history || history.length < 2) return null;
+    var first = history[0];
+    var last = history[history.length - 1];
+    var section = buildSection("Sua Evolução");
+    section.appendChild(
+      el(
+        "p",
+        "diag-report-confidence",
+        "Comparando seu diagnóstico de " + formatShortDate(first.reportGeneratedAt) + " com o mais recente, de " + formatShortDate(last.reportGeneratedAt) + "."
+      )
+    );
+    var card = el("div", "diag-report-card diag-report-card-primary");
+    card.appendChild(evolutionLine("Score geral", first.generalScore, last.generalScore));
+    SCORE_AREA_ORDER.forEach(function (area) {
+      if (area === "general" || area === "business") return;
+      var newVal = last.blockScores[area];
+      if (newVal == null) return;
+      card.appendChild(evolutionLine(areaLabel(area), first.blockScores[area], newVal));
+    });
+    section.appendChild(card);
     return section;
   }
 
@@ -914,7 +967,19 @@
 
   function renderReport(report) {
     reportBodyEl.innerHTML = "";
-    reportBodyEl.appendChild(buildStageHeader(report));
+    var header = buildStageHeader(report);
+    reportBodyEl.appendChild(header);
+
+    // Índice histórico: busca em segundo plano (não atrasa o resto do
+    // relatório) — só aparece uma seção "Sua Evolução" se ela já tiver
+    // refeito o diagnóstico pelo menos uma vez.
+    api("/api/diagnostic/history")
+      .then(function (data) {
+        var evoSection = buildEvolutionSection(data.history);
+        if (evoSection) reportBodyEl.insertBefore(evoSection, header.nextSibling);
+      })
+      .catch(function () {});
+
     reportBodyEl.appendChild(buildScoresSection(report.scores));
     reportBodyEl.appendChild(buildBottlenecksSection(report));
     reportBodyEl.appendChild(buildOpportunitySection(report.main_opportunity));
@@ -978,6 +1043,17 @@
 
   reportBannerBtnEl.addEventListener("click", function () { openReportScreen(); });
   document.getElementById("diagReportBackBtn").addEventListener("click", function () { showScreen("overview"); loadOverview(); });
+
+  retakeBtnEl.addEventListener("click", async function () {
+    if (!confirm("Refazer o Diagnóstico Blindado 360? Seu diagnóstico anterior fica salvo — você vai poder comparar os dois depois.")) return;
+    retakeMsgEl.textContent = "Começando...";
+    try {
+      await api("/api/diagnostic/retake", { method: "POST" });
+      await loadOverview();
+    } catch (err) {
+      retakeMsgEl.textContent = err.message || "Não foi possível começar agora.";
+    }
+  });
 
   loadOverview();
 })();

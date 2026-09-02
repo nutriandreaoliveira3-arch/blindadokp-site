@@ -229,4 +229,17 @@ CREATE TABLE IF NOT EXISTS app_settings (
 );
 `);
 
+// Índice histórico: uma cliente agora pode ter mais de um Diagnóstico 360
+// (cada "refazer" grava uma linha nova em diagnostics, nunca sobrescreve a
+// anterior — é isso que permite comparar a evolução dela no tempo). Mas
+// refazer só é possível se a Andréa liberar antes (Admin → Clientes,
+// "Liberar refazer diagnóstico") — evita gerar custo de IA sem ela saber.
+// retake_diagnostic_unlocked_at: NULL = sem permissão pendente; preenchido
+// = liberado, esperando a cliente usar (é consumido — volta a NULL assim
+// que ela começa o novo diagnóstico).
+const usersColumns = db.prepare('PRAGMA table_info(users)').all().map((c) => c.name);
+if (!usersColumns.includes('retake_diagnostic_unlocked_at')) {
+  db.exec('ALTER TABLE users ADD COLUMN retake_diagnostic_unlocked_at TEXT');
+}
+
 module.exports = db;

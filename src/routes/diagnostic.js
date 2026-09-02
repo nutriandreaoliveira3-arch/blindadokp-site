@@ -9,6 +9,8 @@ const { computeDiagnosticPriorities } = require('../diagnostic/services/computeP
 const { processFinalDiagnostic, getFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
 const { getClientDeliverables } = require('../diagnostic/services/generateClientDeliverables');
 const { getClientUnlockStatus } = require('../diagnostic/unlocking/unlockEngine');
+const { getCurrentDiagnostic } = require('../diagnostic/services/getCurrentDiagnostic');
+const { isRetakeUnlocked, startRetake, getDiagnosticHistory } = require('../diagnostic/services/retakeDiagnostic');
 
 const router = express.Router();
 
@@ -31,8 +33,10 @@ router.use(requireAuth, (req, res, next) => {
   next();
 });
 
+// Devolve o diagnóstico ATUAL da cliente (o mais recente) — cria um novo se
+// ela nunca tiver começado nenhum ainda.
 function getOrCreateDiagnostic(userId) {
-  let diagnostic = db.prepare('SELECT * FROM diagnostics WHERE user_id = ?').get(userId);
+  let diagnostic = getCurrentDiagnostic(userId);
   if (!diagnostic) {
     const id = uuidv4();
     db.prepare('INSERT INTO diagnostics (id, user_id) VALUES (?, ?)').run(id, userId);
@@ -79,8 +83,39 @@ router.get('/', (req, res) => {
       generalScore: diagnostic.general_score,
       scoresGeneratedAt: diagnostic.scores_generated_at,
     },
+    // Índice histórico: se a Andréa já liberou, a cliente pode refazer o
+    // diagnóstico assim que quiser — mesmo com o atual completo.
+    retakeUnlocked: isRetakeUnlocked(req.user.id),
     blocks,
   });
+});
+
+// POST /api/diagnostic/retake — Índice histórico: começa uma rodada nova
+// do Diagnóstico 360, só se a Andréa tiver liberado antes (Admin →
+// Clientes). A rodada anterior fica de histórico, nunca é apagada.
+router.post('/retake', (req, res) => {
+  try {
+    const diagnostic = startRetake(req.user.id);
+    res.json({ ok: true, diagnostic: { id: diagnostic.id } });
+  } catch (err) {
+    if (err.code === 'RETAKE_NOT_UNLOCKED') {
+      return res.status(403).json({ error: err.message });
+    }
+    console.error('Erro ao começar um novo Diagnóstico 360:', err.message);
+    res.status(500).json({ error: 'Não foi possível começar um novo diagnóstico agora.' });
+  }
+});
+
+// GET /api/diagnostic/history — Índice histórico: as rodadas já liberadas
+// dessa cliente, em ordem cronológica, pra montar a comparação de
+// evolução (score geral e por área, antes/depois).
+router.get('/history', (req, res) => {
+  try {
+    res.json({ history: getDiagnosticHistory(req.user.id) });
+  } catch (err) {
+    console.error('Erro ao buscar o índice histórico:', err.message);
+    res.status(500).json({ error: 'Não foi possível carregar seu histórico agora.' });
+  }
 });
 
 // GET /api/diagnostic/blocks/:blockId — perguntas do bloco + respostas salvas.

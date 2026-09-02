@@ -403,7 +403,37 @@
         userId +
         '\')">Liberar próxima área</button>' +
         '<span id="unlock-msg-' + userId + '" style="margin-left:10px;color:var(--muted);font-size:12px;"></span>';
+
+      // Índice histórico: liberar refazer o diagnóstico. Fica pendente até
+      // ela usar — o botão vira "aguardando" enquanto isso, pra não liberar
+      // duas vezes à toa.
+      html += '<div style="margin-top:14px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08);">';
+      if (data.retakeUnlocked) {
+        html += '<span class="unlock-badge unlock-badge-yes">refazer liberado — aguardando a cliente usar</span>';
+      } else {
+        html +=
+          '<button type="button" class="btn-small" onclick="liberarRefazerCliente(\'' +
+          userId +
+          '\')">Liberar refazer diagnóstico</button>' +
+          '<span id="retake-msg-' + userId + '" style="margin-left:10px;color:var(--muted);font-size:12px;"></span>';
+      }
+      html += '</div>';
+
       body.innerHTML = html || "Essa cliente ainda não tem prioridades calculadas no Diagnóstico 360.";
+    };
+
+    window.liberarRefazerCliente = async function (userId) {
+      if (!confirm("Liberar pra essa cliente refazer o Diagnóstico Blindado 360? O diagnóstico atual fica salvo de histórico — não é apagado.")) return;
+      var msg = document.getElementById("retake-msg-" + userId);
+      if (msg) msg.textContent = "Liberando...";
+      var res = await fetch("/api/admin/users/" + userId + "/unlock-retake", { method: "POST", headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        if (msg) msg.textContent = data.error || "Erro ao liberar.";
+        return;
+      }
+      var details = document.getElementById("unlock-status-" + userId).closest("details");
+      details.dispatchEvent(new Event("toggle"));
     };
 
     window.liberarProximaAreaCliente = async function (userId) {
