@@ -466,4 +466,4 @@ function analyze(answers, context) {
   return { derived, redFlags };
 }
 
-module.exports = { id: 'ethics', questions: QUESTIONS, buildQuestions, analyze };
+module.exports = { id: 'ethics', questions: QUESTIONS, buildQuestions, analyze, PROFESSION_ETHICS_CONTENT };

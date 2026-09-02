@@ -277,4 +277,4 @@ function analyze(answers) {
   return { derived, redFlags };
 }
 
-module.exports = { id: 'business_current', questions: QUESTIONS, analyze };
+module.exports = { id: 'business_current', questions: QUESTIONS, analyze, PROFESSION_CATEGORY_OPTIONS };

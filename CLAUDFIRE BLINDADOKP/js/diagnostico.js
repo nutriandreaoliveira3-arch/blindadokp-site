@@ -717,6 +717,133 @@
     reportBodyEl.appendChild(retryBtn);
   }
 
+  // ---------------------------------------------------------------------
+  // Entregáveis Premium (Dossiê de Posicionamento, Manual de Comunicação
+  // Ética, Assistente IA Particular) — gerados em segundo plano junto com
+  // o relatório final (podem não estar prontos ainda quando a tela abre),
+  // por isso faz um polling leve até todos saírem de PROCESSING.
+  // ---------------------------------------------------------------------
+
+  function buildDeliverableCard(title) {
+    var card = el("div", "diag-report-card diag-deliverable-card");
+    card.appendChild(el("h4", "diag-report-card-title", title));
+    return card;
+  }
+
+  function renderDossieContent(container, content) {
+    container.appendChild(buildLabeledLine("Nicho", content.nicho));
+    container.appendChild(buildLabeledLine("Especialidade", content.especialidade));
+    container.appendChild(buildLabeledLine("Posicionamento", content.posicionamento));
+    container.appendChild(buildLabeledLine("Público", content.publico));
+    container.appendChild(buildLabeledLine("Problema principal", content.problema_principal));
+    container.appendChild(buildLabeledLine("Diferenciação", content.diferenciacao));
+    container.appendChild(buildLabeledLine("Proposta de valor", content.proposta_valor));
+    container.appendChild(buildLabeledLine("Mensagem central", content.mensagem_central));
+    if (content.pilares_autoridade && content.pilares_autoridade.length) {
+      container.appendChild(buildLabeledLine("Pilares de autoridade", content.pilares_autoridade.join(" · ")));
+    }
+    container.appendChild(buildLabeledLine("Linguagem", content.linguagem));
+    container.appendChild(buildLabeledLine("Bio pronta", content.bio));
+    container.appendChild(buildLabeledLine("Pitch", content.pitch));
+    container.appendChild(buildLabeledLine("Direcionamento de marca", content.direcionamento_marca));
+  }
+
+  function renderManualEticaContent(container, content) {
+    container.appendChild(buildLabeledLine("O que pode comunicar", content.o_que_pode_comunicar));
+    if (content.pontos_atencao && content.pontos_atencao.length) container.appendChild(buildLabeledLine("Pontos de atenção", content.pontos_atencao.join(" · ")));
+    if (content.linguagem_risco && content.linguagem_risco.length) container.appendChild(buildLabeledLine("Linguagem de risco", content.linguagem_risco.join(" · ")));
+    container.appendChild(buildLabeledLine("Divulgação de resultados", content.divulgacao_resultados));
+    container.appendChild(buildLabeledLine("Depoimentos", content.depoimentos));
+    container.appendChild(buildLabeledLine("Antes e depois", content.antes_depois));
+    container.appendChild(buildLabeledLine("Anúncios", content.anuncios));
+    container.appendChild(buildLabeledLine("Promoções", content.promocoes));
+    container.appendChild(buildLabeledLine("Bio", content.bio));
+    container.appendChild(buildLabeledLine("Publicidade", content.publicidade));
+    container.appendChild(buildLabeledLine("Títulos e especialidades", content.titulos_especialidades));
+    container.appendChild(buildLabeledLine("Identificação profissional", content.identificacao_profissional));
+    if (content.disclaimers && content.disclaimers.length) container.appendChild(buildLabeledLine("Disclaimers", content.disclaimers.join(" · ")));
+    if (content.regras_redes_sociais && content.regras_redes_sociais.length) container.appendChild(buildLabeledLine("Regras pra redes sociais", content.regras_redes_sociais.join(" · ")));
+    if (content.nota_atualizacao) container.appendChild(el("p", "diag-report-card-warning", content.nota_atualizacao));
+  }
+
+  function renderAssistenteIaContent(container, content) {
+    var textarea = el("textarea", null);
+    textarea.readOnly = true;
+    textarea.style.cssText = "width:100%;min-height:200px;background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px;font-family:monospace;font-size:12px;";
+    textarea.value = content.skill_md;
+    container.appendChild(textarea);
+    var copyBtn = el("button", "button button-outline", "Copiar");
+    copyBtn.type = "button";
+    copyBtn.style.marginTop = "8px";
+    copyBtn.addEventListener("click", function () {
+      var resetLabel = function () { setTimeout(function () { copyBtn.textContent = "Copiar"; }, 2000); };
+      navigator.clipboard.writeText(content.skill_md).then(function () {
+        copyBtn.textContent = "Copiado!";
+        resetLabel();
+      }).catch(function () {
+        textarea.removeAttribute("readonly");
+        textarea.select();
+        document.execCommand("copy");
+        textarea.setAttribute("readonly", "readonly");
+        copyBtn.textContent = "Copiado!";
+        resetLabel();
+      });
+    });
+    container.appendChild(copyBtn);
+  }
+
+  var DELIVERABLE_META = {
+    dossie_posicionamento: { title: "Dossiê de Posicionamento Blindado", render: renderDossieContent },
+    manual_etica: { title: "Manual de Comunicação Ética da Marca", render: renderManualEticaContent },
+    assistente_ia: { title: "Assistente IA Particular — skill personalizada pra você", render: renderAssistenteIaContent },
+  };
+
+  function renderDeliverablesSection(deliverables) {
+    var section = buildSection("Seus Entregáveis Premium");
+    Object.keys(DELIVERABLE_META).forEach(function (type) {
+      var meta = DELIVERABLE_META[type];
+      var entry = deliverables[type];
+      var card = buildDeliverableCard(meta.title);
+      if (!entry || entry.status === "PROCESSING") {
+        card.appendChild(el("p", "diag-report-loading", "Gerando esse entregável pra você — pode levar alguns minutos. Atualize a página daqui a pouco."));
+      } else if (entry.status === "PROCESSING_ERROR") {
+        card.appendChild(el("p", "diag-error", "Não conseguimos gerar esse entregável dessa vez. Já avisamos a equipe."));
+      } else if (entry.status === "COMPLETED" && entry.content) {
+        meta.render(card, entry.content);
+      }
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  var deliverablesPollAttempts = 0;
+  async function loadDeliverables() {
+    var existing = document.getElementById("diagDeliverablesSection");
+    if (existing) existing.remove();
+
+    var data;
+    try {
+      data = await api("/api/diagnostic/deliverables");
+    } catch (err) {
+      return; // entregáveis são um extra — nunca travam a tela do relatório principal
+    }
+
+    var section = renderDeliverablesSection(data.deliverables || {});
+    section.id = "diagDeliverablesSection";
+    var regenWrap = reportBodyEl.querySelector(".diag-report-regenerate-wrap");
+    if (regenWrap) reportBodyEl.insertBefore(section, regenWrap);
+    else reportBodyEl.appendChild(section);
+
+    var stillProcessing = Object.keys(DELIVERABLE_META).some(function (type) {
+      var entry = (data.deliverables || {})[type];
+      return !entry || entry.status === "PROCESSING";
+    });
+    deliverablesPollAttempts += 1;
+    if (stillProcessing && deliverablesPollAttempts < 8) {
+      setTimeout(loadDeliverables, 8000);
+    }
+  }
+
   function renderReport(report) {
     reportBodyEl.innerHTML = "";
     reportBodyEl.appendChild(buildStageHeader(report));
@@ -739,6 +866,9 @@
     regenBtn.addEventListener("click", function () { runReportGeneration(); });
     regenWrap.appendChild(regenBtn);
     reportBodyEl.appendChild(regenWrap);
+
+    deliverablesPollAttempts = 0;
+    loadDeliverables();
   }
 
   async function runReportGeneration() {
