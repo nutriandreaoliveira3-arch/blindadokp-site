@@ -12,16 +12,22 @@ const { generateDossiePosicionamento } = require('../deliverables/generateDossie
 const { generateManualEtica } = require('../deliverables/generateManualEtica');
 const { generateAssistenteIA } = require('../deliverables/generateAssistenteIA');
 const { generateLandingPage } = require('../deliverables/generateLandingPage');
+const { generateKitComercial } = require('../deliverables/generateKitComercial');
 const { generateBusinessBook } = require('../deliverables/generateBusinessBook');
 const { getCurrentDiagnostic } = require('./getCurrentDiagnostic');
 const { getClientUnlockStatus } = require('../unlocking/unlockEngine');
 const { getDiagnosticHistory } = require('./retakeDiagnostic');
 
+// Ordem importa: dossie_posicionamento vem primeiro porque
+// generateClientDeliverables injeta o conteúdo dele em context.dossie
+// assim que termina, pro Kit Comercial (e futuros entregáveis) reaproveitar
+// o mesmo posicionamento/tom sem gerar de novo.
 const DELIVERABLE_TYPES = [
   { type: 'dossie_posicionamento', generate: generateDossiePosicionamento },
   { type: 'manual_etica', generate: generateManualEtica },
   { type: 'assistente_ia', generate: generateAssistenteIA },
   { type: 'landing_page', generate: generateLandingPage },
+  { type: 'kit_comercial', generate: generateKitComercial },
 ];
 
 // releaseImmediately: true pros 4 entregáveis automáticos (sempre visíveis
@@ -91,6 +97,7 @@ async function generateClientDeliverables(userId, diagnosticId) {
       const content = await generate(context);
       upsertDeliverable({ userId, diagnosticId, type, status: 'COMPLETED', content: JSON.stringify(content), releaseImmediately: true });
       results[type] = { status: 'COMPLETED' };
+      if (type === 'dossie_posicionamento') context.dossie = content;
     } catch (err) {
       console.error(`Não foi possível gerar o entregável '${type}' pro diagnóstico ${diagnosticId}:`, err.message);
       upsertDeliverable({ userId, diagnosticId, type, status: 'PROCESSING_ERROR', content: null, releaseImmediately: true });

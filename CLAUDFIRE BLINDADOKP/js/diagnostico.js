@@ -837,18 +837,18 @@
     if (content.nota_atualizacao) container.appendChild(el("p", "diag-report-card-warning", content.nota_atualizacao));
   }
 
-  function renderAssistenteIaContent(container, content) {
+  function buildCopyTextarea(container, text, minHeight) {
     var textarea = el("textarea", null);
     textarea.readOnly = true;
-    textarea.style.cssText = "width:100%;min-height:200px;background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px;font-family:monospace;font-size:12px;";
-    textarea.value = content.skill_md;
+    textarea.style.cssText = "width:100%;min-height:" + (minHeight || 200) + "px;background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px;font-family:monospace;font-size:12px;";
+    textarea.value = text;
     container.appendChild(textarea);
     var copyBtn = el("button", "button button-outline", "Copiar");
     copyBtn.type = "button";
     copyBtn.style.marginTop = "8px";
     copyBtn.addEventListener("click", function () {
       var resetLabel = function () { setTimeout(function () { copyBtn.textContent = "Copiar"; }, 2000); };
-      navigator.clipboard.writeText(content.skill_md).then(function () {
+      navigator.clipboard.writeText(text).then(function () {
         copyBtn.textContent = "Copiado!";
         resetLabel();
       }).catch(function () {
@@ -861,6 +861,43 @@
       });
     });
     container.appendChild(copyBtn);
+  }
+
+  function renderAssistenteIaContent(container, content) {
+    buildCopyTextarea(container, content.skill_md, 200);
+  }
+
+  function renderKitComercialContent(container, content) {
+    container.appendChild(buildLabeledLine("Sobre mim", content.sobre_mim));
+
+    if (content.cardapio_servicos && content.cardapio_servicos.length) {
+      container.appendChild(el("h4", "diag-report-card-title", "Cardápio de serviços"));
+      content.cardapio_servicos.forEach(function (item) {
+        var p = el("p", "diag-report-card-line");
+        p.appendChild(el("strong", null, item.nome + ": "));
+        p.appendChild(document.createTextNode((item.descricao || "") + " — " + (item.preco_texto || "")));
+        container.appendChild(p);
+      });
+    }
+
+    container.appendChild(el("h4", "diag-report-card-title", "Script — abordagem inicial (WhatsApp)"));
+    buildCopyTextarea(container, content.script_abordagem_inicial, 90);
+
+    if (content.scripts_objecao && content.scripts_objecao.length) {
+      container.appendChild(el("h4", "diag-report-card-title", "Scripts de objeção"));
+      content.scripts_objecao.forEach(function (item) {
+        var p = el("p", "diag-report-card-line");
+        p.appendChild(el("strong", null, item.objecao + ": "));
+        p.appendChild(document.createTextNode(item.resposta || ""));
+        container.appendChild(p);
+      });
+    }
+
+    container.appendChild(el("h4", "diag-report-card-title", "Script — fechamento (WhatsApp)"));
+    buildCopyTextarea(container, content.script_fechamento, 90);
+
+    container.appendChild(el("h4", "diag-report-card-title", "Mini-proposta pronta"));
+    buildCopyTextarea(container, content.mini_proposta, 160);
   }
 
   function renderHtmlDocumentPreview(container, html, previewHeight) {
@@ -926,6 +963,7 @@
     manual_etica: { title: "Manual de Comunicação Ética da Marca", render: renderManualEticaContent },
     assistente_ia: { title: "Assistente IA Particular — skill personalizada pra você", render: renderAssistenteIaContent },
     landing_page: { title: "Landing Page Premium — pronta pra publicar", render: renderLandingPageContent },
+    kit_comercial: { title: "Kit Comercial Blindado — scripts e cardápio pra fechar venda", render: renderKitComercialContent },
   };
 
   function renderDeliverablesSection(deliverables) {
