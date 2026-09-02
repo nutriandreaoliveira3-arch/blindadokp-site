@@ -258,7 +258,14 @@ router.post('/report', async (req, res) => {
   const diagnostic = getOrCreateDiagnostic(req.user.id);
   try {
     const result = await processFinalDiagnostic(diagnostic.id);
-    res.json({ ok: true, ...result });
+    // Devolutiva 1:1: o relatório recém-gerado também fica travado pra
+    // cliente até a Andréa liberar (mesma regra do GET /report) — sem essa
+    // checagem aqui, a cliente veria o resultado na hora, só pra sumir na
+    // próxima vez que abrisse a tela.
+    if (req.user.role !== 'admin') {
+      return res.json({ ok: true, status: 'AWAITING_REVIEW', report: null });
+    }
+    res.json({ ok: true, status: 'COMPLETED', ...result });
   } catch (err) {
     if (['BLOCKS_INCOMPLETE', 'SCORES_NOT_GENERATED', 'PRIORITIES_NOT_GENERATED'].includes(err.code)) {
       return res.status(400).json({ error: err.message });
@@ -276,10 +283,21 @@ router.post('/report', async (req, res) => {
 
 // GET /api/diagnostic/report — retorna o último relatório final salvo (ou
 // status PROCESSING/PROCESSING_ERROR se ainda não tiver um COMPLETED).
+//
+// Devolutiva 1:1: mesmo com o relatório já COMPLETED, a cliente só vê o
+// conteúdo depois que a Andréa libera manualmente (Admin → Clientes),
+// geralmente depois de uma reunião 1:1 explicando o resultado — até lá,
+// devolve status AWAITING_REVIEW sem o campo "report", pra nunca vazar o
+// conteúdo antes da hora. Não se aplica pra admin vendo o próprio
+// diagnóstico (ex.: conta de teste).
 router.get('/report', (req, res) => {
   const diagnostic = getOrCreateDiagnostic(req.user.id);
   try {
-    res.json(getFinalDiagnostic(diagnostic.id));
+    const result = getFinalDiagnostic(diagnostic.id);
+    if (req.user.role !== 'admin' && result.status === 'COMPLETED' && !result.releasedAt) {
+      return res.json({ status: 'AWAITING_REVIEW', generatedAt: result.generatedAt, report: null });
+    }
+    res.json(result);
   } catch (err) {
     console.error('Erro ao buscar o relatório final do diagnóstico:', err);
     res.status(500).json({ error: 'Não foi possível carregar o relatório agora.' });

@@ -149,8 +149,66 @@ function getFinalDiagnostic(diagnosticId) {
   return {
     status: diagnostic.report_status || null,
     generatedAt: diagnostic.report_generated_at || null,
+    releasedAt: diagnostic.report_released_at || null,
     report: diagnostic.final_report ? JSON.parse(diagnostic.final_report) : null,
   };
 }
 
-module.exports = { processFinalDiagnostic, getFinalDiagnostic, MAX_AI_VALIDATION_RETRIES };
+// Devolutiva 1:1 (Admin → Clientes): edita só os pontos-chave do relatório
+// já gerado (resumo executivo, gargalo principal, maior oportunidade e
+// próximo passo) — nunca os campos read-only (scores, evidence, área),
+// que continuam batendo com o motor determinístico. Só funciona com
+// relatório já COMPLETED.
+function updateFinalDiagnosticFields(diagnosticId, fields) {
+  const diagnostic = getDiagnosticRow(diagnosticId);
+  if (!diagnostic || diagnostic.report_status !== 'COMPLETED' || !diagnostic.final_report) {
+    const err = new Error('Esse diagnóstico ainda não tem um relatório final gerado.');
+    err.code = 'REPORT_NOT_READY';
+    throw err;
+  }
+  const report = JSON.parse(diagnostic.final_report);
+
+  if (typeof fields.executive_summary === 'string') report.executive_summary = fields.executive_summary;
+  if (fields.primary_bottleneck && report.primary_bottleneck) {
+    if (typeof fields.primary_bottleneck.title === 'string') report.primary_bottleneck.title = fields.primary_bottleneck.title;
+    if (typeof fields.primary_bottleneck.description === 'string') report.primary_bottleneck.description = fields.primary_bottleneck.description;
+  }
+  if (fields.main_opportunity && report.main_opportunity) {
+    if (typeof fields.main_opportunity.title === 'string') report.main_opportunity.title = fields.main_opportunity.title;
+    if (typeof fields.main_opportunity.description === 'string') report.main_opportunity.description = fields.main_opportunity.description;
+  }
+  if (fields.next_step && report.next_step) {
+    if (typeof fields.next_step.title === 'string') report.next_step.title = fields.next_step.title;
+    if (typeof fields.next_step.description === 'string') report.next_step.description = fields.next_step.description;
+  }
+
+  db.prepare(`UPDATE diagnostics SET final_report = ?, updated_at = datetime('now') WHERE id = ?`).run(
+    JSON.stringify(report),
+    diagnosticId
+  );
+  return report;
+}
+
+// Libera o relatório final pra cliente ver — chamado pelo Admin → Clientes
+// depois que a Andréa revisou (e talvez editado) e já teve a devolutiva
+// 1:1. Antes disso, GET /api/diagnostic/report devolve status
+// AWAITING_REVIEW pra cliente, sem vazar o conteúdo do relatório.
+function releaseFinalDiagnostic(diagnosticId) {
+  const diagnostic = getDiagnosticRow(diagnosticId);
+  if (!diagnostic || diagnostic.report_status !== 'COMPLETED') {
+    const err = new Error('Esse diagnóstico ainda não tem um relatório final gerado.');
+    err.code = 'REPORT_NOT_READY';
+    throw err;
+  }
+  db.prepare(`UPDATE diagnostics SET report_released_at = datetime('now'), updated_at = datetime('now') WHERE id = ?`).run(
+    diagnosticId
+  );
+}
+
+module.exports = {
+  processFinalDiagnostic,
+  getFinalDiagnostic,
+  updateFinalDiagnosticFields,
+  releaseFinalDiagnostic,
+  MAX_AI_VALIDATION_RETRIES,
+};
