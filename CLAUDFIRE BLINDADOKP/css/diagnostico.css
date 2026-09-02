@@ -145,3 +145,87 @@ main button.button-gold { background: linear-gradient(100deg, #b88b2d, #f0d482);
 @media (max-width: 640px) {
   .diag-repeatable-row { grid-template-columns: 1fr; }
 }
+
+/* Banner "diagnóstico pronto" na tela de blocos */
+.diag-report-banner {
+  margin-bottom: 22px;
+  padding: 24px 26px;
+  border: 1px solid rgba(202,163,74,.4);
+  background: linear-gradient(145deg, #221c10, #14110a);
+}
+.diag-report-banner h3 { margin: 6px 0 8px; color: #fff; font-family: Georgia, serif; font-size: 20px; font-weight: 400; }
+.diag-report-banner p { margin: 0 0 16px; color: var(--muted); font-size: 14px; }
+.diag-report-banner .button { display: inline-block; }
+
+/* Tela de resultado do Diagnóstico 360 */
+.diag-report-body { display: flex; flex-direction: column; gap: 40px; }
+
+.diag-report-header { padding-bottom: 8px; }
+.diag-report-stage-title { margin: 8px 0 10px; color: #fff; font-family: Georgia, serif; font-size: clamp(26px,4vw,34px); font-weight: 400; }
+.diag-report-stage-desc { margin: 0 0 14px; color: #e8e4dd; font-size: 15px; line-height: 1.6; }
+.diag-report-summary { margin: 0; padding-top: 14px; border-top: 1px solid rgba(255,255,255,.1); color: var(--muted); font-size: 14px; line-height: 1.7; }
+
+.diag-report-section-title {
+  margin: 0 0 18px;
+  color: var(--gold-light);
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 400;
+}
+
+.diag-score-grid { display: flex; flex-direction: column; gap: 10px; }
+.diag-score-row { display: grid; grid-template-columns: 220px 1fr 40px; align-items: center; gap: 12px; }
+.diag-score-label { color: #e8e4dd; font-size: 13px; }
+.diag-score-bar { height: 8px; background: rgba(255,255,255,.08); overflow: hidden; }
+.diag-score-bar-fill { height: 100%; background: linear-gradient(100deg, #b88b2d, #f0d482); }
+.diag-score-value { color: var(--gold-light); font-size: 13px; text-align: right; }
+
+.diag-report-card {
+  padding: 20px 22px;
+  margin-bottom: 14px;
+  border: 1px solid rgba(255,255,255,.1);
+  background: linear-gradient(145deg, #171512, #0f0e0c);
+}
+.diag-report-card:last-child { margin-bottom: 0; }
+.diag-report-card-primary { border-color: rgba(202,163,74,.45); }
+.diag-report-card-priority { border-color: rgba(202,163,74,.3); }
+.diag-report-card-alert { border-color: rgba(224,138,111,.45); }
+
+.diag-report-card-head { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.diag-badge {
+  padding: 4px 10px;
+  border: 1px solid rgba(255,255,255,.16);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: .03em;
+  text-transform: uppercase;
+}
+.diag-badge-area { color: var(--gold-light); border-color: rgba(202,163,74,.4); }
+.diag-badge-type { color: #fff; border-color: rgba(255,255,255,.3); }
+.diag-badge-confidence { color: var(--muted); }
+.diag-priority-rank { color: var(--gold-light); font-family: Georgia, serif; font-size: 18px; }
+
+.diag-report-card-title { margin: 0 0 8px; color: #fff; font-family: Georgia, serif; font-size: 18px; font-weight: 400; }
+.diag-report-card-desc { margin: 0 0 6px; color: #e8e4dd; font-size: 14px; line-height: 1.6; }
+.diag-report-card-line { margin: 0 0 6px; color: #cfc9bf; font-size: 13.5px; line-height: 1.6; }
+.diag-report-card-line strong { color: var(--muted); font-weight: 400; }
+.diag-report-card-warning { margin: 8px 0 0; color: #e08a6f; font-size: 13px; }
+.diag-report-empty { color: var(--muted); font-size: 13px; }
+
+.diag-plan-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+.diag-plan-card { padding: 20px 20px; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(145deg, #171512, #0f0e0c); }
+.diag-plan-card-title { margin: 0 0 10px; color: var(--gold-light); font-family: Georgia, serif; font-size: 16px; font-weight: 400; }
+.diag-plan-card-objective { margin: 0 0 12px; color: #e8e4dd; font-size: 13.5px; line-height: 1.6; }
+.diag-plan-sublabel { margin: 10px 0 6px; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .03em; }
+.diag-plan-list { margin: 0; padding-left: 18px; color: #cfc9bf; font-size: 13px; line-height: 1.6; }
+.diag-plan-list li { margin-bottom: 4px; }
+
+.diag-report-confidence { margin: 10px 0 0; color: var(--muted); font-size: 13px; }
+.diag-report-loading { color: var(--muted); font-size: 14px; }
+.diag-report-regenerate-wrap { text-align: center; padding-top: 10px; }
+
+@media (max-width: 720px) {
+  .diag-plan-grid { grid-template-columns: 1fr; }
+  .diag-score-row { grid-template-columns: 1fr; gap: 4px; }
+  .diag-score-value { text-align: left; }
+}

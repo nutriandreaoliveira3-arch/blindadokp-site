@@ -16,6 +16,13 @@
   var eyebrowEl = document.getElementById("diagBlockEyebrow");
   var titleEl = document.getElementById("diagBlockTitle");
 
+  var reportScreenEl = document.getElementById("diagReport");
+  var reportBodyEl = document.getElementById("diagReportBody");
+  var reportBannerEl = document.getElementById("diagReportBanner");
+  var reportBannerTitleEl = document.getElementById("diagReportBannerTitle");
+  var reportBannerTextEl = document.getElementById("diagReportBannerText");
+  var reportBannerBtnEl = document.getElementById("diagReportBannerBtn");
+
   var currentAnswers = {};
   var currentQuestions = [];
   var currentBlockId = null;
@@ -44,6 +51,7 @@
     overviewEl.hidden = name !== "overview";
     blockScreenEl.hidden = name !== "block";
     doneScreenEl.hidden = name !== "done";
+    reportScreenEl.hidden = name !== "report";
   }
 
   async function loadOverview() {
@@ -93,6 +101,27 @@
     });
     loadingEl.hidden = true;
     blockListEl.hidden = false;
+
+    if (data.diagnostic.allBlocksCompleted) {
+      var reportStatus = null;
+      try {
+        reportStatus = await api("/api/diagnostic/report");
+      } catch (err) {
+        reportStatus = null;
+      }
+      reportBannerEl.hidden = false;
+      if (reportStatus && reportStatus.status === "COMPLETED" && reportStatus.report) {
+        reportBannerTitleEl.textContent = "Seu Diagnóstico Blindado 360 está pronto.";
+        reportBannerTextEl.textContent = "Veja o gargalo principal, as prioridades e o plano dos próximos 90 dias.";
+        reportBannerBtnEl.textContent = "Ver meu diagnóstico";
+      } else {
+        reportBannerTitleEl.textContent = "Todas as 15 áreas foram respondidas.";
+        reportBannerTextEl.textContent = "Já temos o que precisamos pra gerar seu Diagnóstico Blindado 360 completo.";
+        reportBannerBtnEl.textContent = "Gerar meu diagnóstico";
+      }
+    } else {
+      reportBannerEl.hidden = true;
+    }
   }
 
   async function openBlock(blockMeta) {
@@ -353,6 +382,398 @@
   document.getElementById("diagCompleteBtn").addEventListener("click", function () { save(true); });
   document.getElementById("diagBackBtn").addEventListener("click", function () { showScreen("overview"); loadOverview(); });
   document.getElementById("diagBackFromDoneBtn").addEventListener("click", function () { showScreen("overview"); loadOverview(); });
+
+  // ---------------------------------------------------------------------
+  // Relatório final (Diagnóstico 360 — Fases 13-17): calcula scores +
+  // prioridades (determinístico, barato) e depois gera o relatório com IA
+  // (POST /api/diagnostic/report), renderizando o resultado.
+  // ---------------------------------------------------------------------
+
+  var AREA_LABELS = {
+    general: "Geral",
+    business: "Negócio Atual",
+    audience: "Público e Cliente Ideal",
+    positioning: "Posicionamento",
+    differentiation: "Diferenciação",
+    offer: "Oferta",
+    pricing: "Precificação e Monetização",
+    communication: "Comunicação e Conteúdo",
+    acquisition: "Marketing e Aquisição",
+    sales: "Vendas e Conversão",
+    operations: "Operação e Entrega",
+    ai: "Inteligência Artificial",
+    automation: "Automação",
+    ethics: "Ética e Comunicação Profissional",
+    retention: "Experiência, Retenção e Renovação",
+    metrics: "Gestão, Métricas e Tomada de Decisão",
+  };
+  var SCORE_AREA_ORDER = [
+    "general", "business", "audience", "positioning", "differentiation", "offer", "pricing",
+    "communication", "acquisition", "sales", "operations", "ai", "automation", "ethics",
+    "retention", "metrics",
+  ];
+  var LEVEL_LABELS = { HIGH: "Alta", MEDIUM: "Média", LOW: "Baixa" };
+  var INSIGHT_TYPE_LABELS = {
+    CONFIRMADO: "Confirmado", HIPOTESE: "Hipótese", ALERTA: "Alerta",
+    OPORTUNIDADE: "Oportunidade", PRIORIDADE: "Prioridade",
+  };
+  var RECOMMENDED_MODE_LABELS = {
+    HUMAN_ONLY: "Só humano", AI_SUPPORT: "IA como apoio", AI_WITH_HUMAN_APPROVAL: "IA com aprovação humana",
+    PARTIAL_AUTOMATION: "Automação parcial", FULL_AUTOMATION: "Automação total",
+    SPECIALIZED_SKILL_OR_AGENT: "Skill/agente especializado",
+  };
+  var CLASSIFICATION_LABELS = {
+    MANTER_HUMANO: "Manter humano", ORGANIZAR_PRIMEIRO: "Organizar primeiro",
+    AUTOMATIZAR_COM_APROVACAO: "Automatizar com aprovação", AUTOMATIZAR_PARCIALMENTE: "Automatizar parcialmente",
+    AUTOMATIZAR: "Automatizar", NAO_PRIORITARIO: "Não prioritário",
+  };
+  var CADENCE_LABELS = {
+    WEEKLY: "Semanal", BIWEEKLY: "Quinzenal", MONTHLY: "Mensal", QUARTERLY: "Trimestral",
+    WHEN_APPLICABLE: "Quando aplicável",
+  };
+  var TIME_HORIZON_LABELS = { TODAY: "Hoje", NEXT_7_DAYS: "Próximos 7 dias", NEXT_30_DAYS: "Próximos 30 dias" };
+
+  function areaLabel(area) { return AREA_LABELS[area] || area; }
+  function levelLabel(v) { return LEVEL_LABELS[v] || v; }
+
+  function el(tag, className, text) {
+    var e = document.createElement(tag);
+    if (className) e.className = className;
+    if (text !== undefined && text !== null) e.textContent = text;
+    return e;
+  }
+
+  function buildLabeledLine(label, text) {
+    var p = el("p", "diag-report-card-line");
+    p.appendChild(el("strong", null, label + ": "));
+    p.appendChild(document.createTextNode(text));
+    return p;
+  }
+
+  function buildSection(title) {
+    var section = el("div", "diag-report-section");
+    section.appendChild(el("h3", "diag-report-section-title", title));
+    return section;
+  }
+
+  function buildStageHeader(report) {
+    var wrap = el("div", "diag-report-header");
+    wrap.appendChild(el("p", "eyebrow", "DIAGNÓSTICO BLINDADO 360"));
+    var stage = report.business_stage || {};
+    wrap.appendChild(el("h2", "diag-report-stage-title", stage.title || ""));
+    if (stage.description) wrap.appendChild(el("p", "diag-report-stage-desc", stage.description));
+    if (report.executive_summary) wrap.appendChild(el("p", "diag-report-summary", report.executive_summary));
+    return wrap;
+  }
+
+  function buildScoresSection(scores) {
+    var section = buildSection("Score 360");
+    var grid = el("div", "diag-score-grid");
+    SCORE_AREA_ORDER.forEach(function (area) {
+      var value = scores ? scores[area] : null;
+      var row = el("div", "diag-score-row");
+      row.appendChild(el("span", "diag-score-label", areaLabel(area)));
+      var barWrap = el("div", "diag-score-bar");
+      var fill = el("div", "diag-score-bar-fill");
+      var pct = value != null ? Math.max(0, Math.min(100, (Number(value) / 5) * 100)) : 0;
+      fill.style.width = pct + "%";
+      barWrap.appendChild(fill);
+      row.appendChild(barWrap);
+      row.appendChild(el("span", "diag-score-value", value != null ? Number(value).toFixed(1) : "—"));
+      grid.appendChild(row);
+    });
+    section.appendChild(grid);
+    return section;
+  }
+
+  function buildBottleneckCard(b, primary) {
+    var card = el("div", "diag-report-card" + (primary ? " diag-report-card-primary" : ""));
+    var head = el("div", "diag-report-card-head");
+    head.appendChild(el("span", "diag-badge", primary ? "Gargalo principal" : "Gargalo"));
+    head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(b.area)));
+    if (b.confidence) head.appendChild(el("span", "diag-badge diag-badge-confidence", "Confiança: " + levelLabel(b.confidence)));
+    card.appendChild(head);
+    card.appendChild(el("h4", "diag-report-card-title", b.title));
+    card.appendChild(el("p", "diag-report-card-desc", b.description));
+    return card;
+  }
+
+  function buildBottlenecksSection(report) {
+    var section = buildSection("Gargalos");
+    if (report.primary_bottleneck) section.appendChild(buildBottleneckCard(report.primary_bottleneck, true));
+    (report.secondary_bottlenecks || []).forEach(function (b) { section.appendChild(buildBottleneckCard(b, false)); });
+    return section;
+  }
+
+  function buildOpportunitySection(opp) {
+    var section = buildSection("Maior oportunidade");
+    if (!opp) return section;
+    var card = el("div", "diag-report-card diag-report-card-primary");
+    var head = el("div", "diag-report-card-head");
+    head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(opp.area)));
+    if (opp.confidence) head.appendChild(el("span", "diag-badge diag-badge-confidence", "Confiança: " + levelLabel(opp.confidence)));
+    card.appendChild(head);
+    card.appendChild(el("h4", "diag-report-card-title", opp.title));
+    card.appendChild(el("p", "diag-report-card-desc", opp.description));
+    if (opp.expected_gain) card.appendChild(buildLabeledLine("Ganho esperado", opp.expected_gain));
+    section.appendChild(card);
+    return section;
+  }
+
+  function buildInsightsSection(insights) {
+    var section = buildSection("Principais insights");
+    (insights || []).forEach(function (insight) {
+      var card = el("div", "diag-report-card");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-type", INSIGHT_TYPE_LABELS[insight.type] || insight.type));
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(insight.area)));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", insight.title));
+      card.appendChild(el("p", "diag-report-card-desc", insight.message));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildPrioritiesSection(priorities) {
+    var section = buildSection("Top 3 prioridades");
+    (priorities || []).slice().sort(function (a, b) { return a.rank - b.rank; }).forEach(function (p) {
+      var card = el("div", "diag-report-card diag-report-card-priority");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-priority-rank", "#" + p.rank));
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(p.area)));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", p.title));
+      if (p.problem) card.appendChild(buildLabeledLine("Problema", p.problem));
+      if (p.reason) card.appendChild(buildLabeledLine("Por quê", p.reason));
+      if (p.action) card.appendChild(buildLabeledLine("Ação", p.action));
+      if (p.expected_operational_result) card.appendChild(buildLabeledLine("Resultado esperado", p.expected_operational_result));
+      if (p.success_metric) card.appendChild(buildLabeledLine("Métrica de sucesso", p.success_metric));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildNotNowSection(items) {
+    var section = buildSection("O que não fazer agora");
+    if (!items || !items.length) {
+      section.appendChild(el("p", "diag-report-empty", "Nenhum item registrado."));
+      return section;
+    }
+    items.forEach(function (item) {
+      var card = el("div", "diag-report-card");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(item.area)));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", item.action));
+      if (item.reason) card.appendChild(buildLabeledLine("Motivo", item.reason));
+      if (item.review_when) card.appendChild(buildLabeledLine("Revisar quando", item.review_when));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildAiSection(items) {
+    var section = buildSection("Oportunidades de IA");
+    if (!items || !items.length) {
+      section.appendChild(el("p", "diag-report-empty", "Nenhuma oportunidade registrada."));
+      return section;
+    }
+    items.forEach(function (item) {
+      var card = el("div", "diag-report-card");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(item.area)));
+      if (item.priority) head.appendChild(el("span", "diag-badge", "Prioridade: " + levelLabel(item.priority)));
+      if (item.risk) head.appendChild(el("span", "diag-badge", "Risco: " + levelLabel(item.risk)));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", item.job_to_be_done));
+      if (item.ai_role) card.appendChild(buildLabeledLine("Papel da IA", item.ai_role));
+      if (item.human_role) card.appendChild(buildLabeledLine("Papel humano", item.human_role));
+      if (item.expected_gain) card.appendChild(buildLabeledLine("Ganho esperado", item.expected_gain));
+      if (item.recommended_mode) card.appendChild(buildLabeledLine("Modo recomendado", RECOMMENDED_MODE_LABELS[item.recommended_mode] || item.recommended_mode));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildAutomationSection(items) {
+    var section = buildSection("Oportunidades de automação");
+    if (!items || !items.length) {
+      section.appendChild(el("p", "diag-report-empty", "Nenhuma oportunidade registrada."));
+      return section;
+    }
+    items.forEach(function (item) {
+      var card = el("div", "diag-report-card");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(item.area)));
+      if (item.classification) head.appendChild(el("span", "diag-badge", CLASSIFICATION_LABELS[item.classification] || item.classification));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", item.task));
+      if (item.reason) card.appendChild(buildLabeledLine("Motivo", item.reason));
+      if (item.expected_gain) card.appendChild(buildLabeledLine("Ganho esperado", item.expected_gain));
+      if (item.human_approval_required !== undefined) card.appendChild(buildLabeledLine("Aprovação humana", item.human_approval_required ? "Necessária" : "Não necessária"));
+      if (item.risk) card.appendChild(buildLabeledLine("Risco", levelLabel(item.risk)));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildMetricsSection(items) {
+    var section = buildSection("Métricas prioritárias");
+    if (!items || !items.length) {
+      section.appendChild(el("p", "diag-report-empty", "Nenhuma métrica registrada."));
+      return section;
+    }
+    items.forEach(function (item) {
+      var card = el("div", "diag-report-card");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(item.area)));
+      if (item.cadence) head.appendChild(el("span", "diag-badge", CADENCE_LABELS[item.cadence] || item.cadence));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", item.label));
+      if (item.reason) card.appendChild(buildLabeledLine("Por quê", item.reason));
+      if (item.decision_use) card.appendChild(buildLabeledLine("Uso na decisão", item.decision_use));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildEthicsSection(items) {
+    var section = buildSection("Alertas éticos");
+    items.forEach(function (item) {
+      var card = el("div", "diag-report-card diag-report-card-alert");
+      var head = el("div", "diag-report-card-head");
+      head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(item.area)));
+      if (item.confidence) head.appendChild(el("span", "diag-badge diag-badge-confidence", "Confiança: " + levelLabel(item.confidence)));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", item.title));
+      card.appendChild(el("p", "diag-report-card-desc", item.message));
+      if (item.action) card.appendChild(buildLabeledLine("Ação recomendada", item.action));
+      if (item.requires_external_validation) card.appendChild(el("p", "diag-report-card-warning", "Requer validação externa (jurídica/conselho) antes de agir."));
+      section.appendChild(card);
+    });
+    return section;
+  }
+
+  function buildPlanCard(plan, title) {
+    var card = el("div", "diag-plan-card");
+    card.appendChild(el("h4", "diag-plan-card-title", title));
+    if (!plan) return card;
+    if (plan.objective) card.appendChild(el("p", "diag-plan-card-objective", plan.objective));
+    if (plan.actions && plan.actions.length) {
+      card.appendChild(el("p", "diag-plan-sublabel", "Ações"));
+      var actionsList = el("ul", "diag-plan-list");
+      plan.actions.forEach(function (a) {
+        actionsList.appendChild(el("li", null, a.title + (a.description ? " — " + a.description : "")));
+      });
+      card.appendChild(actionsList);
+    }
+    if (plan.deliverables && plan.deliverables.length) {
+      card.appendChild(el("p", "diag-plan-sublabel", "Entregáveis"));
+      var delivList = el("ul", "diag-plan-list");
+      plan.deliverables.forEach(function (d) { delivList.appendChild(el("li", null, d)); });
+      card.appendChild(delivList);
+    }
+    return card;
+  }
+
+  function buildPlanSection(report) {
+    var section = buildSection("Plano 30 / 60 / 90 dias");
+    var grid = el("div", "diag-plan-grid");
+    grid.appendChild(buildPlanCard(report.plan_30_days, "30 dias — Corrigir"));
+    grid.appendChild(buildPlanCard(report.plan_60_days, "60 dias — Implementar"));
+    grid.appendChild(buildPlanCard(report.plan_90_days, "90 dias — Testar e ajustar"));
+    section.appendChild(grid);
+    return section;
+  }
+
+  function buildNextStepSection(nextStep, confidence) {
+    var section = buildSection("Próximo passo");
+    if (nextStep) {
+      var card = el("div", "diag-report-card diag-report-card-primary");
+      var head = el("div", "diag-report-card-head");
+      if (nextStep.area) head.appendChild(el("span", "diag-badge diag-badge-area", areaLabel(nextStep.area)));
+      if (nextStep.time_horizon) head.appendChild(el("span", "diag-badge", TIME_HORIZON_LABELS[nextStep.time_horizon] || nextStep.time_horizon));
+      card.appendChild(head);
+      card.appendChild(el("h4", "diag-report-card-title", nextStep.title));
+      card.appendChild(el("p", "diag-report-card-desc", nextStep.description));
+      section.appendChild(card);
+    }
+    if (confidence) section.appendChild(el("p", "diag-report-confidence", "Confiança geral do diagnóstico: " + levelLabel(confidence)));
+    return section;
+  }
+
+  function renderReportLoading(msg) {
+    reportBodyEl.innerHTML = "";
+    reportBodyEl.appendChild(el("p", "diag-report-loading", msg));
+  }
+
+  function renderReportError(msg) {
+    reportBodyEl.innerHTML = "";
+    reportBodyEl.appendChild(el("p", "diag-error", msg || "Não conseguimos gerar seu diagnóstico agora. Tente novamente."));
+    var retryBtn = el("button", "button button-gold", "Tentar novamente");
+    retryBtn.type = "button";
+    retryBtn.addEventListener("click", function () { runReportGeneration(); });
+    reportBodyEl.appendChild(retryBtn);
+  }
+
+  function renderReport(report) {
+    reportBodyEl.innerHTML = "";
+    reportBodyEl.appendChild(buildStageHeader(report));
+    reportBodyEl.appendChild(buildScoresSection(report.scores));
+    reportBodyEl.appendChild(buildBottlenecksSection(report));
+    reportBodyEl.appendChild(buildOpportunitySection(report.main_opportunity));
+    reportBodyEl.appendChild(buildInsightsSection(report.key_insights));
+    reportBodyEl.appendChild(buildPrioritiesSection(report.top_priorities));
+    reportBodyEl.appendChild(buildNotNowSection(report.not_now));
+    reportBodyEl.appendChild(buildAiSection(report.ai_opportunities));
+    reportBodyEl.appendChild(buildAutomationSection(report.automation_opportunities));
+    reportBodyEl.appendChild(buildMetricsSection(report.top_metrics));
+    if (report.ethical_alerts && report.ethical_alerts.length) reportBodyEl.appendChild(buildEthicsSection(report.ethical_alerts));
+    reportBodyEl.appendChild(buildPlanSection(report));
+    reportBodyEl.appendChild(buildNextStepSection(report.next_step, report.diagnostic_confidence));
+
+    var regenWrap = el("div", "diag-report-regenerate-wrap");
+    var regenBtn = el("button", "button button-outline", "Gerar diagnóstico novamente");
+    regenBtn.type = "button";
+    regenBtn.addEventListener("click", function () { runReportGeneration(); });
+    regenWrap.appendChild(regenBtn);
+    reportBodyEl.appendChild(regenWrap);
+  }
+
+  async function runReportGeneration() {
+    try {
+      renderReportLoading("Calculando as notas das 15 áreas...");
+      await api("/api/diagnostic/scores", { method: "POST" });
+      renderReportLoading("Definindo suas prioridades estratégicas...");
+      await api("/api/diagnostic/priorities", { method: "POST" });
+      renderReportLoading("Gerando seu Diagnóstico Blindado 360 com IA — isso pode levar até 1 minuto...");
+      var data = await api("/api/diagnostic/report", { method: "POST" });
+      renderReport(data.report);
+    } catch (err) {
+      renderReportError(err.message);
+    }
+  }
+
+  async function openReportScreen() {
+    showScreen("report");
+    renderReportLoading("Carregando seu diagnóstico...");
+    var data;
+    try {
+      data = await api("/api/diagnostic/report");
+    } catch (err) {
+      renderReportError(err.message);
+      return;
+    }
+    if (data.status === "COMPLETED" && data.report) {
+      renderReport(data.report);
+    } else {
+      await runReportGeneration();
+    }
+  }
+
+  reportBannerBtnEl.addEventListener("click", function () { openReportScreen(); });
+  document.getElementById("diagReportBackBtn").addEventListener("click", function () { showScreen("overview"); loadOverview(); });
 
   loadOverview();
 })();
