@@ -792,10 +792,60 @@
     container.appendChild(copyBtn);
   }
 
+  function renderLandingPageContent(container, content) {
+    container.appendChild(buildLabeledLine("Headline", content.headline));
+    container.appendChild(buildLabeledLine("Tema de cor", content.theme_used));
+
+    var previewWrap = el("div", null);
+    previewWrap.style.cssText = "margin-top:10px;border:1px solid rgba(255,255,255,.16);border-radius:6px;overflow:hidden;";
+    var iframe = document.createElement("iframe");
+    iframe.srcdoc = content.html;
+    iframe.style.cssText = "width:100%;height:420px;border:0;background:#fff;";
+    previewWrap.appendChild(iframe);
+    container.appendChild(previewWrap);
+
+    var actions = el("div", null);
+    actions.style.cssText = "margin-top:8px;display:flex;gap:8px;flex-wrap:wrap;";
+
+    var openBtn = el("button", "button button-outline", "Abrir em nova aba");
+    openBtn.type = "button";
+    openBtn.addEventListener("click", function () {
+      var blob = new Blob([content.html], { type: "text/html" });
+      var url = URL.createObjectURL(blob);
+      window.open(url, "_blank");
+    });
+    actions.appendChild(openBtn);
+
+    var copyBtn = el("button", "button button-outline", "Copiar HTML");
+    copyBtn.type = "button";
+    copyBtn.addEventListener("click", function () {
+      var resetLabel = function () { setTimeout(function () { copyBtn.textContent = "Copiar HTML"; }, 2000); };
+      navigator.clipboard.writeText(content.html).then(function () {
+        copyBtn.textContent = "Copiado!";
+        resetLabel();
+      }).catch(function () {
+        var textarea = document.createElement("textarea");
+        textarea.value = content.html;
+        textarea.style.position = "fixed";
+        textarea.style.opacity = "0";
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand("copy");
+        document.body.removeChild(textarea);
+        copyBtn.textContent = "Copiado!";
+        resetLabel();
+      });
+    });
+    actions.appendChild(copyBtn);
+
+    container.appendChild(actions);
+  }
+
   var DELIVERABLE_META = {
     dossie_posicionamento: { title: "Dossiê de Posicionamento Blindado", render: renderDossieContent },
     manual_etica: { title: "Manual de Comunicação Ética da Marca", render: renderManualEticaContent },
     assistente_ia: { title: "Assistente IA Particular — skill personalizada pra você", render: renderAssistenteIaContent },
+    landing_page: { title: "Landing Page Premium — pronta pra publicar", render: renderLandingPageContent },
   };
 
   function renderDeliverablesSection(deliverables) {
