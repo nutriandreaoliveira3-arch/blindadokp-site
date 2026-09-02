@@ -217,6 +217,19 @@ CREATE TABLE IF NOT EXISTS client_deliverables (
 );
 `);
 
+// Business Book Blindado (type 'business_book') é diferente dos outros 4
+// entregáveis: não gera sozinho, e não fica visível pra cliente só por
+// existir — a Andréa gera quando quiser (Admin → Clientes) e decide
+// separadamente quando entregar ("eu entrego quando achar necessário").
+// released_at: NULL = gerado mas não entregue ainda (ou nem gerado);
+// preenchido = a cliente já pode ver. Pros outros 4 entregáveis (sempre
+// visíveis assim que ficam prontos), released_at é preenchido junto com
+// generated_at, sem esse passo manual extra.
+const clientDeliverablesColumns = db.prepare('PRAGMA table_info(client_deliverables)').all().map((c) => c.name);
+if (!clientDeliverablesColumns.includes('released_at')) {
+  db.exec('ALTER TABLE client_deliverables ADD COLUMN released_at TEXT');
+}
+
 // Configurações gerais do app (chave/valor) — hoje só guarda
 // auto_unlock_enabled (Admin → Configurações), pra dar pra Andréa desligar
 // a liberação automática enquanto ela valida o método na mão, sem precisar

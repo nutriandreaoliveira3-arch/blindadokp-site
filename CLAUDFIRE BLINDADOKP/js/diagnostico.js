@@ -863,15 +863,12 @@
     container.appendChild(copyBtn);
   }
 
-  function renderLandingPageContent(container, content) {
-    container.appendChild(buildLabeledLine("Headline", content.headline));
-    container.appendChild(buildLabeledLine("Tema de cor", content.theme_used));
-
+  function renderHtmlDocumentPreview(container, html, previewHeight) {
     var previewWrap = el("div", null);
     previewWrap.style.cssText = "margin-top:10px;border:1px solid rgba(255,255,255,.16);border-radius:6px;overflow:hidden;";
     var iframe = document.createElement("iframe");
-    iframe.srcdoc = content.html;
-    iframe.style.cssText = "width:100%;height:420px;border:0;background:#fff;";
+    iframe.srcdoc = html;
+    iframe.style.cssText = "width:100%;height:" + (previewHeight || 420) + "px;border:0;background:#fff;";
     previewWrap.appendChild(iframe);
     container.appendChild(previewWrap);
 
@@ -881,7 +878,7 @@
     var openBtn = el("button", "button button-outline", "Abrir em nova aba");
     openBtn.type = "button";
     openBtn.addEventListener("click", function () {
-      var blob = new Blob([content.html], { type: "text/html" });
+      var blob = new Blob([html], { type: "text/html" });
       var url = URL.createObjectURL(blob);
       window.open(url, "_blank");
     });
@@ -891,12 +888,12 @@
     copyBtn.type = "button";
     copyBtn.addEventListener("click", function () {
       var resetLabel = function () { setTimeout(function () { copyBtn.textContent = "Copiar HTML"; }, 2000); };
-      navigator.clipboard.writeText(content.html).then(function () {
+      navigator.clipboard.writeText(html).then(function () {
         copyBtn.textContent = "Copiado!";
         resetLabel();
       }).catch(function () {
         var textarea = document.createElement("textarea");
-        textarea.value = content.html;
+        textarea.value = html;
         textarea.style.position = "fixed";
         textarea.style.opacity = "0";
         document.body.appendChild(textarea);
@@ -910,6 +907,18 @@
     actions.appendChild(copyBtn);
 
     container.appendChild(actions);
+  }
+
+  function renderLandingPageContent(container, content) {
+    container.appendChild(buildLabeledLine("Headline", content.headline));
+    container.appendChild(buildLabeledLine("Tema de cor", content.theme_used));
+    renderHtmlDocumentPreview(container, content.html, 420);
+  }
+
+  function renderBusinessBookContent(container, content) {
+    container.appendChild(buildLabeledLine("Título", content.title));
+    container.appendChild(buildLabeledLine("Tema de cor", content.theme_used));
+    renderHtmlDocumentPreview(container, content.html, 600);
   }
 
   var DELIVERABLE_META = {
@@ -934,6 +943,17 @@
       }
       section.appendChild(card);
     });
+
+    // Business Book Blindado: diferente dos outros, só aparece se a Andréa
+    // já tiver gerado E liberado (GET /api/diagnostic/deliverables só
+    // devolve esse tipo quando já está liberado) — por isso não entra no
+    // DELIVERABLE_META de cima, que sempre mostra "gerando" quando falta.
+    if (deliverables.business_book && deliverables.business_book.status === "COMPLETED" && deliverables.business_book.content) {
+      var bookCard = buildDeliverableCard("Business Book Blindado");
+      renderBusinessBookContent(bookCard, deliverables.business_book.content);
+      section.appendChild(bookCard);
+    }
+
     return section;
   }
 

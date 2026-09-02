@@ -366,6 +366,10 @@
           '<details class="unlock-status" ontoggle="carregarDevolutivaCliente(event, \'' + u.id + '\')">' +
           '<summary style="color:var(--gold-light);cursor:pointer;font-size:13px;">Devolutiva do Diagnóstico 360 (revisar antes de liberar)</summary>' +
           '<div class="unlock-status-body" id="devolutiva-' + u.id + '" style="margin-top:10px;color:var(--muted);font-size:13px;">Carregando...</div>' +
+          "</details>" +
+          '<details class="unlock-status" ontoggle="carregarBusinessBookCliente(event, \'' + u.id + '\')">' +
+          '<summary style="color:var(--gold-light);cursor:pointer;font-size:13px;">Business Book Blindado (entregue quando achar necessário)</summary>' +
+          '<div class="unlock-status-body" id="business-book-' + u.id + '" style="margin-top:10px;color:var(--muted);font-size:13px;">Carregando...</div>' +
           "</details></div>";
       });
       document.getElementById("clientesLista").innerHTML = html || '<p style="color:var(--muted);">Nenhuma cliente cadastrada ainda.</p>';
@@ -567,6 +571,73 @@
         : (data.unlockError ? " " + data.unlockError : " Nenhuma próxima área pra liberar agora.");
       msg.textContent = "Liberado pra cliente!" + extra;
       var details = document.getElementById("devolutiva-" + userId).closest("details");
+      details.dispatchEvent(new Event("toggle"));
+    };
+
+    window.carregarBusinessBookCliente = async function (event, userId) {
+      var details = event.target;
+      if (!details.open) return;
+      var body = document.getElementById("business-book-" + userId);
+      body.textContent = "Carregando...";
+      var res = await fetch("/api/admin/users/" + userId + "/deliverables", { headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        body.textContent = data.error || "Não foi possível carregar.";
+        return;
+      }
+      var book = (data.deliverables || {}).business_book;
+      var html = "";
+
+      if (!book || (book.status !== "COMPLETED" && book.status !== "PROCESSING_ERROR")) {
+        html += '<p style="margin:0 0 12px;">Ainda não foi gerado pra essa cliente.</p>';
+      } else if (book.status === "PROCESSING_ERROR") {
+        html += '<p style="margin:0 0 12px;color:#e08a72;">A última tentativa de gerar falhou — pode tentar de novo.</p>';
+      } else if (book.status === "COMPLETED") {
+        html += book.releasedAt
+          ? '<p style="color:#78c896;margin:0 0 12px;">✓ Liberado pra cliente em ' + new Date(book.releasedAt).toLocaleString("pt-BR") + '.</p>'
+          : '<p style="color:var(--gold-light);margin:0 0 12px;">Gerado, aguardando você liberar pra cliente.</p>';
+        html += '<iframe srcdoc="' + escapeHtmlAdmin(book.content.html) + '" style="width:100%;height:420px;border:1px solid rgba(255,255,255,.16);border-radius:6px;background:#fff;"></iframe>';
+      }
+
+      html += '<div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">';
+      html += '<button type="button" class="button button-outline" onclick="gerarBusinessBook(\'' + userId + '\')">' + (book && book.status === "COMPLETED" ? "GERAR NOVAMENTE" : "GERAR BUSINESS BOOK") + '</button>';
+      if (book && book.status === "COMPLETED" && !book.releasedAt) {
+        html += '<button type="button" class="button button-gold" onclick="liberarBusinessBook(\'' + userId + '\')">LIBERAR PRA CLIENTE</button>';
+      }
+      html += '<span id="business-book-msg-' + userId + '" style="color:var(--muted);font-size:12px;"></span>';
+      html += '</div>';
+
+      body.innerHTML = html;
+    };
+
+    window.gerarBusinessBook = async function (userId) {
+      var msg = document.getElementById("business-book-msg-" + userId);
+      if (msg) msg.textContent = "Gerando... pode levar até 1 minuto.";
+      var res = await fetch("/api/admin/users/" + userId + "/business-book/generate", { method: "POST", headers: authHeaders() });
+      var data = await res.json();
+      var details = document.getElementById("business-book-" + userId).closest("details");
+      if (!res.ok) {
+        details.dispatchEvent(new Event("toggle"));
+        setTimeout(function () {
+          var newMsg = document.getElementById("business-book-msg-" + userId);
+          if (newMsg) newMsg.textContent = data.error || "Erro ao gerar.";
+        }, 0);
+        return;
+      }
+      details.dispatchEvent(new Event("toggle"));
+    };
+
+    window.liberarBusinessBook = async function (userId) {
+      if (!confirm("Liberar o Business Book Blindado pra essa cliente ver?")) return;
+      var msg = document.getElementById("business-book-msg-" + userId);
+      msg.textContent = "Liberando...";
+      var res = await fetch("/api/admin/users/" + userId + "/business-book/release", { method: "POST", headers: authHeaders() });
+      var data = await res.json();
+      if (!res.ok) {
+        msg.textContent = data.error || "Erro ao liberar.";
+        return;
+      }
+      var details = document.getElementById("business-book-" + userId).closest("details");
       details.dispatchEvent(new Event("toggle"));
     };
 
