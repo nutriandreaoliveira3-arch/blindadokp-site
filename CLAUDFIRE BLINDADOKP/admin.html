@@ -177,6 +177,7 @@
           html +=
             '<div class="admin-item"><div class="admin-item-info"><strong>' +
             lesson.title +
+            (lesson.copy_content ? ' <span style="color:var(--gold-light);font-size:12px;">(tem conteúdo pra copiar)</span>' : "") +
             "</strong></div><button class=\"btn-delete\" onclick=\"excluirAula('" +
             lesson.id +
             "')\">Excluir aula</button></div>";
@@ -188,6 +189,7 @@
           '<input type="text" placeholder="Título da aula" class="aula-title" required style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
           '<input type="text" placeholder="Link do vídeo (opcional)" class="aula-video" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
           '<textarea placeholder="Conteúdo / manual (opcional)" class="aula-content" rows="3" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;"></textarea>' +
+          '<textarea placeholder="Conteúdo pra copiar (opcional) — ex: texto da SKILL.md, pra cliente colar no Claude.ai. Aparece com um botão \'Copiar\' separado, sem misturar com o texto explicativo acima." class="aula-copy-content" rows="6" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;font-family:monospace;font-size:12px;"></textarea>' +
           '<button type="submit" class="button button-outline" style="width:fit-content;">ADICIONAR AULA</button>' +
           "</form></div></div>";
       });
@@ -216,6 +218,7 @@
           title: form.querySelector(".aula-title").value,
           video_url: form.querySelector(".aula-video").value,
           content: form.querySelector(".aula-content").value,
+          copy_content: form.querySelector(".aula-copy-content").value,
         }),
       }).then(carregarModulos);
       return false;

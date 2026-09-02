@@ -60,6 +60,31 @@
 
   <script src="js/auth-shared.js"></script>
   <script>
+    function escapeHtml(text) {
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;");
+    }
+
+    window.copiarConteudo = async function (textareaId, button) {
+      var textarea = document.getElementById(textareaId);
+      var texto = textarea.value;
+      var textoOriginal = button.textContent;
+      try {
+        await navigator.clipboard.writeText(texto);
+      } catch (err) {
+        textarea.removeAttribute("readonly");
+        textarea.select();
+        document.execCommand("copy");
+        textarea.setAttribute("readonly", "readonly");
+      }
+      button.textContent = "Copiado!";
+      setTimeout(function () {
+        button.textContent = textoOriginal;
+      }, 2000);
+    };
+
     (async function () {
       if (!BlindadoAuth.getToken()) {
         window.location.href = "login.html?proximo=membros.html";
@@ -96,6 +121,21 @@
           }
           if (lesson.content) {
             html += "<p>" + lesson.content.replace(/\n/g, "<br>") + "</p>";
+          }
+          if (lesson.copy_content) {
+            var taId = "copyta-" + lesson.id;
+            html += '<div style="margin-top:10px;">';
+            html +=
+              '<textarea id="' +
+              taId +
+              '" readonly style="width:100%;min-height:160px;background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px;border-radius:6px;font-family:monospace;font-size:12px;">' +
+              escapeHtml(lesson.copy_content) +
+              "</textarea>";
+            html +=
+              '<button type="button" class="button button-outline" style="margin-top:8px;" onclick="copiarConteudo(\'' +
+              taId +
+              "', this)\">Copiar</button>";
+            html += "</div>";
           }
           html += "</div>";
         });

@@ -92,7 +92,7 @@ router.post('/:moduleId/lessons', requireAuth, requireAdmin, (req, res) => {
     return res.status(404).json({ error: 'Módulo não encontrado.' });
   }
 
-  const { title, content, video_url } = req.body || {};
+  const { title, content, video_url, copy_content } = req.body || {};
   if (!title) {
     return res.status(400).json({ error: 'Informe o título da aula.' });
   }
@@ -102,8 +102,8 @@ router.post('/:moduleId/lessons', requireAuth, requireAdmin, (req, res) => {
     .get(mod.id).max;
   const id = uuidv4();
   db.prepare(
-    'INSERT INTO lessons (id, module_id, title, content, video_url, sort_order) VALUES (?, ?, ?, ?, ?, ?)'
-  ).run(id, mod.id, title, content || '', video_url || null, maxOrder + 1);
+    'INSERT INTO lessons (id, module_id, title, content, video_url, copy_content, sort_order) VALUES (?, ?, ?, ?, ?, ?, ?)'
+  ).run(id, mod.id, title, content || '', video_url || null, copy_content || null, maxOrder + 1);
 
   res.status(201).json({ lesson: db.prepare('SELECT * FROM lessons WHERE id = ?').get(id) });
 });
@@ -114,11 +114,12 @@ router.put('/lessons/:lessonId', requireAuth, requireAdmin, (req, res) => {
     return res.status(404).json({ error: 'Aula não encontrada.' });
   }
 
-  const { title, content, video_url } = req.body || {};
-  db.prepare('UPDATE lessons SET title = ?, content = ?, video_url = ? WHERE id = ?').run(
+  const { title, content, video_url, copy_content } = req.body || {};
+  db.prepare('UPDATE lessons SET title = ?, content = ?, video_url = ?, copy_content = ? WHERE id = ?').run(
     title ?? lesson.title,
     content ?? lesson.content,
     video_url === undefined ? lesson.video_url : video_url,
+    copy_content === undefined ? lesson.copy_content : copy_content,
     lesson.id
   );
 
