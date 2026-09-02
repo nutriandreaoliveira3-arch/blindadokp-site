@@ -8,6 +8,7 @@ const { computeDiagnosticScores, allBlocksCompleted } = require('../diagnostic/s
 const { computeDiagnosticPriorities } = require('../diagnostic/services/computePriorities');
 const { processFinalDiagnostic, getFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
 const { getClientDeliverables } = require('../diagnostic/services/generateClientDeliverables');
+const { getClientUnlockStatus } = require('../diagnostic/unlocking/unlockEngine');
 
 const router = express.Router();
 
@@ -315,6 +316,37 @@ router.get('/deliverables', (req, res) => {
   } catch (err) {
     console.error('Erro ao buscar os entregáveis premium:', err);
     res.status(500).json({ error: 'Não foi possível carregar seus entregáveis agora.' });
+  }
+});
+
+// GET /api/diagnostic/roadmap — Roadmap Blindado: a trilha completa dessa
+// cliente, na ordem de prioridade calculada pelo Diagnóstico 360 — o que já
+// foi liberado, o que vem a seguir, o que ainda está por vir. Reaproveita
+// o mesmo motor usado no Admin → Clientes (getClientUnlockStatus), só que
+// filtrado pro que interessa pra cliente ver (só áreas com módulo
+// principal — sem "área sem módulo" nem detalhe de apoio, que são coisa de
+// bastidor do Admin).
+router.get('/roadmap', (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  try {
+    const status = getClientUnlockStatus(req.user.id, diagnostic.id);
+    const areas = status.areas
+      .filter((a) => a.hasPrincipalModules)
+      .map((a) => ({
+        area: a.area,
+        label: a.label,
+        isTopPriority: a.isTopPriority,
+        unlocked: a.allPrincipalUnlocked,
+        modules: a.principal.map((m) => ({ title: m.title, aiMessage: (m.unlockInfo && m.unlockInfo.ai_message) || null })),
+      }));
+    const nextIndex = areas.findIndex((a) => !a.unlocked);
+    res.json({ hasFinalReport: status.hasFinalReport, areas, nextArea: nextIndex === -1 ? null : areas[nextIndex].area });
+  } catch (err) {
+    if (err.code === 'PRIORITIES_NOT_GENERATED') {
+      return res.status(400).json({ error: err.message });
+    }
+    console.error('Erro ao montar o Roadmap Blindado:', err.message);
+    res.status(500).json({ error: 'Não foi possível carregar seu roadmap agora.' });
   }
 });
 
