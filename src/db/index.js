@@ -122,4 +122,15 @@ if (!diagnosticsColumns.includes('priorities_generated_at')) {
   db.exec('ALTER TABLE diagnostics ADD COLUMN priorities_generated_at TEXT');
 }
 
+// Migração leve: adiciona copy_content à tabela lessons quando ainda não
+// existir. Usado pras skills vendidas como arquivo de texto (SKILL.md) que a
+// cliente precisa copiar e colar no Claude.ai — fica separado de "content"
+// (texto explicativo renderizado como prosa) pra poder mostrar um botão
+// "Copiar" com o conteúdo exato, sem risco de a formatação de prosa mangling
+// o texto que precisa ser colado verbatim.
+const lessonsColumns = db.prepare('PRAGMA table_info(lessons)').all().map((c) => c.name);
+if (!lessonsColumns.includes('copy_content')) {
+  db.exec('ALTER TABLE lessons ADD COLUMN copy_content TEXT');
+}
+
 module.exports = db;
