@@ -75,7 +75,10 @@
           document.getElementById('email').value,
           document.getElementById('password').value
         );
-        window.location.href = redirectTo;
+        // Admin sempre cai no painel administrativo, direto — não faz
+        // sentido pra ela passar pela última página que visitou antes de
+        // precisar logar, como faz pro fluxo normal de cliente.
+        window.location.href = data.user && data.user.role === 'admin' ? 'admin.html' : redirectTo;
       } catch (err) {
         errorEl.textContent = err.message || 'Não foi possível entrar. Confira e-mail e senha.';
         errorEl.style.display = 'block';
