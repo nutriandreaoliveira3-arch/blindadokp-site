@@ -16,6 +16,7 @@ const { buildAiContext, DIAGNOSTIC_VERSION } = require('../ai/buildAiContext');
 const { generateFinalDiagnostic } = require('../ai/generateFinalDiagnostic');
 const { validateFinalDiagnostic } = require('../ai/finalDiagnosticSchema');
 const { autoUnlockNextArea } = require('../unlocking/unlockEngine');
+const { generateClientDeliverables } = require('./generateClientDeliverables');
 
 const MAX_AI_VALIDATION_RETRIES = 2;
 
@@ -105,6 +106,17 @@ async function processFinalDiagnostic(diagnosticId) {
       } catch (err) {
         console.error(`Não foi possível liberar módulo automático pro diagnóstico ${diagnosticId}:`, err.message);
       }
+
+      // Entregáveis Premium (Dossiê, Manual de Ética, Assistente IA
+      // Particular) — são 3 chamadas de IA a mais, então rodam em segundo
+      // plano (sem await) em vez de atrasar a resposta do relatório
+      // principal, que já está salvo e é o que a cliente está esperando
+      // ver na hora. Cada entregável já se protege individualmente (ver
+      // generateClientDeliverables.js) — a cliente confere o status deles
+      // depois em GET /api/diagnostic/deliverables.
+      generateClientDeliverables(diagnostic.user_id, diagnosticId).catch((err) => {
+        console.error(`Não foi possível gerar os entregáveis premium pro diagnóstico ${diagnosticId}:`, err.message);
+      });
 
       return { report: finalReport, attempts: attemptNumber + 1 };
     }

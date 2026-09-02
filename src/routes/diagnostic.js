@@ -7,6 +7,7 @@ const { getBlockModule } = require('../diagnostic/blocks');
 const { computeDiagnosticScores, allBlocksCompleted } = require('../diagnostic/services/computeScores');
 const { computeDiagnosticPriorities } = require('../diagnostic/services/computePriorities');
 const { processFinalDiagnostic, getFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
+const { getClientDeliverables } = require('../diagnostic/services/generateClientDeliverables');
 
 const router = express.Router();
 
@@ -282,6 +283,20 @@ router.get('/report', (req, res) => {
   } catch (err) {
     console.error('Erro ao buscar o relatório final do diagnóstico:', err);
     res.status(500).json({ error: 'Não foi possível carregar o relatório agora.' });
+  }
+});
+
+// GET /api/diagnostic/deliverables — retorna os Entregáveis Premium
+// (Dossiê de Posicionamento, Manual de Comunicação Ética, Assistente IA
+// Particular) já gerados pra essa cliente. São gerados automaticamente
+// junto com o relatório final (Fase 16) — esse endpoint só lê o que já
+// existe, não dispara geração nova.
+router.get('/deliverables', (req, res) => {
+  try {
+    res.json({ deliverables: getClientDeliverables(req.user.id) });
+  } catch (err) {
+    console.error('Erro ao buscar os entregáveis premium:', err);
+    res.status(500).json({ error: 'Não foi possível carregar seus entregáveis agora.' });
   }
 });
 

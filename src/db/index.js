@@ -188,4 +188,26 @@ CREATE TABLE IF NOT EXISTS module_unlocks (
 );
 `);
 
+// Entregáveis Premium: documentos gerados por IA, personalizados por
+// cliente, a partir do Diagnóstico 360 dela — não são conteúdo de catálogo
+// (como os módulos/aulas), são dado específico de cada cliente. type:
+// 'dossie_posicionamento' | 'manual_etica' | 'assistente_ia'. status segue
+// o mesmo padrão do relatório final (PROCESSING/COMPLETED/PROCESSING_ERROR)
+// — se um entregável falhar, os outros continuam normalmente (nunca trava
+// um por causa do outro).
+db.exec(`
+CREATE TABLE IF NOT EXISTS client_deliverables (
+  id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  diagnostic_id TEXT REFERENCES diagnostics(id) ON DELETE SET NULL,
+  type TEXT NOT NULL,
+  status TEXT NOT NULL DEFAULT 'PROCESSING',
+  content TEXT,
+  generated_at TEXT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(user_id, type)
+);
+`);
+
 module.exports = db;
