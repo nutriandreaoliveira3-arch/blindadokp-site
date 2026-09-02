@@ -4,6 +4,21 @@
 // Objetivo: entender como o negócio funciona hoje, de onde vem a receita,
 // capacidade, dependência do profissional e principal gargalo percebido.
 
+// Usado pra rotear o conteúdo do Bloco 13 (Ética) pro código de ética da
+// profissão certa (ver PROFESSION_ETHICS_CONTENT em blocks/ethics.js).
+// 'outro' cai no conteúdo genérico até termos o código de ética levantado
+// pra essa profissão especificamente.
+const PROFESSION_CATEGORY_OPTIONS = [
+  { value: 'nutricionista', label: 'Nutricionista' },
+  { value: 'medico', label: 'Médico(a)' },
+  { value: 'dentista', label: 'Dentista' },
+  { value: 'fisioterapeuta', label: 'Fisioterapeuta' },
+  { value: 'psicologo', label: 'Psicólogo(a)' },
+  { value: 'fonoaudiologo', label: 'Fonoaudiólogo(a)' },
+  { value: 'enfermeiro', label: 'Enfermeiro(a)' },
+  { value: 'outro', label: 'Outra profissão' },
+];
+
 const REVENUE_IMPORTANCE_OPTIONS = [
   { value: '1', label: 'Muito baixa' },
   { value: '2', label: 'Baixa' },
@@ -86,6 +101,13 @@ const QUESTIONS = [
     title: 'Profissão e negócio',
     content: 'Qual é sua profissão, especialidade e principal produto ou serviço atualmente?',
     fields: [
+      {
+        id: 'profession_category',
+        label: 'Categoria profissional',
+        type: 'select',
+        options: PROFESSION_CATEGORY_OPTIONS,
+        required: true,
+      },
       { id: 'profession', label: 'Profissão', type: 'text', required: true },
       { id: 'specialty', label: 'Especialidade', type: 'text', required: false },
       { id: 'main_offer', label: 'Principal produto/serviço', type: 'text', required: true },
