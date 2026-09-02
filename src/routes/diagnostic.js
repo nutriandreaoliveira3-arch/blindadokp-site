@@ -6,6 +6,7 @@ const { BLOCK_LIST } = require('../diagnostic/blockList');
 const { getBlockModule } = require('../diagnostic/blocks');
 const { computeDiagnosticScores, allBlocksCompleted } = require('../diagnostic/services/computeScores');
 const { computeDiagnosticPriorities } = require('../diagnostic/services/computePriorities');
+const { processFinalDiagnostic, getFinalDiagnostic } = require('../diagnostic/services/processFinalDiagnostic');
 
 const router = express.Router();
 
@@ -246,6 +247,42 @@ router.get('/priorities', (req, res) => {
     candidatePriorities: diagnostic.candidate_priorities ? JSON.parse(diagnostic.candidate_priorities) : null,
     prioritiesGeneratedAt: diagnostic.priorities_generated_at,
   });
+});
+
+// POST /api/diagnostic/report — Fases 13-16: monta o contexto, chama a IA
+// com o Prompt Mestre, valida contra o Contrato JSON e salva o relatório
+// final. Exige scores e prioridades já calculados. Pode levar mais tempo
+// que os outros endpoints (até 3 chamadas de IA, por causa do retry).
+router.post('/report', async (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  try {
+    const result = await processFinalDiagnostic(diagnostic.id);
+    res.json({ ok: true, ...result });
+  } catch (err) {
+    if (['BLOCKS_INCOMPLETE', 'SCORES_NOT_GENERATED', 'PRIORITIES_NOT_GENERATED'].includes(err.code)) {
+      return res.status(400).json({ error: err.message });
+    }
+    if (String(err.message || '').includes('ANTHROPIC_API_KEY')) {
+      return res.status(503).json({ error: err.message });
+    }
+    if (err.code === 'PROCESSING_ERROR') {
+      return res.status(422).json({ error: err.message, validationErrors: err.validationErrors });
+    }
+    console.error('Erro ao gerar o relatório final do diagnóstico:', err);
+    res.status(500).json({ error: 'Não conseguimos concluir sua análise agora. Suas respostas continuam salvas.' });
+  }
+});
+
+// GET /api/diagnostic/report — retorna o último relatório final salvo (ou
+// status PROCESSING/PROCESSING_ERROR se ainda não tiver um COMPLETED).
+router.get('/report', (req, res) => {
+  const diagnostic = getOrCreateDiagnostic(req.user.id);
+  try {
+    res.json(getFinalDiagnostic(diagnostic.id));
+  } catch (err) {
+    console.error('Erro ao buscar o relatório final do diagnóstico:', err);
+    res.status(500).json({ error: 'Não foi possível carregar o relatório agora.' });
+  }
 });
 
 module.exports = router;
