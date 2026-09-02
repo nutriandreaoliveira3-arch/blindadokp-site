@@ -95,22 +95,31 @@ replaceLessons(trafegoModuleId, [
 console.log('Skill de Tráfego cadastrada.');
 
 // --- Skill TopClaudia ---
-// ATENÇÃO: só temos o manual de uso (README) da TopClaudia entre os
-// documentos recebidos — o arquivo SKILL.md real dela (o texto técnico que
-// a cliente cola no Claude.ai) não veio junto. Por isso o campo de copiar
-// fica vazio aqui, de propósito: bloco.io não inventa esse conteúdo. Falta
-// a Andréa enviar o SKILL.md real da TopClaudia pra completar isso.
+// O SKILL.md real da TopClaudia (skil-topclaudia) é de uso pessoal da
+// Andréa: referencia o Drive dela (banco de fotos com IDs), o Instagram
+// @nutriandreaoliveira e o produto "Emagrecimento Blindado". Não pode ir
+// pra cliente assim — quem compra usa a própria marca e as próprias fotos.
+// skil-topclaudia-generic.md é a versão genérica derivada dele (mesma
+// estrutura/templates/regras técnicas), adaptada pro fluxo que o manual da
+// própria Andréa já descrevia: comprador anexa as fotos direto na
+// conversa (sem Drive), pergunta a identidade de marca uma vez, e a skill
+// só entrega HTML (conversão pra PNG é manual, fora da skill).
 const topClaudiaModuleId = upsertModule(
   'Skill TopClaudia',
-  'Complemento visual da Skill Blindada Pro — gera carrossel em HTML pronto pra virar PNG. Exclusiva pra quem já tem a Blindada Pro Premium.',
+  'Complemento visual da Skill Blindada Pro — gera carrossel em HTML pronto pra virar PNG, com as fotos do próprio comprador. Exclusiva pra quem já tem a Blindada Pro Premium.',
   getProductId('skill_topclaudia')
 );
 replaceLessons(topClaudiaModuleId, [
   {
-    title: 'Manual de instalação e uso',
-    content: read('manual-topclaudia.md') + '\n\n⚠️ PENDENTE: falta cadastrar aqui o texto do arquivo SKILL.md real da TopClaudia (o que a cliente copia e cola pra instalar). Envie esse arquivo pra Andréa completar.',
+    title: 'Instalação e uso',
+    content: INSTALL_INSTRUCTIONS_GERAL + '\n\nEssa é a segunda skill do pacote Premium — instale além da Skill Blindada Pro, não no lugar dela. Antes de usar, separe 9 a 12 fotos suas pra anexar direto na conversa quando for gerar cada carrossel.',
+    copy_content: read('skil-topclaudia-generic.md'),
+  },
+  {
+    title: 'Manual completo',
+    content: read('manual-topclaudia.md'),
   },
 ]);
-console.log('Skill TopClaudia cadastrada (PENDENTE: falta o SKILL.md real dela — só o manual foi cadastrado).');
+console.log('Skill TopClaudia cadastrada (versão genérica, derivada do SKILL.md pessoal da Andréa).');
 
 console.log('\nConcluído.');
