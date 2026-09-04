@@ -184,6 +184,9 @@ a:focus-visible, button:focus-visible { outline: 2px solid var(--gold-light); ou
 .feature-card { padding: 30px 28px; border: 1px solid rgba(255,255,255,.1); background: linear-gradient(145deg, #171512, #0f0e0c); }
 .feature-card h4 { margin: 0 0 10px; color: var(--gold-light); font-family: Georgia, serif; font-size: 19px; font-weight: 400; letter-spacing: -.01em; }
 .feature-card p { margin: 0; color: var(--muted); font-size: 14px; line-height: 1.65; }
+.feature-card summary::-webkit-details-marker { display: none; }
+.feature-card summary::before { content: "+ "; color: var(--gold); }
+.feature-card[open] summary::before { content: "\2013 "; }
 
 .plans-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
 .plan-card { position: relative; padding: 42px 34px; border: 1px solid rgba(255,255,255,.12); background: linear-gradient(145deg, #171512, #0f0e0c); }

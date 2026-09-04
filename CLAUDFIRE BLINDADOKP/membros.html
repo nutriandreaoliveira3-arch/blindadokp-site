@@ -123,7 +123,12 @@
             "</div>";
         }
         (mod.lessons || []).forEach(function (lesson) {
-          html += '<div class="feature-card" style="margin-bottom:14px;"><h4>' + lesson.title + "</h4>";
+          html +=
+            '<details class="feature-card" style="margin-bottom:14px;">' +
+            '<summary style="cursor:pointer;list-style:none;color:var(--gold-light);font-family:Georgia,serif;font-size:19px;font-weight:400;letter-spacing:-.01em;">' +
+            lesson.title +
+            "</summary>";
+          html += '<div style="margin-top:14px;">';
           if (lesson.video_url) {
             html += '<p style="margin-bottom:10px;"><a href="' + lesson.video_url + '" target="_blank" rel="noopener noreferrer" style="color:var(--gold-light);">▶ Assistir vídeo</a></p>';
           }
@@ -145,7 +150,7 @@
               "', this)\">Copiar</button>";
             html += "</div>";
           }
-          html += "</div>";
+          html += "</div></details>";
         });
         html += "</div>";
       });
