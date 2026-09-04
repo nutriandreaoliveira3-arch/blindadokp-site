@@ -245,12 +245,30 @@
         html += '<div class="admin-sub">';
         (mod.lessons || []).forEach(function (lesson) {
           html +=
-            '<div class="admin-item"><div class="admin-item-info"><strong>' +
+            '<details class="admin-item" style="display:block;"><summary style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:10px;"><span><strong>' +
             lesson.title +
             (lesson.copy_content ? ' <span style="color:var(--gold-light);font-size:12px;">(tem conteúdo pra copiar)</span>' : "") +
-            "</strong></div><button class=\"btn-delete\" onclick=\"excluirAula('" +
+            '</strong></span><button type="button" class="btn-delete" onclick="event.preventDefault();excluirAula(\'' +
             lesson.id +
-            "')\">Excluir aula</button></div>";
+            "')\">Excluir aula</button></summary>";
+          html +=
+            '<form onsubmit="return salvarEdicaoAula(event, \'' +
+            lesson.id +
+            '\')" style="display:grid;gap:10px;margin-top:12px;">' +
+            '<input type="text" placeholder="Título da aula" class="aula-edit-title" value="' +
+            escapeHtmlAdmin(lesson.title) +
+            '" required style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
+            '<input type="text" placeholder="Link do vídeo (opcional)" class="aula-edit-video" value="' +
+            escapeHtmlAdmin(lesson.video_url || "") +
+            '" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
+            '<textarea placeholder="Conteúdo / manual (opcional)" class="aula-edit-content" rows="3" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;">' +
+            escapeHtmlAdmin(lesson.content || "") +
+            "</textarea>" +
+            '<textarea placeholder="Conteúdo pra copiar (opcional)" class="aula-edit-copy-content" rows="6" style="background:#0c0b0a;border:1px solid rgba(255,255,255,.16);color:var(--cream);padding:10px 12px;border-radius:6px;font-family:monospace;font-size:12px;">' +
+            escapeHtmlAdmin(lesson.copy_content || "") +
+            "</textarea>" +
+            '<button type="submit" class="button button-outline" style="width:fit-content;">SALVAR AULA</button>' +
+            "</form></details>";
         });
         html +=
           '<form onsubmit="return adicionarAula(event, \'' +
@@ -289,6 +307,22 @@
         method: "PUT",
         headers: authHeaders(),
         body: JSON.stringify({ diagnostic_areas: diagnosticAreas }),
+      }).then(carregarModulos);
+      return false;
+    };
+
+    window.salvarEdicaoAula = function (event, lessonId) {
+      event.preventDefault();
+      var form = event.target;
+      fetch("/api/modules/lessons/" + lessonId, {
+        method: "PUT",
+        headers: authHeaders(),
+        body: JSON.stringify({
+          title: form.querySelector(".aula-edit-title").value,
+          video_url: form.querySelector(".aula-edit-video").value,
+          content: form.querySelector(".aula-edit-content").value,
+          copy_content: form.querySelector(".aula-edit-copy-content").value,
+        }),
       }).then(carregarModulos);
       return false;
     };
